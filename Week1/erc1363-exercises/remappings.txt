@@ -1,0 +1,4 @@
+forge-std/=lib/forge-std/src/
+erc-1363=lib/erc1363-payable-token/contracts/token/
+openzeppelin=lib/openzeppelin-contracts/contracts/
+@openzeppelin=lib/openzeppelin-contracts/

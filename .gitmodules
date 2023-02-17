@@ -1,3 +1,9 @@
 [submodule "Week1/lib/forge-std"]
 	path = Week1/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "Week1/erc1363-exercises/lib/openzeppelin-contracts"]
+	path = Week1/erc1363-exercises/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "Week1/erc1363-exercises/lib/erc1363-payable-token"]
+	path = Week1/erc1363-exercises/lib/erc1363-payable-token
+	url = https://github.com/vittominacori/erc1363-payable-token
