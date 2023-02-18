@@ -18,6 +18,9 @@ import "erc-1363/ERC1363//IERC1363Spender.sol";
 abstract contract ERC1363Capped is ERC20Capped, IERC1363, ERC165 {
     using Address for address;
 
+    constructor(string memory _name, string memory _symbol, uint256 _maxSupply) ERC20Capped(_maxSupply) ERC20(_name, _symbol) {
+    }
+
     /**
      * @dev See {IERC165-supportsInterface}.
      */

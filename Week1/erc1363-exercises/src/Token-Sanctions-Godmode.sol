@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: Unlicense
-pragma solidity 0.8.17;
-
+pragma solidity 0.8.18;
 
 import {ERC1363Capped} from "./ERC1363Capped.sol";
-import {ERC20Capped} from "openzeppelin/token/ERC20/extensions/ERC20Capped.sol";
-import {ERC20} from "openzeppelin/token/ERC20/ERC20.sol";
 import {Ownable} from "openzeppelin/access/Ownable.sol";
 
 
@@ -14,7 +11,7 @@ import {Ownable} from "openzeppelin/access/Ownable.sol";
 contract MyOwnToken is ERC1363Capped, Ownable {
     mapping(address => bool) public bannedAddress;
 
-    constructor(string memory _name, string memory _symbol, uint256 _maxSupply) ERC20Capped(_maxSupply) ERC20(_name, _symbol) Ownable() {
+    constructor(string memory _name, string memory _symbol, uint256 _maxSupply) ERC1363Capped(_name, _symbol, _maxSupply) Ownable() {
     }
 
     function _beforeTokenTransfer(address from, address to, uint256 amount) internal view override {

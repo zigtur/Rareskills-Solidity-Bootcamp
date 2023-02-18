@@ -4,12 +4,12 @@ pragma solidity >=0.8.0;
 
 import {Test} from "forge-std/test.sol";
 import {console} from "forge-std/console.sol";
-import {MyOwnTokenSale} from "../src/Sanctions-Godmode-SimpleSale.sol";
+import {MyOwnTokenBonding} from "../src/Token-BondingSale.sol";
 
 contract BaseSetup is Test {
     
 
-    MyOwnTokenSale internal myContract;
+    MyOwnTokenBonding internal myContract;
 
     address internal owner;
     address internal user1;
@@ -30,11 +30,11 @@ contract BaseSetup is Test {
         bannedUser = vm.addr(3);
 
         vm.prank(owner);
-        myContract = new MyOwnTokenSale("ZigTest", "ZGT", 100_000_000 * 10 ** 18);
+        myContract = new MyOwnTokenBonding("ZigTest", "ZGT", 100_000_000 * 10 ** 18);
     }
 }
 
-contract MyERC20Test is BaseSetup {
+contract MyERC1363BondingTest is BaseSetup {
     function setUp() public override {
         super.setUp();
     }

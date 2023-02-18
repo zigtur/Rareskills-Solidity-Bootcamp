@@ -3,7 +3,7 @@ pragma solidity >=0.8.0;
 
 import {Test} from "forge-std/test.sol";
 import {console} from "forge-std/console.sol";
-import {MyOwnToken} from "../src/Sanctions-Godmode.sol";
+import {MyOwnToken} from "../src/Token-Sanctions-Godmode.sol";
 
 contract BaseSetup is Test {
     
@@ -33,7 +33,7 @@ contract BaseSetup is Test {
     }
 }
 
-contract MyERC20Test is BaseSetup {
+contract MyERC1363Test is BaseSetup {
     function setUp() public override {
         super.setUp();
     }
