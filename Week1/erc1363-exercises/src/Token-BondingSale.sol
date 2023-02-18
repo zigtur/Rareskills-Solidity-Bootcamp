@@ -10,11 +10,7 @@ contract MyOwnTokenBonding is MyOwnToken {
     }
 
     function buy(uint256 amount) external payable {
-        require(msg.value <= tokenPrice * amount / (10 ** decimals()), "Not enough value of ether");
+        require(msg.value >= (tokenPrice * amount), "Not enough value of ether");
         _mint(msg.sender, amount);
-    }
-
-    function formattedTokenPrice() public view returns (uint256) {
-        return tokenPrice;
     }
 }

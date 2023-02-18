@@ -39,30 +39,34 @@ contract MyERC1363SimpleTest is BaseSetup {
         super.setUp();
     }
 
+    function testTokenPrice() public {
+
+        uint256 tokenPrice = myContract.tokenPrice();
+        console.log("Token price is %s", tokenPrice);
+    }
+
     function testBuyTokens() public {
 
         vm.prank(user1);
-
-        uint256 amount = myContract.formattedTokenPrice() * 2_000_000 / (10 ** myContract.decimals());
+        uint256 amount = myContract.tokenPrice() * 2_000_000;
 
         vm.prank(user1);
-        try myContract.buy{value: amount}(2_000_000 * 10 ** 18) {
-            console.log("User1 just buy 2_000_000 tokens");
-            console.log("user1 balance = %s", myContract.balanceOf(user1));
-        } catch  {
-            console.log("User1 couldn't buy 2_000_000 tokens");
-        }
+        vm.deal(user1, amount);
+        myContract.buy{value: amount}(2_000_000);
+        console.log("User1 just buy 2_000_000 tokens");
+        console.log("user1 balance = %s", myContract.balanceOf(user1));
     }
 
     function testFailBuyTokens() public {
 
         vm.prank(user1);
-        //myContract.buy(20_000 * 10 ** 18);
-        uint256 amount = (myContract.formattedTokenPrice() - 1) * 2_000_000 / (10 ** myContract.decimals());
+        uint256 amount = myContract.tokenPrice() * 1_999_999;
+
+
+        console.log("User1 balance before: %s", myContract.balanceOf(user1));
 
         vm.prank(user1);
-        vm.expectRevert(abi.encodePacked("EvmError: OutOfFund"));
-        myContract.buy{value: amount}(2_000_000 * 10 ** 18);
-        console.log("User1 failed to buy 2_000_000 tokens with less ethers than needed");
+        vm.deal(user1, amount);
+        myContract.buy{value: amount}(2_000_000);
     }
 }
