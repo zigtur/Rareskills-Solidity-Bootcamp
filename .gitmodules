@@ -7,3 +7,15 @@
 [submodule "Week1/erc1363-exercises/lib/erc1363-payable-token"]
 	path = Week1/erc1363-exercises/lib/erc1363-payable-token
 	url = https://github.com/vittominacori/erc1363-payable-token
+[submodule "Week2/lib/forge-std"]
+	path = Week2/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "Week2/lib/openzeppelin-contracts"]
+	path = Week2/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "Week2/exercise1/lib/forge-std"]
+	path = Week2/exercise1/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "Week2/exercise1/lib/openzeppelin-contracts"]
+	path = Week2/exercise1/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
