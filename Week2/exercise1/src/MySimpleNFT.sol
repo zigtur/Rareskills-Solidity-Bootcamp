@@ -18,6 +18,7 @@ contract MySimpleNFTCollection {
     function transferFrom(address _from, address _to, uint256 _tokenId) external payable {
         require(_owners[_tokenId] != address(0), "Transfer from zero address");
         require(_owners[_tokenId] == _from, "cannot transfer from _from");
+        
         _owners[_tokenId] = _to;
     }
     
