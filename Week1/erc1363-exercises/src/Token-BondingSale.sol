@@ -15,23 +15,33 @@ contract MyOwnTokenBonding is MyOwnToken, IERC1363Receiver {
     }
 
     function buy(uint256 amount) external payable {
-        uint256 actualPrice = pricePerToken * totalSupply();
-        uint256 curveBasePrice = amount * actualPrice;
-        uint256 curveExtraPrice = (pricePerToken * (amount - 1)) / 2;
-        require(msg.value >= curveBasePrice + curveExtraPrice, "Not enough value");
+        require(msg.value == buyPriceCalculation(amount), "Not enough value");
         _mint(msg.sender, amount);
     }
 
+    /// @notice automatic sell when tranfering to contract
     function onTransferReceived(address operator, address from, uint256 value, bytes memory data) external returns (bytes4) {
-        uint256 futurePrice = pricePerToken * (totalSupply() - value);
-        uint256 curveBasePrice = value * futurePrice;
-        uint256 curveExtraPrice = (pricePerToken * (value - 1)) / 2;
+        uint256 _currentPrice = pricePerToken * totalSupply();
+        uint256 curveBasePrice = (value * _currentPrice) / 10 ** (2*decimals());
+        uint256 curveExtraPrice = ((value * pricePerToken) * (value)) / (2 * 10 ** (2*decimals()));
         _burn(address(this), value);
-        payable(from).transfer(curveBasePrice + curveExtraPrice);
+        payable(from).transfer(curveBasePrice - curveExtraPrice);
         return bytes4(keccak256("onTransferReceived(address,address,uint256,bytes)"));
+    }
+
+    /// @notice Calculation of ether price for amount
+    function buyPriceCalculation(uint256 amount) public view returns (uint256) {
+        uint256 _currentPrice = pricePerToken * totalSupply();
+        uint256 curveBasePrice = (amount * _currentPrice) / 10 ** (2*decimals());
+        uint256 curveExtraPrice = ((amount * pricePerToken) * (amount)) / (2 * 10 ** (2*decimals()));
+        return (curveBasePrice + curveExtraPrice);
     }
 
     function ethBalance() external view returns (uint256) {
         return address(this).balance;
+    }
+
+    function currentPrice() external view returns (uint256) {
+        return pricePerToken * totalSupply();
     }
 }

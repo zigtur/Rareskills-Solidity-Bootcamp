@@ -13,4 +13,4 @@ BUT the main security problem is that, just like ether transfers, tokens will be
 |   | ERC-777 | ERC-1363 |
 |---|---|---|
 |Pros| - Granularity allows to specify the smallest part of the token that's not divisible | - Declare its notification interface using ERC165  |
-|Cons| - Needs to register the ERC777Token interface with its own address via ERC-1820<br /> - Declare its notification interface using ERC-1820 (which is harder than ERC-165) |  |
+|Cons| - Needs to register the ERC777Token interface with its own address via ERC-1820<br /> - Declare its notification interface using ERC-1820 (which is harder than ERC-165) | - No granularity |
