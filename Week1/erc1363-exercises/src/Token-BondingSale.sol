@@ -14,12 +14,20 @@ contract MyOwnTokenBonding is MyOwnToken, IERC1363Receiver {
     constructor(string memory _name, string memory _symbol, uint256 _maxSupply) MyOwnToken(_name, _symbol, _maxSupply) {
     }
 
+    /// @notice Buy tokens with ethers
+    /// @param amount uinst256 Amount of token to buy
     function buy(uint256 amount) external payable {
-        require(msg.value == buyPriceCalculation(amount), "Not enough value");
+        require(msg.value == buyPriceCalculation(amount), "msg.value != price");
         _mint(msg.sender, amount);
     }
 
-    /// @notice automatic sell when tranfering to contract
+    /**
+     * @notice automatic sell when tranfering to contract
+     * @param operator address The address which called `transferAndCall` or `transferFromAndCall` function
+     * @param from address The address which are token transferred from
+     * @param value uint256 The amount of tokens transferred
+     * @param data bytes Additional data with no specified format
+     */
     function onTransferReceived(address operator, address from, uint256 value, bytes memory data) external returns (bytes4) {
         uint256 _currentPrice = pricePerToken * totalSupply();
         uint256 curveBasePrice = (value * _currentPrice) / 10 ** (2*decimals());
@@ -29,7 +37,11 @@ contract MyOwnTokenBonding is MyOwnToken, IERC1363Receiver {
         return bytes4(keccak256("onTransferReceived(address,address,uint256,bytes)"));
     }
 
-    /// @notice Calculation of ether price for amount
+    /**
+     * @notice Calculation of ether price for amount
+     * @param amount uint256 The amount of tokens to calculate price for
+     * @return Price to pay for the given amount
+     */
     function buyPriceCalculation(uint256 amount) public view returns (uint256) {
         uint256 _currentPrice = pricePerToken * totalSupply();
         uint256 curveBasePrice = (amount * _currentPrice) / 10 ** (2*decimals());
@@ -37,10 +49,9 @@ contract MyOwnTokenBonding is MyOwnToken, IERC1363Receiver {
         return (curveBasePrice + curveExtraPrice);
     }
 
-    function ethBalance() external view returns (uint256) {
-        return address(this).balance;
-    }
-
+    /** @notice Get the corrent price for a token
+     * @return Current Price for a single token
+     */
     function currentPrice() external view returns (uint256) {
         return pricePerToken * totalSupply();
     }

@@ -53,7 +53,7 @@ contract MyERC1363BondingTest is BaseSetup {
         myContract.buy{value: buyPrice}(tokenAmount);
 
         console.log("User1 buys 5 tokens");
-        console.log("Current eth balance of contract: %s", myContract.ethBalance());
+        console.log("Current eth balance of contract: %s", address(myContract).balance);
         
         buyPrice = myContract.buyPriceCalculation(tokenAmount);
         console.log("buyPrice for 5 more tokens (from 5 to 10) is %s", buyPrice);
@@ -61,12 +61,12 @@ contract MyERC1363BondingTest is BaseSetup {
         vm.deal(user1, 1 ether);
         myContract.buy{value: buyPrice}(tokenAmount);
         console.log("User1 buys 5 more tokens");
-        console.log("Current eth balance of contract: %s", myContract.ethBalance());
+        console.log("Current eth balance of contract: %s", address(myContract).balance);
         console.log("Current total Supply : %s", myContract.totalSupply());
         vm.prank(user1);
         myContract.transferAndCall(address(myContract), 5 ether, bytes(""));
         console.log("User1 sends 5 tokens to Contract (automatic sell)");
-        console.log("Current eth balance of contract: %s", myContract.ethBalance());
+        console.log("Current eth balance of contract: %s", address(myContract).balance);
     }
 
     function testBuyWithDecimals() public {
@@ -93,7 +93,7 @@ contract MyERC1363BondingTest is BaseSetup {
         myContract.buy{value: buyPrice}(tokenAmount);
 
         
-        console.log("Current eth balance of contract: %s", myContract.ethBalance());
+        console.log("Current eth balance of contract: %s", address(myContract).balance);
         console.log("Current totalSupply: %s", myContract.totalSupply());
     }
 
@@ -117,14 +117,14 @@ contract MyERC1363BondingTest is BaseSetup {
         vm.prank(user1);
         vm.deal(user1, 1 ether);
         myContract.buy{value: buyPrice}(tokenAmount);
-        console.log("Current eth balance of contract: %s", myContract.ethBalance());
+        console.log("Current eth balance of contract: %s", address(myContract).balance);
 
 
         // Can't sell less than 1 token
         vm.prank(user1);
         myContract.transferAndCall(address(myContract), 1.8 ether, bytes(""));
         console.log("User1 sends 1.8 tokens to Contract (automatic sell)");
-        console.log("Current eth balance of contract: %s", myContract.ethBalance());
+        console.log("Current eth balance of contract: %s", address(myContract).balance);
     }
 
 }

@@ -14,6 +14,7 @@ contract MyOwnTokenSale is MyOwnToken {
     }
 
     /// @notice Buy tokens with ethers
+    /// @param amount Amount of token to buy
     function buy(uint256 amount) external payable {
         require(msg.value >= (tokenPrice * amount), "Not enough value of ether");
         _mint(msg.sender, amount);
