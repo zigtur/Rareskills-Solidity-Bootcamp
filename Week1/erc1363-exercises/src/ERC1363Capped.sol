@@ -7,9 +7,9 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 
-import "erc-1363/ERC1363//IERC1363.sol";
-import "erc-1363/ERC1363//IERC1363Receiver.sol";
-import "erc-1363/ERC1363//IERC1363Spender.sol";
+import "erc-1363/ERC1363/IERC1363.sol";
+import "erc-1363/ERC1363/IERC1363Receiver.sol";
+import "erc-1363/ERC1363/IERC1363Spender.sol";
 
 /**
  * @title ERC1363

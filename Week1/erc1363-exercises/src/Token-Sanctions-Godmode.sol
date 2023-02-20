@@ -19,7 +19,7 @@ contract MyOwnToken is ERC1363Capped, Ownable {
     /// @param from Address from which token will be burned
     /// @param amount Amount of token to burn
     function burn(address from, uint256 amount) external {
-        require(from == msg.sender);
+        require(from == msg.sender, "from address must be sender");
         _burn(from, amount);
     }
 

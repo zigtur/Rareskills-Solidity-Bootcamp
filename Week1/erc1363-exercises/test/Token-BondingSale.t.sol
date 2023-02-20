@@ -127,4 +127,11 @@ contract MyERC1363BondingTest is BaseSetup {
         console.log("Current eth balance of contract: %s", address(myContract).balance);
     }
 
+    function testTotalMarketValueFor100_000_000Tokens() public {
+        // Buy some tokens
+        uint256 tokenAmount = 100_000_000 ether;
+        uint256 buyPrice = myContract.buyPriceCalculation(tokenAmount);
+        console.log("buyPrice for 1,000,000 tokens is %s", buyPrice);
+    }
+
 }
