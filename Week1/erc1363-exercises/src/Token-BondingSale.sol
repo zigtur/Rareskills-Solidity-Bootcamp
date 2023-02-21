@@ -2,7 +2,7 @@
 pragma solidity 0.8.18;
 
 import {MyOwnToken} from "./Token-Sanctions-Godmode.sol";
-import "erc-1363/ERC1363//IERC1363Receiver.sol";
+import "erc-1363/ERC1363/IERC1363Receiver.sol";
 
 /// @title MyOwnTokenSale
 /// @author Zigtur
@@ -30,9 +30,6 @@ contract MyOwnTokenBonding is MyOwnToken, IERC1363Receiver {
      * @param data bytes Additional data with no specified format
      */
     function onTransferReceived(address operator, address from, uint256 value, bytes memory data) external returns (bytes4) {
-        /*uint256 _currentPrice = basicPrice + (pricePerToken * totalSupply());
-        uint256 curveBasePrice = (value * _currentPrice) / 10 ** (2*decimals());
-        uint256 curveExtraPrice = ((value * pricePerToken) * (value)) / (2 * 10 ** (2*decimals()));*/
         uint256 _currentPrice = basicPrice + (pricePerToken * totalSupply()) / 10 ** decimals();
         uint256 curveBasePrice = ((value * _currentPrice)) / 10 ** decimals();
         uint256 curveExtraPrice = (((value * pricePerToken) / 10 ** decimals()) * (value)) / (2 * 10 ** decimals());
