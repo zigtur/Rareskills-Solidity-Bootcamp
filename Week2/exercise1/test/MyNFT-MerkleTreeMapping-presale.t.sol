@@ -3,7 +3,7 @@ pragma solidity >=0.8.0;
 
 import "forge-std/test.sol";
 import {console} from "forge-std/console.sol";
-import {MyOwnNFTCollection} from "../src/MyNFT-MerkleTree-presale.sol";
+import {MyOwnNFTCollectionMapping} from "../src/MyNFT-MerkleTreeMapping-presale.sol";
 import {Merkle} from "murky/Merkle.sol";
 
 /**
@@ -16,9 +16,9 @@ import {Merkle} from "murky/Merkle.sol";
 
 contract BaseSetup is Test {
     // Contract with Solidity initialized Merkle Tree
-    MyOwnNFTCollection internal myContract1;
+    MyOwnNFTCollectionMapping internal myContract1;
     // Contract with JavaScript initialized Merkle Tree
-    MyOwnNFTCollection internal myContract2;
+    MyOwnNFTCollectionMapping internal myContract2;
 
     address internal owner;
     address internal user1;
@@ -57,12 +57,12 @@ contract BaseSetup is Test {
         merkleRoot1 = m.getRoot(merkleData);
 
         vm.prank(owner);
-        myContract1 = new MyOwnNFTCollection("ZigNFT", "ZGN", 10, merkleRoot1, uint96(250));
+        myContract1 = new MyOwnNFTCollectionMapping("ZigNFT", "ZGN", 10, merkleRoot1);
 
         // This Merkle Tree has been generated with 1000 users for presale
         merkleRoot2 = bytes32(0x2c0be55cd11715b0f7e28542f55cc84b71f9120d45bfa9a1cbfc06d6361618dc);
         vm.prank(owner);
-        myContract2 = new MyOwnNFTCollection("ZigNFTPresale", "ZNP", 1000, merkleRoot2, uint96(250));
+        myContract2 = new MyOwnNFTCollectionMapping("ZigNFTPresale", "ZNP", 1000, merkleRoot2);
     }
 }
 
@@ -123,9 +123,6 @@ contract MyERC721Test is BaseSetup {
             proof[i] = proof_array[i];
         }
 
-        //console.log("Second slot that shloud contain the index 501 has value :");
-        //console.logBytes32(bytes32(myContract2.ticketGroup1()));
-
         uint256 discountPrice = myContract2.discountPrice();
         vm.prank(presaleUser1);
         vm.deal(presaleUser1, 1 ether);
@@ -164,25 +161,5 @@ contract MyERC721Test is BaseSetup {
         vm.deal(presaleUser1, 1 ether);
         myContract2.presaleMint{value: discountPrice}(200, 501, proof);
         console.log("Presale mint : NFT 100 owner is ", myContract2.ownerOf(100));
-    }
-
-    function testContract2TokenRoyalties() public {
-        uint256 _mintPrice = myContract2.mintPrice();
-        vm.prank(user1);
-        vm.deal(user1, 1 ether);
-        myContract2.selfMint{value: _mintPrice}(5);
-
-        (address royalUser, uint256 royalAmount) = myContract2.royaltyInfo(5, 1 ether);
-        console.log("NFT 5 royalties user is %s and amount is %s ", royalUser, royalAmount);
-
-        // user2 try to modify user1 token royalties
-        vm.prank(user2);
-        vm.expectRevert();
-        myContract2.setTokenRoyalty(5, user2, uint96(500));
-
-        vm.prank(user1);
-        myContract2.setTokenRoyalty(5, user1, uint96(500));
-        (royalUser, royalAmount) = myContract2.royaltyInfo(5, 1 ether);
-        console.log("NFT 5 royalties should have changed: user is %s and amount is %s ", royalUser, royalAmount);
     }
 }
