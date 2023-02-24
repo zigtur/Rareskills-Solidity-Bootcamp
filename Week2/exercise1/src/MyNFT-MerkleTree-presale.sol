@@ -12,12 +12,11 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
     bytes32 private immutable merkleRoot;
 
     uint256 private constant MAX_INT = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
-    uint256[4] tickets = [MAX_INT, MAX_INT, MAX_INT, MAX_INT];
-    /*uint256 public ticketGroup0 = MAX_INT;
-    uint256 public ticketGroup1 = MAX_INT;
-    uint256 public ticketGroup2 = MAX_INT;
-    uint256 public ticketGroup3 = MAX_INT;
-    uint256 private constant MAX_TICKETS = 1000;*/
+    uint256 private ticketGroup0 = MAX_INT;
+    uint256 private ticketGroup1 = MAX_INT;
+    uint256 private ticketGroup2 = MAX_INT;
+    uint256 private ticketGroup3 = MAX_INT;
+    uint256 private constant MAX_TICKETS = 1000;
 
     constructor(string memory _name, string memory _symbol, uint256 _presaleMaxSupply, bytes32 _merkleRoot, uint96 ownerRoyaltiesFees) ERC721(_name, _symbol) {
         presaleMaxSupply = _presaleMaxSupply;
@@ -33,8 +32,7 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
 
     function presaleMint(uint256 _tokenId, uint256 ticket, bytes32[] calldata merkleProof) external payable {
         require(MerkleProof.verify(merkleProof, merkleRoot, keccak256(bytes.concat(keccak256(abi.encode(msg.sender, ticket))))), "Invalid merkle proof");
-        //require(ticket <= MAX_TICKETS, "Ticket not in range");
-        require(ticket <= 256 * tickets.length, "Ticket not in range");
+        require(ticket <= MAX_TICKETS, "Ticket not in range");
         uint256 ticketGroupValue;
         uint256 ticketSlot;
         uint256 ticketOffset;
@@ -43,24 +41,20 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
             ticketOffset = ticket % 256;
         }
 
-        ticketGroupValue = tickets[ticketSlot];
-        uint256 isTicketAvailable = (ticketGroupValue >> ticketOffset) & uint256(1);
-
-        // This assembly code allows us to remove the use of an array, to be more gas efficient !
-        /*assembly {
+        // This assembly code allows us to remove the use of an array, to be more gas efficient during reading !
+        assembly {
             ticketSlot := add(ticketGroup0.slot, ticketSlot) // moving to correspond ticketSlot
             ticketGroupValue := sload(ticketSlot)        // load word value from storage to local variable
         }
-        uint256 isTicketAvailable = (ticketGroupValue >> ticketOffset) & uint256(1);*/
 
+        uint256 isTicketAvailable = (ticketGroupValue >> ticketOffset) & uint256(1);
         require(isTicketAvailable == 1, "Ticket has already been used");
-        tickets[ticketSlot] = ticketGroupValue & ~(uint256(1) << ticketOffset);
+        ticketGroupValue = ticketGroupValue & ~(uint256(1) << ticketOffset);
         
-        /*ticketGroupValue = ticketGroupValue & ~(uint256(1) << ticketOffset);
-        // Store the new ticketGroup value
+        // Store the new ticketGroup value in storage
         assembly {
             sstore(ticketSlot, ticketGroupValue)
-        }*/
+        }
 
         require(msg.value == discountPrice, "Value is not discountPrice");
         require(_tokenId > 0 && _tokenId <= presaleMaxSupply, "_tokenId is not in range");
