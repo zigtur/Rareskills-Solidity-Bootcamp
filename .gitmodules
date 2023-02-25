@@ -22,3 +22,6 @@
 [submodule "Week2/exercise1/lib/murky"]
 	path = Week2/exercise1/lib/murky
 	url = https://github.com/dmfxyz/murky
+[submodule "Week2/exercise1/lib/RSA-presale-allowlist"]
+	path = Week2/exercise1/lib/RSA-presale-allowlist
+	url = https://github.com/RareSkills/RSA-presale-allowlist

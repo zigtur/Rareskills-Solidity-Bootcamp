@@ -1,0 +1,25 @@
+{
+    "image":"https://raw.githubusercontent.com/zigtur/Rareskills-Solidity-Bootcamp/master/Week2/nft-collection/0.png",
+    "attributes": [
+        {
+          "trait_type": "skin",
+          "value": "black"
+        },
+        {
+          "trait_type": "hair",
+          "value": "long yellow"
+        },
+        {
+          "trait_type": "background",
+          "value": "red"
+        },
+        {
+          "trait_type": "clothes",
+          "value": "purple pantie"
+        },
+        {
+          "trait_type": "wristband",
+          "value": "purple"
+        }
+    ]
+}

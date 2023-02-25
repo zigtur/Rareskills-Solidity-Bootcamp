@@ -113,6 +113,6 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
      * @dev baseURI used with tokenURI
      */    
     function _baseURI() internal pure override returns (string memory) {
-        return "https://zigtur.github.io/Rareskills-Solidity-Bootcamp/";
+        return "https://raw.githubusercontent.com/zigtur/Rareskills-Solidity-Bootcamp/master/Week2/nft-collection/";
     }
 }

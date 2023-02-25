@@ -1,1 +1,25 @@
-{"image":"ipfs://QmQHjXmaBs6v8hXh7145qDcYmT49bqgv7GjQPCt2ZAzQ36","attributes":[{"trait_type":"Background","value":"M1 Aquamarine"},{"trait_type":"Fur","value":"M1 White"},{"trait_type":"Eyes","value":"M1 Heart"},{"trait_type":"Clothes","value":"M1 Lab Coat"},{"trait_type":"Hat","value":"M1 Beanie"},{"trait_type":"Mouth","value":"M1 Grin"}]}
+{
+    "image":"https://raw.githubusercontent.com/zigtur/Rareskills-Solidity-Bootcamp/master/Week2/nft-collection/7.png",
+    "attributes":[
+        {
+            "trait_type": "skin",
+            "value": "tanned"
+        },
+        {
+            "trait_type": "hair",
+            "value": "long yellow"
+        },
+        {
+            "trait_type": "background",
+            "value": "yellow"
+        },
+        {
+            "trait_type": "clothes",
+            "value": "blue pantie"
+        },
+        {
+            "trait_type": "wristband",
+            "value": "white"
+        }
+    ]
+}
