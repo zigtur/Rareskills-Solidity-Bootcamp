@@ -14,8 +14,9 @@ import {MerkleProof} from "openzeppelin/utils/cryptography/MerkleProof.sol";
 contract MyOwnNFTCollection is ERC721, ERC2981 {
     uint256 public constant mintPrice = 0.000001 ether;
     uint256 public constant discountPrice = 0.0000005 ether;
-    uint256 public immutable presaleMaxSupply;
+    uint256 public immutable maxSupply;
     bytes32 private immutable merkleRoot;
+    uint256 public currentSupply = 1;
 
     uint256 private constant MAX_INT = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
     uint256 private ticketGroup0 = MAX_INT;
@@ -24,8 +25,8 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
     uint256 private ticketGroup3 = MAX_INT;
     uint256 private constant MAX_TICKETS = 1000;
 
-    constructor(string memory _name, string memory _symbol, uint256 _presaleMaxSupply, bytes32 _merkleRoot, uint96 ownerRoyaltiesFees) ERC721(_name, _symbol) {
-        presaleMaxSupply = _presaleMaxSupply;
+    constructor(string memory _name, string memory _symbol, uint256 _maxSupply, bytes32 _merkleRoot, uint96 ownerRoyaltiesFees) ERC721(_name, _symbol) {
+        maxSupply = _maxSupply;
         merkleRoot = _merkleRoot;
         _setDefaultRoyalty(msg.sender, ownerRoyaltiesFees);
     }
@@ -33,22 +34,26 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
     /**
      * @notice Mint NFT with price = mintPrice
      * @param _to address Address to which NFT will be minted
-     * @param _tokenId uint256 ID of the token to mint
      */
-    function mint(address _to, uint256 _tokenId) external payable {
+    function mint(address _to) external payable returns(uint256) {
         require(msg.value == mintPrice, "Value is not mintPrice");
-        require(_tokenId > 0 && _tokenId <= presaleMaxSupply, "_tokenId is not in range");
-        _safeMint(_to, _tokenId);
+        uint256 _currentSupply = currentSupply;
+        require(_currentSupply < maxSupply, "maxSupply hit");
+        unchecked {
+            _currentSupply = _currentSupply + 1;
+        }
+        currentSupply = _currentSupply;
+        _safeMint(_to, _currentSupply);
+        return _currentSupply;
     }
     
     /**
      * @notice Mint NFT during presale. Valide presale ticket is needed (whitelist)
      * @dev Some assembly code has been used for gas optimization purposes
-     * @param _tokenId uint256 ID of the token to mint
      * @param ticket uint256 Presale ticket associated to msg.sender address
      * @param merkleProof bytes32[] Proof used to verify if msg.sender can mint using presale ticket
      */
-    function presaleMint(uint256 _tokenId, uint256 ticket, bytes32[] calldata merkleProof) external payable {
+    function presaleMint(uint256 ticket, bytes32[] calldata merkleProof) external payable returns(uint256) {
         require(MerkleProof.verify(merkleProof, merkleRoot, keccak256(bytes.concat(keccak256(abi.encode(msg.sender, ticket))))), "Invalid merkle proof");
         require(ticket <= MAX_TICKETS, "Ticket not in range");
         uint256 ticketGroupValue;
@@ -75,18 +80,29 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
         }
 
         require(msg.value == discountPrice, "Value is not discountPrice");
-        require(_tokenId > 0 && _tokenId <= presaleMaxSupply, "_tokenId is not in range");
-        _safeMint(msg.sender, _tokenId);
+        uint256 _currentSupply = currentSupply;
+        require(_currentSupply < maxSupply, "maxSupply hit");
+        unchecked {
+            _currentSupply = _currentSupply + 1;
+        }
+        currentSupply = _currentSupply;
+        _safeMint(msg.sender, _currentSupply);
+        return _currentSupply;
     }
 
     /**
      * @notice Same function as mint(), but using msg.sender as receiver of the minted token
-     * @param _tokenId ID of the token to mint
      */
-    function selfMint(uint256 _tokenId) external payable {
+    function selfMint() external payable returns(uint256) {
         require(msg.value == mintPrice, "Value is not mintPrice");
-        require(_tokenId > 0 && _tokenId <= presaleMaxSupply, "_tokenId is not in range");
-        _safeMint(msg.sender, _tokenId);
+        uint256 _currentSupply = currentSupply;
+        require(_currentSupply < maxSupply, "maxSupply hit");
+        unchecked {
+            _currentSupply = _currentSupply + 1;
+        }
+        currentSupply = _currentSupply;
+        _safeMint(msg.sender, _currentSupply);
+        return _currentSupply;
     }
 
     /**

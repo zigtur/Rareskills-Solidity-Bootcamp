@@ -4,7 +4,13 @@ pragma solidity 0.8.18;
 import {ERC721} from "openzeppelin/token/ERC721/ERC721.sol";
 import {MerkleProof} from "openzeppelin/utils/cryptography/MerkleProof.sol";
 
-contract MyOwnNFTCollection is ERC721 {
+/**
+ * @title MyOwnNFTCollectionRSA
+ * @author Zigtur
+ * @notice 
+ * @dev THIS CONTRACT IS IN DEVELOPMENT !!!
+ */
+contract MyOwnNFTCollectionRSA is ERC721 {
     uint256 public constant mintPrice = 0.000001 ether;
     uint256 public constant discountPrice = 0.0000005 ether;
     bytes32 private immutable merkleRoot;
