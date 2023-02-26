@@ -7,7 +7,7 @@ import {IERC721Enumerable} from "openzeppelin/token/ERC721/extensions/IERC721Enu
 /**
  * @title SimpleNFTEnumerate
  * @author Zigtur
- * @notice This smart contract enumerates a NFT collection (other contract)
+ * @notice This smart contract enumerates prime numbers of a NFT collection (other contract)
  */
 contract SimpleNFTEnumerate {
     IERC721Enumerable private immutable NFTContract;
@@ -28,6 +28,7 @@ contract SimpleNFTEnumerate {
             uint256 tokenNumber = NFTContract.tokenOfOwnerByIndex(owner, i);
             unchecked {
                 uint256 stopVerify = tokenNumber / 2;
+                // 1 is not considered a prime number
                 if(tokenNumber == 1){
                     continue;
                 }
@@ -37,6 +38,7 @@ contract SimpleNFTEnumerate {
                     continue;
                 }
                 if(tokenNumber % 2 == 0) {
+                    // if even number, not a Prime
                     continue;
                 }
                 // Only the odd numbers need to be tested

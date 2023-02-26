@@ -23,7 +23,6 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
     uint256 private ticketGroup1 = MAX_INT;
     uint256 private ticketGroup2 = MAX_INT;
     uint256 private ticketGroup3 = MAX_INT;
-    uint256 private constant MAX_TICKETS = 1000;
 
     constructor(string memory _name, string memory _symbol, uint256 _maxSupply, bytes32 _merkleRoot, uint96 ownerRoyaltiesFees) ERC721(_name, _symbol) {
         maxSupply = _maxSupply;
@@ -59,7 +58,6 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
      */
     function presaleMint(uint256 ticket, bytes32[] calldata merkleProof) external payable returns(uint256) {
         require(MerkleProof.verify(merkleProof, merkleRoot, keccak256(bytes.concat(keccak256(abi.encode(_msgSender(), ticket))))), "Invalid merkle proof");
-        require(ticket <= MAX_TICKETS, "Ticket not in range");
         uint256 ticketGroupValue;
         uint256 ticketSlot;
         uint256 ticketOffset;

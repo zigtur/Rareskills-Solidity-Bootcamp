@@ -44,6 +44,19 @@ contract ZGameStaking is Ownable {
         // Do not use safeTransferFrom because it will collude with onERC781Received function
         ZGameNFTCollectionContract.transferFrom(msg.sender, address(this), tokenId);
     }
+
+    /**
+     * @notice Claim your rewards without withdrawing your NFT
+     * @param tokenId uint256 ID of the token to withdraw
+     */
+    function getRewards(uint256 tokenId) public {
+        depositStruct memory _deposit = deposits[tokenId];
+        require(_deposit.originalOwner == _msgSender(), "_msgSender() not original owner!");
+        uint256 calculatedRewards = calculateRewards(_deposit.depositTime);
+        _deposit.depositTime = block.timestamp;
+        deposits[tokenId] = _deposit;
+        ZGameTokenContract.mint(_msgSender(), calculatedRewards);
+    }
     
     /**
      * @notice Withdraw your deposited NFT and obtain rewards

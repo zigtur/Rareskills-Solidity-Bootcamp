@@ -102,7 +102,7 @@ contract MyStakingRewardGameTest is BaseSetup {
         console.log("Current timestamp is : %s", block.timestamp);
     }
 
-    function testRewardsNFT() public {
+    function testWithdrawRewardsNFT() public {
         vm.warp(1677358172);
         vm.startPrank(user1);
         vm.deal(user1, 1 ether);
@@ -120,6 +120,32 @@ contract MyStakingRewardGameTest is BaseSetup {
         console.log("User1 token balance: %s", ZGameTokenDeployed.balanceOf(user1));
         vm.warp(1677358172 + 2 * 24 hours); //adding 24 hours
 
+        vm.prank(user1);
+        ZGameStakingDeployed.withdrawNFT(tokenId);
+        
+        console.log("Owner of NFT 1 : %s", ZGameNFTCollectionDeployed.ownerOf(tokenId));
+        console.log("User1 token balance: %s", ZGameTokenDeployed.balanceOf(user1));
+    }
+
+    function testGetRewardsNFT() public {
+        vm.warp(1677358172);
+        vm.startPrank(user1);
+        vm.deal(user1, 1 ether);
+        uint256 mintNFTPrice = ZGameNFTCollectionDeployed.mintPrice();
+        // self mint token
+        uint256 tokenId = ZGameNFTCollectionDeployed.selfMint{value: mintNFTPrice}();
+        console.log("Owner of NFT %s : %s", tokenId, ZGameNFTCollectionDeployed.ownerOf(tokenId));
+
+        ZGameNFTCollectionDeployed.safeTransferFrom(user1, address(ZGameStakingDeployed), tokenId);
+        vm.stopPrank();
+
+        console.log("Owner of NFT %s : %s", tokenId, ZGameNFTCollectionDeployed.ownerOf(tokenId));
+        console.log("User1 token balance: %s", ZGameTokenDeployed.balanceOf(user1));
+        vm.warp(1677358172 + 1 * 24 hours); //adding 24 hours
+        vm.prank(user1);
+        ZGameStakingDeployed.getRewards(tokenId);
+
+        vm.warp(1677358172 + 2 * 24 hours); //adding 24 hours
         vm.prank(user1);
         ZGameStakingDeployed.withdrawNFT(tokenId);
         
