@@ -10,16 +10,15 @@ import {IZGameToken,ZGameToken} from "./Game-ERC20-Token.sol";
 import {ZGameNFTCollection} from "./Game-NFT-Collection.sol";
 
 contract ZGameStaking is Ownable {
-    IZGameToken public ZGameTokenContract;
-    IERC721 public immutable ZGameNFTCollectionContract;
     struct depositStruct {
         address originalOwner;
         uint256 depositTime;
     }
 
-    mapping(uint256 => depositStruct) deposits;
+    IZGameToken public ZGameTokenContract;
+    IERC721 public immutable ZGameNFTCollectionContract;
 
-    
+    mapping(uint256 => depositStruct) deposits;
 
     constructor(address _ZGameNFTCollectionContract) {
         ZGameNFTCollectionContract = IERC721(_ZGameNFTCollectionContract);

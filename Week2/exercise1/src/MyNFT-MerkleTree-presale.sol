@@ -28,7 +28,7 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
     constructor(string memory _name, string memory _symbol, uint256 _maxSupply, bytes32 _merkleRoot, uint96 ownerRoyaltiesFees) ERC721(_name, _symbol) {
         maxSupply = _maxSupply;
         merkleRoot = _merkleRoot;
-        _setDefaultRoyalty(msg.sender, ownerRoyaltiesFees);
+        _setDefaultRoyalty(_msgSender(), ownerRoyaltiesFees);
     }
 
     /**
@@ -39,10 +39,11 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
         require(msg.value == mintPrice, "Value is not mintPrice");
         uint256 _currentSupply = currentSupply;
         require(_currentSupply < maxSupply, "maxSupply hit");
+        // update current supply
         unchecked {
-            _currentSupply = _currentSupply + 1;
+            currentSupply = _currentSupply + 1;
         }
-        currentSupply = _currentSupply;
+        // use old supply as tokenId to mint
         _safeMint(_to, _currentSupply);
         return _currentSupply;
     }
@@ -50,11 +51,11 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
     /**
      * @notice Mint NFT during presale. Valide presale ticket is needed (whitelist)
      * @dev Some assembly code has been used for gas optimization purposes
-     * @param ticket uint256 Presale ticket associated to msg.sender address
-     * @param merkleProof bytes32[] Proof used to verify if msg.sender can mint using presale ticket
+     * @param ticket uint256 Presale ticket associated to _msgSender() address
+     * @param merkleProof bytes32[] Proof used to verify if _msgSender() can mint using presale ticket
      */
     function presaleMint(uint256 ticket, bytes32[] calldata merkleProof) external payable returns(uint256) {
-        require(MerkleProof.verify(merkleProof, merkleRoot, keccak256(bytes.concat(keccak256(abi.encode(msg.sender, ticket))))), "Invalid merkle proof");
+        require(MerkleProof.verify(merkleProof, merkleRoot, keccak256(bytes.concat(keccak256(abi.encode(_msgSender(), ticket))))), "Invalid merkle proof");
         require(ticket <= MAX_TICKETS, "Ticket not in range");
         uint256 ticketGroupValue;
         uint256 ticketSlot;
@@ -82,26 +83,28 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
         require(msg.value == discountPrice, "Value is not discountPrice");
         uint256 _currentSupply = currentSupply;
         require(_currentSupply < maxSupply, "maxSupply hit");
+        // update current supply
         unchecked {
-            _currentSupply = _currentSupply + 1;
+            currentSupply = _currentSupply + 1;
         }
-        currentSupply = _currentSupply;
-        _safeMint(msg.sender, _currentSupply);
+        // use old supply as tokenId to mint
+        _safeMint(_msgSender(), _currentSupply);
         return _currentSupply;
     }
 
     /**
-     * @notice Same function as mint(), but using msg.sender as receiver of the minted token
+     * @notice Same function as mint(), but using _msgSender() as receiver of the minted token
      */
     function selfMint() external payable returns(uint256) {
         require(msg.value == mintPrice, "Value is not mintPrice");
         uint256 _currentSupply = currentSupply;
         require(_currentSupply < maxSupply, "maxSupply hit");
+        // update current supply
         unchecked {
-            _currentSupply = _currentSupply + 1;
+            currentSupply = _currentSupply + 1;
         }
-        currentSupply = _currentSupply;
-        _safeMint(msg.sender, _currentSupply);
+        // use old supply as tokenId to mint
+        _safeMint(_msgSender(), _currentSupply);
         return _currentSupply;
     }
 

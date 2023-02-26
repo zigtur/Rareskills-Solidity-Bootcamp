@@ -81,8 +81,8 @@ contract MyERC721Test is BaseSetup {
         vm.expectRevert();
         myContract1.ownerOf(5);
 
-        console.log("Owner of NFT is ", myContract1.ownerOf(tokenId));
-        console.log("NFT URI is : ", myContract1.tokenURI(tokenId));
+        console.log("Owner of NFT %s is %s", tokenId, myContract1.ownerOf(tokenId));
+        console.log("NFT %s URI is : %s", tokenId, myContract1.tokenURI(tokenId));
     }
 
     function testContract1PresaleMint() public {
@@ -99,7 +99,7 @@ contract MyERC721Test is BaseSetup {
         vm.deal(presaleUser1, 1 ether);
         tokenId = myContract1.presaleMint{value: discountPrice}(3, proof);
 
-        console.log("Presale mint : NFT 2 owner is ", myContract1.ownerOf(tokenId));
+        console.log("Presale mint : NFT %s owner is : %s", tokenId, myContract1.ownerOf(tokenId));
         
     }
 
