@@ -27,6 +27,7 @@ contract ZGameStaking is Ownable {
     /**
      * @notice The calcul is based on 10 tokens every 24 hours
      * @param depositTimestamp Time to start calculation
+     * @return The calculated rewards
      */
     function calculateRewards(uint256 depositTimestamp) public view returns(uint256) {
         uint256 _timeSinceDeposit = block.timestamp - depositTimestamp;
@@ -34,24 +35,46 @@ contract ZGameStaking is Ownable {
         return _calculatedRewards;
     }
 
+    /**
+     * @notice Deposit your NFT to gain rewards
+     * @param tokenId uint256 ID of the token to deposit
+     */
     function depositNFT(uint256 tokenId) external {
         deposits[tokenId] = depositStruct(msg.sender, block.timestamp);
-        ZGameNFTCollectionContract.safeTransferFrom(msg.sender, address(this), tokenId);
+        // Do not use safeTransferFrom because it will collude with onERC781Received function
+        ZGameNFTCollectionContract.transferFrom(msg.sender, address(this), tokenId);
     }
-
+    
+    /**
+     * @notice Withdraw your deposited NFT and obtain rewards
+     * @param tokenId uint256 ID of the token to withdraw
+     */
     function withdrawNFT(uint256 tokenId) external {
         depositStruct memory _deposit = deposits[tokenId];
-        require(_deposit.originalOwner == msg.sender, "msg.sender not original owner!");
+        require(_deposit.originalOwner == _msgSender(), "_msgSender() not original owner!");
         uint256 calculatedRewards = calculateRewards(_deposit.depositTime);
         ZGameNFTCollectionContract.safeTransferFrom(address(this), msg.sender, tokenId);
-        ZGameTokenContract.mint(msg.sender, calculatedRewards);
+        ZGameTokenContract.mint(_msgSender(), calculatedRewards);
     }
 
+    /**
+     * @notice Transfering your NFT to this contract do the same as depositNFT
+     * @param operator address Token transfered by this address
+     * @param from address Token transfered from this address 
+     * @param tokenId uint256 ID of the token to deposit
+     * @param data Additionnal data
+     * @return IERC721Receiver.onERC721Received.selector
+     */
     function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data) external returns (bytes4){
+        require(msg.sender == address(ZGameNFTCollectionContract), "Not the NFT Game contract");
         deposits[tokenId] = depositStruct(operator, block.timestamp);
         return IERC721Receiver.onERC721Received.selector;
     }
 
+    /**
+     * @dev Allow Owner to change the ERC20 rewards contract
+     * @param _ZGameTokenContract address New ERC20 rewards contract
+     */
     function setGameTokenContract(address _ZGameTokenContract) external onlyOwner() {
         ZGameTokenContract = IZGameToken(_ZGameTokenContract);
     }

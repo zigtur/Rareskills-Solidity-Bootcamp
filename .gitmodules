@@ -31,3 +31,9 @@
 [submodule "Week2/exercise2/lib/openzeppelin-contracts"]
 	path = Week2/exercise2/lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "Week2/exercise3/lib/forge-std"]
+	path = Week2/exercise3/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "Week2/exercise3/lib/openzeppelin-contracts"]
+	path = Week2/exercise3/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts

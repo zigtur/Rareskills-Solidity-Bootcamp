@@ -34,11 +34,13 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
     /**
      * @notice Mint NFT with price = mintPrice
      * @param _to address Address to which NFT will be minted
+     * @return tokenId to let user know
      */
-    function mint(address _to) external payable returns(uint256) {
+    function mint(address _to) public payable returns(uint256) {
         require(msg.value == mintPrice, "Value is not mintPrice");
         uint256 _currentSupply = currentSupply;
-        require(_currentSupply < maxSupply, "maxSupply hit");
+        // set <= because currentTokenId starts at 1
+        require(_currentSupply <= maxSupply, "maxSupply hit");
         // update current supply
         unchecked {
             currentSupply = _currentSupply + 1;
@@ -53,6 +55,7 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
      * @dev Some assembly code has been used for gas optimization purposes
      * @param ticket uint256 Presale ticket associated to _msgSender() address
      * @param merkleProof bytes32[] Proof used to verify if _msgSender() can mint using presale ticket
+     * @return tokenId to let user know
      */
     function presaleMint(uint256 ticket, bytes32[] calldata merkleProof) external payable returns(uint256) {
         require(MerkleProof.verify(merkleProof, merkleRoot, keccak256(bytes.concat(keccak256(abi.encode(_msgSender(), ticket))))), "Invalid merkle proof");
@@ -82,7 +85,8 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
 
         require(msg.value == discountPrice, "Value is not discountPrice");
         uint256 _currentSupply = currentSupply;
-        require(_currentSupply < maxSupply, "maxSupply hit");
+        // set <= because currentTokenId starts at 1
+        require(_currentSupply <= maxSupply, "maxSupply hit");
         // update current supply
         unchecked {
             currentSupply = _currentSupply + 1;
@@ -94,18 +98,10 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
 
     /**
      * @notice Same function as mint(), but using _msgSender() as receiver of the minted token
+     * @return tokenId to let user know
      */
     function selfMint() external payable returns(uint256) {
-        require(msg.value == mintPrice, "Value is not mintPrice");
-        uint256 _currentSupply = currentSupply;
-        require(_currentSupply < maxSupply, "maxSupply hit");
-        // update current supply
-        unchecked {
-            currentSupply = _currentSupply + 1;
-        }
-        // use old supply as tokenId to mint
-        _safeMint(_msgSender(), _currentSupply);
-        return _currentSupply;
+        return mint(_msgSender());
     }
 
     /**

@@ -61,22 +61,38 @@ contract MyStakingRewardGameTest is BaseSetup {
         vm.startPrank(user1);
         vm.deal(user1, 1 ether);
         uint256 mintNFTPrice = ZGameNFTCollectionDeployed.mintPrice();
-        uint256 tokenId = 1;
-        // self mint token 1
-        ZGameNFTCollectionDeployed.selfMint{value: mintNFTPrice}(tokenId);
-        console.log("Owner of NFT 1 : %s", ZGameNFTCollectionDeployed.ownerOf(tokenId));
+        // self mint token
+        uint256 tokenId = ZGameNFTCollectionDeployed.selfMint{value: mintNFTPrice}();
+        console.log("Owner of NFT %s : %s", tokenId, ZGameNFTCollectionDeployed.ownerOf(tokenId));
 
-        //ZGameNFTCollectionDeployed.approve(address(ZGameStakingDeployed), tokenId);
-        //ZGameStakingDeployed.depositNFT(tokenId);
+        ZGameNFTCollectionDeployed.approve(address(ZGameStakingDeployed), tokenId);
+        ZGameStakingDeployed.depositNFT(tokenId);
+
+        console.log("Owner of NFT %s : %s", tokenId, ZGameNFTCollectionDeployed.ownerOf(tokenId));
+
+        ZGameStakingDeployed.withdrawNFT(tokenId);
+        
+        console.log("Owner of NFT %s : %s", tokenId, ZGameNFTCollectionDeployed.ownerOf(tokenId));
+        vm.stopPrank();
+    }
+
+    function testTransferAndWithdrawNFT() public {
+        vm.startPrank(user1);
+        vm.deal(user1, 1 ether);
+        uint256 mintNFTPrice = ZGameNFTCollectionDeployed.mintPrice();
+        // self mint token 1
+        uint256 tokenId = ZGameNFTCollectionDeployed.selfMint{value: mintNFTPrice}();
+        console.log("Owner of NFT %s : %s", tokenId, ZGameNFTCollectionDeployed.ownerOf(tokenId));
+
         ZGameNFTCollectionDeployed.safeTransferFrom(user1, address(ZGameStakingDeployed), tokenId);
         vm.stopPrank();
 
-        console.log("Owner of NFT 1 : %s", ZGameNFTCollectionDeployed.ownerOf(tokenId));
+        console.log("Owner of NFT %s : %s", tokenId, ZGameNFTCollectionDeployed.ownerOf(tokenId));
 
         vm.prank(user1);
         ZGameStakingDeployed.withdrawNFT(tokenId);
         
-        console.log("Owner of NFT 1 : %s", ZGameNFTCollectionDeployed.ownerOf(tokenId));
+        console.log("Owner of NFT %s : %s", tokenId, ZGameNFTCollectionDeployed.ownerOf(tokenId));
     }
 
     function testCalculateRewards() public {
@@ -91,17 +107,16 @@ contract MyStakingRewardGameTest is BaseSetup {
         vm.startPrank(user1);
         vm.deal(user1, 1 ether);
         uint256 mintNFTPrice = ZGameNFTCollectionDeployed.mintPrice();
-        uint256 tokenId = 1;
-        // self mint token 1
-        ZGameNFTCollectionDeployed.selfMint{value: mintNFTPrice}(tokenId);
-        console.log("Owner of NFT 1 : %s", ZGameNFTCollectionDeployed.ownerOf(tokenId));
+        // self mint token
+        uint256 tokenId = ZGameNFTCollectionDeployed.selfMint{value: mintNFTPrice}();
+        console.log("Owner of NFT %s : %s", tokenId, ZGameNFTCollectionDeployed.ownerOf(tokenId));
 
         //ZGameNFTCollectionDeployed.approve(address(ZGameStakingDeployed), tokenId);
         //ZGameStakingDeployed.depositNFT(tokenId);
         ZGameNFTCollectionDeployed.safeTransferFrom(user1, address(ZGameStakingDeployed), tokenId);
         vm.stopPrank();
 
-        console.log("Owner of NFT 1 : %s", ZGameNFTCollectionDeployed.ownerOf(tokenId));
+        console.log("Owner of NFT %s : %s", tokenId, ZGameNFTCollectionDeployed.ownerOf(tokenId));
         console.log("User1 token balance: %s", ZGameTokenDeployed.balanceOf(user1));
         vm.warp(1677358172 + 2 * 24 hours); //adding 24 hours
 

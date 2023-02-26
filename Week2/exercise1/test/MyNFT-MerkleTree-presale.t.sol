@@ -157,13 +157,13 @@ contract MyERC721Test is BaseSetup {
         vm.prank(presaleUser1);
         vm.deal(presaleUser1, 1 ether);
         uint256 tokenId = myContract2.presaleMint{value: discountPrice}(501, proof);
-        console.log("Presale mint : NFT 100 owner is ", myContract2.ownerOf(tokenId));
+        console.log("Presale mint : NFT %s owner is %s", tokenId, myContract2.ownerOf(tokenId));
 
         // Reuse of presale ticket
         vm.prank(presaleUser1);
         vm.deal(presaleUser1, 1 ether);
         tokenId = myContract2.presaleMint{value: discountPrice}(501, proof);
-        console.log("Presale mint : NFT 100 owner is ", myContract2.ownerOf(tokenId));
+        console.log("Presale mint : NFT %s owner is %s", tokenId, myContract2.ownerOf(tokenId));
     }
 
     function testContract2TokenRoyalties() public {
@@ -173,7 +173,7 @@ contract MyERC721Test is BaseSetup {
         uint256 tokenId = myContract2.selfMint{value: _mintPrice}();
 
         (address royalUser, uint256 royalAmount) = myContract2.royaltyInfo(tokenId, 1 ether);
-        console.log("NFT 5 royalties user is %s and amount is %s ", royalUser, royalAmount);
+        console.log("NFT %s royalties user is %s and amount is %s ", royalUser, royalAmount);
 
         // user2 try to modify user1 token royalties
         vm.prank(user2);
@@ -183,6 +183,6 @@ contract MyERC721Test is BaseSetup {
         vm.prank(user1);
         myContract2.setTokenRoyalty(tokenId, user1, uint96(500));
         (royalUser, royalAmount) = myContract2.royaltyInfo(tokenId, 1 ether);
-        console.log("NFT 5 royalties should have changed: user is %s and amount is %s ", royalUser, royalAmount);
+        console.log("NFT %s royalties should have changed: user is %s and amount is %s ", tokenId, royalUser, royalAmount);
     }
 }
