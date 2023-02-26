@@ -4,6 +4,7 @@ pragma solidity 0.8.18;
 import {ERC721} from "openzeppelin/token/ERC721/ERC721.sol";
 import {ERC2981} from "openzeppelin/token/common/ERC2981.sol";
 import {MerkleProof} from "openzeppelin/utils/cryptography/MerkleProof.sol";
+import {Ownable} from "openzeppelin/access/Ownable.sol";
 
 /**
  * @title MyOwnNFTCollection
@@ -11,7 +12,7 @@ import {MerkleProof} from "openzeppelin/utils/cryptography/MerkleProof.sol";
  * @notice This smart contract is a NFT collection with optimized MerkleTree and bitmap presale, and royalties
  * @dev Merkle Tree needs to be generated before deploying the contract
  */
-contract MyOwnNFTCollection is ERC721, ERC2981 {
+contract MyOwnNFTCollection is Ownable, ERC721, ERC2981 {
     uint256 public constant mintPrice = 0.000001 ether;
     uint256 public constant discountPrice = 0.0000005 ether;
     uint256 public immutable maxSupply;
@@ -24,7 +25,7 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
     uint256 private ticketGroup2 = MAX_INT;
     uint256 private ticketGroup3 = MAX_INT;
 
-    constructor(string memory _name, string memory _symbol, uint256 _maxSupply, bytes32 _merkleRoot, uint96 ownerRoyaltiesFees) ERC721(_name, _symbol) {
+    constructor(string memory _name, string memory _symbol, uint256 _maxSupply, bytes32 _merkleRoot, uint96 ownerRoyaltiesFees) Ownable() ERC721(_name, _symbol) {
         maxSupply = _maxSupply;
         merkleRoot = _merkleRoot;
         _setDefaultRoyalty(_msgSender(), ownerRoyaltiesFees);
@@ -127,5 +128,9 @@ contract MyOwnNFTCollection is ERC721, ERC2981 {
      */    
     function _baseURI() internal pure override returns (string memory) {
         return "https://raw.githubusercontent.com/zigtur/Rareskills-Solidity-Bootcamp/master/Week2/nft-collection/";
+    }
+
+    function withdrawEther() external onlyOwner {
+        payable(owner()).transfer(address(this).balance);
     }
 }
