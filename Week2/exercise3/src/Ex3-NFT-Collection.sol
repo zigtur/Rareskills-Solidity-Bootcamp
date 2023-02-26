@@ -51,4 +51,8 @@ contract SimpleNFTCollection is ERC721Enumerable {
     function _baseURI() internal pure override returns (string memory) {
         return "https://raw.githubusercontent.com/zigtur/Rareskills-Solidity-Bootcamp/master/Week2/nft-collection/";
     }
+
+    function withdrawEther() external onlyOwner {
+        payable(owner()).transfer(address(this).balance);
+    }
 }

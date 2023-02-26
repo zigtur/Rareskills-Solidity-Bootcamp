@@ -3,6 +3,7 @@ pragma solidity 0.8.18;
 
 import {ERC721} from "openzeppelin/token/ERC721/ERC721.sol";
 import {IERC721} from "openzeppelin/token/ERC721/IERC721.sol";
+import {Ownable} from "openzeppelin/access/Ownable.sol";
 
 /**
  * @title ZGameNFTCollection
@@ -10,12 +11,12 @@ import {IERC721} from "openzeppelin/token/ERC721/IERC721.sol";
  * @notice This smart contract is a Game NFT collection
  * @dev Needs two more contracts for the game to work
  */
-contract ZGameNFTCollection is ERC721 {
+contract ZGameNFTCollection is Ownable, ERC721 {
     uint256 public constant mintPrice = 0.000001 ether;
     uint256 public immutable maxSupply;
     uint256 public currentSupply = 1;
 
-    constructor(string memory _name, string memory _symbol, uint256 _maxSupply) ERC721(_name, _symbol) {
+    constructor(string memory _name, string memory _symbol, uint256 _maxSupply) Ownable() ERC721(_name, _symbol) {
         maxSupply = _maxSupply;
     }
 
@@ -51,5 +52,9 @@ contract ZGameNFTCollection is ERC721 {
      */    
     function _baseURI() internal pure override returns (string memory) {
         return "https://raw.githubusercontent.com/zigtur/Rareskills-Solidity-Bootcamp/master/Week2/nft-collection/";
+    }
+
+    function withdrawEther() external onlyOwner {
+        payable(owner()).transfer(address(this).balance);
     }
 }
