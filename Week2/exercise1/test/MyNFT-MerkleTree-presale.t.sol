@@ -62,7 +62,7 @@ contract BaseSetup is Test {
         // This Merkle Tree has been generated with 1000 users for presale
         merkleRoot2 = bytes32(0x2c0be55cd11715b0f7e28542f55cc84b71f9120d45bfa9a1cbfc06d6361618dc);
         vm.prank(owner);
-        myContract2 = new MyOwnNFTCollection("ZigNFTPresale", "ZNP", 1000, merkleRoot2, uint96(250));
+        myContract2 = new MyOwnNFTCollection("ZigNFTPresale", "ZNP", 10000, merkleRoot2, uint96(250));
     }
 }
 

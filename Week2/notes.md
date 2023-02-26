@@ -62,3 +62,8 @@ And the winner is... **ASSEMBLY!!!**
 
 
 
+## Questions
+
+MyNFT-MerkleTree-presale.sol :
+- Should I rewrite my supportsInterface function ?
+- 

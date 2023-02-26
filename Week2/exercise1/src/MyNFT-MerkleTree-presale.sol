@@ -120,7 +120,7 @@ contract MyOwnNFTCollection is Ownable, ERC721, ERC2981 {
      * @param interfaceId bytes4 The interface identifier, as specified in ERC-165
      */
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, ERC2981) returns (bool) {
-        return interfaceId == type(IERC2981).interfaceId || super.supportsInterface(interfaceId);
+        return super.supportsInterface(interfaceId);
     }
 
     /**

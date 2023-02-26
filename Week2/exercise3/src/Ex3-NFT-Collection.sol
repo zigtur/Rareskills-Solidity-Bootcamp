@@ -3,13 +3,14 @@ pragma solidity 0.8.18;
 
 import {ERC721Enumerable} from "openzeppelin/token/ERC721/extensions/ERC721Enumerable.sol";
 import {ERC721} from "openzeppelin/token/ERC721/ERC721.sol";
+import {Ownable} from "openzeppelin/access/Ownable.sol";
 
 /**
  * @title SimpleNFTCollection
  * @author Zigtur
  * @notice This smart contract is a NFT collection with enumerable capabilities
  */
-contract SimpleNFTCollection is ERC721Enumerable {
+contract SimpleNFTCollection is Ownable, ERC721Enumerable {
     uint256 public constant mintPrice = 0.000001 ether;
     uint256 public immutable maxSupply;
     uint256 public currentTokenId = 1;
