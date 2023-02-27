@@ -76,7 +76,7 @@ contract MyOwnNFTCollection is Ownable, ERC721, ERC2981 {
         uint256 isTicketAvailable = (ticketGroupValue >> ticketOffset) & uint256(1);
         require(isTicketAvailable == 1, "Ticket has already been used");
         ticketGroupValue = ticketGroupValue & ~(uint256(1) << ticketOffset);
-        
+
         // Store the new ticketGroup value in storage
         assembly {
             sstore(ticketSlot, ticketGroupValue)
