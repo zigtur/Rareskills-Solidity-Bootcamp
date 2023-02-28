@@ -14,7 +14,7 @@ import {Ownable} from "openzeppelin/access/Ownable.sol";
 contract ZGameNFTCollection is Ownable, ERC721 {
     uint256 public constant mintPrice = 0.000001 ether;
     uint256 public immutable maxSupply;
-    uint256 public currentSupply = 1;
+    uint256 public currentTokenId = 1;
 
     constructor(string memory _name, string memory _symbol, uint256 _maxSupply) Ownable() ERC721(_name, _symbol) {
         maxSupply = _maxSupply;
@@ -27,16 +27,16 @@ contract ZGameNFTCollection is Ownable, ERC721 {
      */
     function mint(address _to) public payable returns(uint256) {
         require(msg.value == mintPrice, "Value is not mintPrice");
-        uint256 _currentSupply = currentSupply;
+        uint256 _currentTokenId = currentTokenId;
         // set <= because currentTokenId starts at 1
-        require(_currentSupply <= maxSupply, "maxSupply hit");
+        require(_currentTokenId <= maxSupply, "maxSupply hit");
         // update current supply
         unchecked {
-            currentSupply = _currentSupply + 1;
+            currentTokenId = _currentTokenId + 1;
         }
         // use old supply as tokenId to mint
-        _safeMint(_to, _currentSupply);
-        return _currentSupply;
+        _safeMint(_to, _currentTokenId);
+        return _currentTokenId;
     }
 
     /**

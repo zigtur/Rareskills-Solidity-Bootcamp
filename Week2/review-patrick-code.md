@@ -83,3 +83,20 @@ Why use of Math.sol for uint256 (for sqrt :) )
 ### Questions
 Why do you use Strings for uint256?
 
+
+
+# Answers to Patrick's remarks
+Source: https://github.com/PatrickZimmerer/RARE-StakingAndRewards/blob/main/code-review-madigan.md
+
+## Week2/exercise1/src/MyNFT-MerkleTree-presale.sol
+Do we need to make maxSupply public? there is a function in ERC721 called totalSupply which would show us the same as maxSupply
+- I think we should so user can know how many NFT are left (maxSupply - tokenSupply).
+
+You can reduce those to uint16 in our case since we only provide 10 NFTs and a bunch of presales so uint16 would be sufficient I guess.
+- I agree. For educational purposes, I wanted to create a presale with a lot of addresses (1000 in this case).
+
+Defining constructor of Ownable which has no constructor
+- Ownable of OpenZeppelin does have a constructor (see https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol).
+
+The <= check is using more gas then just a < check so I guess since we can't mint more than one nft at a time < would be sufficient
+- Yes, but currentSupply would not be able to be equal to maxSupply. And so the real maximum supply would in fact be maxSupply - 1 (as I'm started ). As maxSupply variable can be read by users, I want to make it clear that maxSupply = the real maximum supply
