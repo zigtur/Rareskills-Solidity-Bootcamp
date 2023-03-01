@@ -24,7 +24,7 @@ contract SimpleNFTEnumerate {
     function enumeratePrimeNumberTokensForOwner(address owner) external view returns(uint256) {
         uint256 balanceOwner = NFTContract.balanceOf(owner);
         uint256 primeNumbersBalance = 0;
-        for (uint i=0; i < balanceOwner; i++) {
+        for (uint i=0; i < balanceOwner; ) {
             uint256 tokenNumber = NFTContract.tokenOfOwnerByIndex(owner, i);
             unchecked {
                 uint256 stopVerify = tokenNumber / 2;
@@ -53,6 +53,7 @@ contract SimpleNFTEnumerate {
                 if (isPrime == true) {
                     primeNumbersBalance++;
                 }
+            ++i;
             }
         }
         return primeNumbersBalance;

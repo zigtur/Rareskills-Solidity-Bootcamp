@@ -17,7 +17,7 @@ contract MyOwnNFTCollection is Ownable, ERC721, ERC2981 {
     uint256 public constant discountPrice = 0.0000005 ether;
     uint256 public immutable maxSupply;
     bytes32 private immutable merkleRoot;
-    uint256 public currentSupply = 1;
+    uint256 public currentTokenId = 1;
 
     uint256 private constant MAX_INT = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
     uint256 private ticketGroup0 = MAX_INT;
@@ -38,16 +38,16 @@ contract MyOwnNFTCollection is Ownable, ERC721, ERC2981 {
      */
     function mint(address _to) public payable returns(uint256) {
         require(msg.value == mintPrice, "Value is not mintPrice");
-        uint256 _currentSupply = currentSupply;
+        uint256 _currentTokenId = currentTokenId;
         // set <= because currentTokenId starts at 1
-        require(_currentSupply <= maxSupply, "maxSupply hit");
+        require(_currentTokenId <= maxSupply, "maxSupply hit");
         // update current supply
         unchecked {
-            currentSupply = _currentSupply + 1;
+            currentTokenId = _currentTokenId + 1;
         }
         // use old supply as tokenId to mint
-        _safeMint(_to, _currentSupply);
-        return _currentSupply;
+        _safeMint(_to, _currentTokenId);
+        return _currentTokenId;
     }
     
     /**
@@ -83,16 +83,16 @@ contract MyOwnNFTCollection is Ownable, ERC721, ERC2981 {
         }
 
         require(msg.value == discountPrice, "Value is not discountPrice");
-        uint256 _currentSupply = currentSupply;
+        uint256 _currentTokenId = currentTokenId;
         // set <= because currentTokenId starts at 1
-        require(_currentSupply <= maxSupply, "maxSupply hit");
+        require(_currentTokenId <= maxSupply, "maxSupply hit");
         // update current supply
         unchecked {
-            currentSupply = _currentSupply + 1;
+            currentTokenId = _currentTokenId + 1;
         }
         // use old supply as tokenId to mint
-        _safeMint(_msgSender(), _currentSupply);
-        return _currentSupply;
+        _safeMint(_msgSender(), _currentTokenId);
+        return _currentTokenId;
     }
 
     /**
