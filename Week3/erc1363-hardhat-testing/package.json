@@ -11,12 +11,14 @@
   "dependencies": {
     "@openzeppelin/contracts": "^4.8.2",
     "erc-payable-token": "^4.8.2",
+    "eslint": "^5.16.0",
     "hardhat": "^2.13.0",
     "solidity-coverage": "^0.8.2"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.27.5"
+    "@nomiclabs/hardhat-solhint": "^3.0.0",
+    "prettier": "^2.8.4",
+    "prettier-plugin-solidity": "^1.1.3"
   }
 }

@@ -13,13 +13,13 @@ describe("MyOwnTokenBonding", function () {
     let bannedUser1;
     let bannedUser2;
 
-    const basicPrice = ethers.utils.parseEther("0.001");
-    const pricePerToken = ethers.utils.parseUnits("0.1", "gwei");
+    const BASIC_PRICE = ethers.utils.parseEther("0.001");
+    const PRICE_PER_TOKEN = ethers.utils.parseUnits("0.1", "gwei");
 
     const calculateBuyPrice = (totalSupply, amount) => {
-        const _currentPrice = basicPrice.add((pricePerToken.mul(totalSupply).div(BigNumber.from(10).pow(18))));
+        const _currentPrice = BASIC_PRICE.add((PRICE_PER_TOKEN.mul(totalSupply).div(BigNumber.from(10).pow(18))));
         const curveBasePrice = amount.mul(_currentPrice).div(BigNumber.from(10).pow(18));
-        const curveExtraPrice = ((amount.mul(pricePerToken).div(BigNumber.from(10).pow(18))).mul(amount)).div(BigNumber.from(2).mul(BigNumber.from(10).pow(18)));
+        const curveExtraPrice = ((amount.mul(PRICE_PER_TOKEN).div(BigNumber.from(10).pow(18))).mul(amount)).div(BigNumber.from(2).mul(BigNumber.from(10).pow(18)));
         return (curveBasePrice.add(curveExtraPrice));
     }
 

@@ -14,7 +14,7 @@ interface IZGameToken is IERC20 {
  * @notice This smart contract is a Game Token
  * @dev Needs two more contracts for the game to work
  */
-contract ZGameToken is ERC20 {
+contract ZGameToken is IZGameToken, ERC20 {
     address public immutable stakingRewardContract;
 
     constructor(string memory _name, string memory _symbol, address _stakingRewardContract) ERC20(_name, _symbol) {

@@ -11,7 +11,7 @@ import {Ownable} from "openzeppelin/access/Ownable.sol";
  * @notice This smart contract is a NFT collection with enumerable capabilities
  */
 contract SimpleNFTCollection is Ownable, ERC721Enumerable {
-    uint256 public constant mintPrice = 0.000001 ether;
+    uint256 public constant MINT_PRICE = 0.000001 ether;
     uint256 public immutable maxSupply;
     uint256 public currentTokenId = 1;
 
@@ -20,12 +20,12 @@ contract SimpleNFTCollection is Ownable, ERC721Enumerable {
     }
 
     /**
-     * @notice Mint NFT with price = mintPrice
+     * @notice Mint NFT with price = MINT_PRICE
      * @param _to address Address to which NFT will be minted
      * @return tokenId to let user know
      */
     function mint(address _to) public payable returns(uint256) {
-        require(msg.value == mintPrice, "Value is not mintPrice");
+        require(msg.value == MINT_PRICE, "Value is not MINT_PRICE");
         uint256 _currentTokenId = currentTokenId;
         // set <= because currentTokenId starts at 1
         require(_currentTokenId <= maxSupply, "maxSupply hit");

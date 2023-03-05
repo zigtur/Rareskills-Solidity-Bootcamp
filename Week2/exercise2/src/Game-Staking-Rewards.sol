@@ -9,8 +9,8 @@ import {Ownable} from "openzeppelin/access/Ownable.sol";
 import {IZGameToken,ZGameToken} from "./Game-ERC20-Token.sol";
 import {ZGameNFTCollection} from "./Game-NFT-Collection.sol";
 
-contract ZGameStaking is Ownable {
-    struct depositStruct {
+contract ZGameStaking is Ownable, IERC721Receiver {
+    struct DepositStruct {
         address originalOwner;
         uint256 depositTime;
     }
@@ -18,7 +18,7 @@ contract ZGameStaking is Ownable {
     IZGameToken public ZGameTokenContract;
     IERC721 public immutable ZGameNFTCollectionContract;
 
-    mapping(uint256 => depositStruct) deposits;
+    mapping(uint256 => DepositStruct) deposits;
 
     constructor(address _ZGameNFTCollectionContract) {
         ZGameNFTCollectionContract = IERC721(_ZGameNFTCollectionContract);
@@ -40,7 +40,7 @@ contract ZGameStaking is Ownable {
      * @param tokenId uint256 ID of the token to deposit
      */
     function depositNFT(uint256 tokenId) external {
-        deposits[tokenId] = depositStruct(msg.sender, block.timestamp);
+        deposits[tokenId] = DepositStruct(msg.sender, block.timestamp);
         // Do not use safeTransferFrom because it will collude with onERC781Received function
         ZGameNFTCollectionContract.transferFrom(msg.sender, address(this), tokenId);
     }
@@ -50,7 +50,7 @@ contract ZGameStaking is Ownable {
      * @param tokenId uint256 ID of the token to withdraw
      */
     function getRewards(uint256 tokenId) public {
-        depositStruct memory _deposit = deposits[tokenId];
+        DepositStruct memory _deposit = deposits[tokenId];
         require(_deposit.originalOwner == _msgSender(), "_msgSender() not original owner!");
         uint256 calculatedRewards = calculateRewards(_deposit.depositTime);
         _deposit.depositTime = block.timestamp;
@@ -63,7 +63,7 @@ contract ZGameStaking is Ownable {
      * @param tokenId uint256 ID of the token to withdraw
      */
     function withdrawNFT(uint256 tokenId) external {
-        depositStruct memory _deposit = deposits[tokenId];
+        DepositStruct memory _deposit = deposits[tokenId];
         require(_deposit.originalOwner == _msgSender(), "_msgSender() not original owner!");
         uint256 calculatedRewards = calculateRewards(_deposit.depositTime);
         ZGameNFTCollectionContract.safeTransferFrom(address(this), msg.sender, tokenId);
@@ -80,7 +80,7 @@ contract ZGameStaking is Ownable {
      */
     function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data) external returns (bytes4){
         require(msg.sender == address(ZGameNFTCollectionContract), "Not the NFT Game contract");
-        deposits[tokenId] = depositStruct(operator, block.timestamp);
+        deposits[tokenId] = DepositStruct(operator, block.timestamp);
         return IERC721Receiver.onERC721Received.selector;
     }
 

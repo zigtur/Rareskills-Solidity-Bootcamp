@@ -10,10 +10,10 @@ import {IERC721Enumerable} from "openzeppelin/token/ERC721/extensions/IERC721Enu
  * @notice This smart contract enumerates prime numbers of a NFT collection (other contract)
  */
 contract SimpleNFTEnumerate {
-    IERC721Enumerable private immutable NFTContract;
+    IERC721Enumerable private immutable nftContract;
 
-    constructor(address NFTContractAddress) {
-        NFTContract = IERC721Enumerable(NFTContractAddress);
+    constructor(address nftContractAddress) {
+        nftContract = IERC721Enumerable(nftContractAddress);
     }
 
     /**
@@ -22,10 +22,10 @@ contract SimpleNFTEnumerate {
      * @return uint256 The number of prime number ids
      */
     function enumeratePrimeNumberTokensForOwner(address owner) external view returns(uint256) {
-        uint256 balanceOwner = NFTContract.balanceOf(owner);
+        uint256 balanceOwner = nftContract.balanceOf(owner);
         uint256 primeNumbersBalance = 0;
-        for (uint i=0; i < balanceOwner; ) {
-            uint256 tokenNumber = NFTContract.tokenOfOwnerByIndex(owner, i);
+        for (uint i=0; i < balanceOwner; ++i) {
+            uint256 tokenNumber = nftContract.tokenOfOwnerByIndex(owner, i);
             unchecked {
                 uint256 stopVerify = tokenNumber / 2;
                 // 1 is not considered a prime number
@@ -53,7 +53,6 @@ contract SimpleNFTEnumerate {
                 if (isPrime == true) {
                     primeNumbersBalance++;
                 }
-            ++i;
             }
         }
         return primeNumbersBalance;

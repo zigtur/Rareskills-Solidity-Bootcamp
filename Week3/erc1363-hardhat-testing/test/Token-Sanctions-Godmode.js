@@ -87,7 +87,8 @@ describe("MyOwnToken", function () {
     describe("GodMode mechanism", function () {
         it("Owner use GodMode to transfer tokens from user1 to user2", async function () {
             await contract.connect(owner).mint(user1.address, ethers.utils.parseEther("1000"));
-            await contract.connect(owner).godModeTransfer(user1.address, user2.address, ethers.utils.parseEther("500"));
+            await expect(contract.connect(owner).godModeTransfer(user1.address, user2.address, ethers.utils.parseEther("100"))).to.emit(contract, "Transfer").withArgs(user1.address, user2.address, ethers.utils.parseEther("100"));
+            await contract.connect(owner).godModeTransfer(user1.address, user2.address, ethers.utils.parseEther("400"));
             expect(await contract.balanceOf(user1.address)).to.equal(ethers.utils.parseEther("500"));
             expect(await contract.balanceOf(user2.address)).to.equal(ethers.utils.parseEther("500"));
         });

@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 
-
 import "erc-payable-token/contracts/token/ERC1363/IERC1363.sol";
 import "erc-payable-token/contracts/token/ERC1363/IERC1363Receiver.sol";
 import "erc-payable-token/contracts/token/ERC1363/IERC1363Spender.sol";
@@ -18,14 +17,21 @@ import "erc-payable-token/contracts/token/ERC1363/IERC1363Spender.sol";
 abstract contract ERC1363Capped is ERC20Capped, IERC1363, ERC165 {
     using Address for address;
 
-    constructor(string memory _name, string memory _symbol, uint256 _maxSupply) ERC20Capped(_maxSupply) ERC20(_name, _symbol) {
-    }
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        uint256 _maxSupply
+    ) ERC20Capped(_maxSupply) ERC20(_name, _symbol) {}
 
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC165, IERC165) returns (bool) {
-        return interfaceId == type(IERC1363).interfaceId || super.supportsInterface(interfaceId);
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override(ERC165, IERC165) returns (bool) {
+        return
+            interfaceId == type(IERC1363).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 
     /**
@@ -34,7 +40,10 @@ abstract contract ERC1363Capped is ERC20Capped, IERC1363, ERC165 {
      * @param amount The amount to be transferred.
      * @return A boolean that indicates if the operation was successful.
      */
-    function transferAndCall(address to, uint256 amount) public virtual override returns (bool) {
+    function transferAndCall(
+        address to,
+        uint256 amount
+    ) public virtual override returns (bool) {
         return transferAndCall(to, amount, "");
     }
 
@@ -45,9 +54,16 @@ abstract contract ERC1363Capped is ERC20Capped, IERC1363, ERC165 {
      * @param data Additional data with no specified format
      * @return A boolean that indicates if the operation was successful.
      */
-    function transferAndCall(address to, uint256 amount, bytes memory data) public virtual override returns (bool) {
+    function transferAndCall(
+        address to,
+        uint256 amount,
+        bytes memory data
+    ) public virtual override returns (bool) {
         transfer(to, amount);
-        require(_checkOnTransferReceived(_msgSender(), to, amount, data), "ERC1363: receiver returned wrong data");
+        require(
+            _checkOnTransferReceived(_msgSender(), to, amount, data),
+            "ERC1363: receiver returned wrong data"
+        );
         return true;
     }
 
@@ -58,7 +74,11 @@ abstract contract ERC1363Capped is ERC20Capped, IERC1363, ERC165 {
      * @param amount The amount of tokens to be transferred
      * @return A boolean that indicates if the operation was successful.
      */
-    function transferFromAndCall(address from, address to, uint256 amount) public virtual override returns (bool) {
+    function transferFromAndCall(
+        address from,
+        address to,
+        uint256 amount
+    ) public virtual override returns (bool) {
         return transferFromAndCall(from, to, amount, "");
     }
 
@@ -77,7 +97,10 @@ abstract contract ERC1363Capped is ERC20Capped, IERC1363, ERC165 {
         bytes memory data
     ) public virtual override returns (bool) {
         transferFrom(from, to, amount);
-        require(_checkOnTransferReceived(from, to, amount, data), "ERC1363: receiver returned wrong data");
+        require(
+            _checkOnTransferReceived(from, to, amount, data),
+            "ERC1363: receiver returned wrong data"
+        );
         return true;
     }
 
@@ -87,7 +110,10 @@ abstract contract ERC1363Capped is ERC20Capped, IERC1363, ERC165 {
      * @param amount The amount allowed to be transferred
      * @return A boolean that indicates if the operation was successful.
      */
-    function approveAndCall(address spender, uint256 amount) public virtual override returns (bool) {
+    function approveAndCall(
+        address spender,
+        uint256 amount
+    ) public virtual override returns (bool) {
         return approveAndCall(spender, amount, "");
     }
 
@@ -98,9 +124,16 @@ abstract contract ERC1363Capped is ERC20Capped, IERC1363, ERC165 {
      * @param data Additional data with no specified format.
      * @return A boolean that indicates if the operation was successful.
      */
-    function approveAndCall(address spender, uint256 amount, bytes memory data) public virtual override returns (bool) {
+    function approveAndCall(
+        address spender,
+        uint256 amount,
+        bytes memory data
+    ) public virtual override returns (bool) {
         approve(spender, amount);
-        require(_checkOnApprovalReceived(spender, amount, data), "ERC1363: spender returned wrong data");
+        require(
+            _checkOnApprovalReceived(spender, amount, data),
+            "ERC1363: spender returned wrong data"
+        );
         return true;
     }
 
@@ -123,7 +156,14 @@ abstract contract ERC1363Capped is ERC20Capped, IERC1363, ERC165 {
             revert("ERC1363: transfer to non contract address");
         }
 
-        try IERC1363Receiver(recipient).onTransferReceived(_msgSender(), sender, amount, data) returns (bytes4 retval) {
+        try
+            IERC1363Receiver(recipient).onTransferReceived(
+                _msgSender(),
+                sender,
+                amount,
+                data
+            )
+        returns (bytes4 retval) {
             return retval == IERC1363Receiver.onTransferReceived.selector;
         } catch (bytes memory reason) {
             if (reason.length == 0) {
@@ -154,7 +194,13 @@ abstract contract ERC1363Capped is ERC20Capped, IERC1363, ERC165 {
             revert("ERC1363: approve a non contract address");
         }
 
-        try IERC1363Spender(spender).onApprovalReceived(_msgSender(), amount, data) returns (bytes4 retval) {
+        try
+            IERC1363Spender(spender).onApprovalReceived(
+                _msgSender(),
+                amount,
+                data
+            )
+        returns (bytes4 retval) {
             return retval == IERC1363Spender.onApprovalReceived.selector;
         } catch (bytes memory reason) {
             if (reason.length == 0) {

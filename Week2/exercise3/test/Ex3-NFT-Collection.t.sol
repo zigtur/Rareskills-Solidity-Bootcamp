@@ -42,10 +42,13 @@ contract MyERC721Enumerable is BaseSetup {
     function testEnumerableFunctions() public {
         vm.startPrank(user1);
         vm.deal(user1, 1 ether);
-        uint256 mintPrice = myContract.mintPrice();
-        uint256 token1 = myContract.selfMint{value: mintPrice}();
-        uint256 token2 = myContract.selfMint{value: mintPrice}();
-        uint256 token3 = myContract.selfMint{value: mintPrice}();
+        uint256 MINT_PRICE = myContract.MINT_PRICE();
+        uint256 token1 = myContract.selfMint{value: MINT_PRICE}();
+        uint256 token2 = myContract.selfMint{value: MINT_PRICE}();
+        uint256 token3 = myContract.selfMint{value: MINT_PRICE}();
+
+        vm.expectRevert();
+        uint256 token4 = myContract.selfMint{value: MINT_PRICE-1}();
 
         console.log("User1 minted tokens %s, %s and %s", token1, token2, token3);
 
@@ -64,16 +67,45 @@ contract MyERC721Enumerable is BaseSetup {
         vm.stopPrank();
     }
 
+    function testMaxSupply() public {
+        vm.startPrank(user1);
+        vm.deal(user1, 1 ether);
+        uint256 MINT_PRICE = myContract.MINT_PRICE();
+
+        for(uint256 i=0; i<20; ) {
+            myContract.selfMint{value: MINT_PRICE}();
+            ++i;
+        }
+
+        vm.expectRevert();
+        uint256 token = myContract.selfMint{value: MINT_PRICE}();
+        vm.stopPrank();
+    }
+
+    function testWithdrawEtherAndTokenURI() public {
+        vm.startPrank(user1);
+        vm.deal(user1, 1 ether);
+        uint256 MINT_PRICE = myContract.MINT_PRICE();
+
+        uint256 tokenId = myContract.selfMint{value: MINT_PRICE}();
+        string memory tokenURI = myContract.tokenURI(tokenId);
+        vm.stopPrank();
+        vm.prank(owner);
+        myContract.withdrawEther();
+
+    }
+
 
     function testPrimeNumber() public {
         vm.startPrank(user1);
         vm.deal(user1, 1 ether);
-        uint256 mintPrice = myContract.mintPrice();
+        uint256 MINT_PRICE = myContract.MINT_PRICE();
         for (uint i=0; i < 20; i++) {
-            myContract.selfMint{value: mintPrice}();
+            myContract.selfMint{value: MINT_PRICE}();
         }
 
-        console.log("User1 has %s tokens with a prime number as token ID", primeNumbersContract.enumeratePrimeNumberTokensForOwner(user1));
+        uint256 numberOfPrimes = primeNumbersContract.enumeratePrimeNumberTokensForOwner(user1);
+        assert(numberOfPrimes == 8);
 
         vm.stopPrank();
     }

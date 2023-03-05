@@ -4,7 +4,6 @@ pragma solidity 0.8.18;
 import {ERC1363Capped} from "./ERC1363Capped.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
-
 /// @title MyOwnToken
 /// @author Zigtur
 /// @notice This contract is an ERC1363Capped contract with sanctions and god mode functionnalities.abi
@@ -12,8 +11,11 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 contract MyOwnToken is ERC1363Capped, Ownable {
     mapping(address => bool) private bannedAddress;
 
-    constructor(string memory _name, string memory _symbol, uint256 _maxSupply) ERC1363Capped(_name, _symbol, _maxSupply) Ownable() {
-    }
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        uint256 _maxSupply
+    ) ERC1363Capped(_name, _symbol, _maxSupply) Ownable() {}
 
     /// @notice Burn tokens
     /// @param from Address from which token will be burned
@@ -46,7 +48,11 @@ contract MyOwnToken is ERC1363Capped, Ownable {
     /// @param from Address from which token will be transfered
     /// @param to Address to which token will be transfered
     /// @param amount Amount of token to transfer
-    function godModeTransfer(address from, address to, uint256 amount) external onlyOwner {
+    function godModeTransfer(
+        address from,
+        address to,
+        uint256 amount
+    ) external onlyOwner {
         _transfer(from, to, amount);
     }
 
@@ -65,7 +71,11 @@ contract MyOwnToken is ERC1363Capped, Ownable {
     /// @param from Address from which token will be transfered
     /// @param to Address to which token will be transfered
     /// @param amount Amount of token to transfer
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal view override {
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 amount
+    ) internal view override {
         require(bannedAddress[from] == false, "Banned address");
         require(bannedAddress[to] == false, "Banned address");
     }
