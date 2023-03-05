@@ -1,3 +1,6 @@
 node_modules
 openzeppelin-contracts
 forge-std
+artifacts
+cache
+
