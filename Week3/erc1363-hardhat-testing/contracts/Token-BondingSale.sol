@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Unlicense
-pragma solidity 0.8.18;
+pragma solidity 0.8.19;
 
 import {MyOwnToken} from "./Token-Sanctions-Godmode.sol";
 import "erc-payable-token/contracts/token/ERC1363/IERC1363Receiver.sol";

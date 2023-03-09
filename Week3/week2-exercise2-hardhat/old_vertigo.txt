@@ -1,0 +1,207 @@
+[+] Report:
+Mutation testing report:
+Number of mutations:    38
+Killed:                 4 / 38
+
+Mutations:
+
+[+] Survivors
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-ERC20-Token.sol
+    Line nr: 27
+    Result: Lived
+    Original line:
+                 require(from == msg.sender, "from address must be sender");
+
+    Mutated line:
+                 require(from != msg.sender, "from address must be sender");
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-ERC20-Token.sol
+    Line nr: 35
+    Result: Lived
+    Original line:
+                 require(msg.sender == stakingRewardContract, "msg.sender is not staking and reward contract");
+
+    Mutated line:
+                 require(msg.sender != stakingRewardContract, "msg.sender is not staking and reward contract");
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-ERC20-Token.sol
+    Line nr: 27
+    Result: Lived
+    Original line:
+                 require(from == msg.sender, "from address must be sender");
+
+    Mutated line:
+                 require(from != msg.sender, "from address must be sender");
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-ERC20-Token.sol
+    Line nr: 35
+    Result: Lived
+    Original line:
+                 require(msg.sender == stakingRewardContract, "msg.sender is not staking and reward contract");
+
+    Mutated line:
+                 require(msg.sender != stakingRewardContract, "msg.sender is not staking and reward contract");
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-ERC20-Token.sol
+    Line nr: 28
+    Result: Lived
+    Original line:
+                 _burn(from, amount);
+
+    Mutated line:
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-ERC20-Token.sol
+    Line nr: 36
+    Result: Lived
+    Original line:
+                 _mint(to, amount);
+
+    Mutated line:
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-ERC20-Token.sol
+    Line nr: 27
+    Result: Lived
+    Original line:
+                 require(from == msg.sender, "from address must be sender");
+
+    Mutated line:
+                 require(from != msg.sender, "from address must be sender");
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-ERC20-Token.sol
+    Line nr: 35
+    Result: Lived
+    Original line:
+                 require(msg.sender == stakingRewardContract, "msg.sender is not staking and reward contract");
+
+    Mutated line:
+                 require(msg.sender != stakingRewardContract, "msg.sender is not staking and reward contract");
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-ERC20-Token.sol
+    Line nr: 27
+    Result: Lived
+    Original line:
+                 require(from == msg.sender, "from address must be sender");
+
+    Mutated line:
+                 require(from != msg.sender, "from address must be sender");
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-ERC20-Token.sol
+    Line nr: 35
+    Result: Lived
+    Original line:
+                 require(msg.sender == stakingRewardContract, "msg.sender is not staking and reward contract");
+
+    Mutated line:
+                 require(msg.sender != stakingRewardContract, "msg.sender is not staking and reward contract");
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-ERC20-Token.sol
+    Line nr: 28
+    Result: Lived
+    Original line:
+                 _burn(from, amount);
+
+    Mutated line:
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-ERC20-Token.sol
+    Line nr: 36
+    Result: Lived
+    Original line:
+                 _mint(to, amount);
+
+    Mutated line:
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-NFT-Collection.sol
+    Line nr: 28
+    Result: Lived
+    Original line:
+                 require(msg.value == mintPrice, "Value is not mintPrice");
+
+    Mutated line:
+                 require(msg.value != mintPrice, "Value is not mintPrice");
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-NFT-Collection.sol
+    Line nr: 31
+    Result: Lived
+    Original line:
+                 require(_currentTokenId <= maxSupply, "maxSupply hit");
+
+    Mutated line:
+                 require(_currentTokenId < maxSupply, "maxSupply hit");
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-NFT-Collection.sol
+    Line nr: 28
+    Result: Lived
+    Original line:
+                 require(msg.value == mintPrice, "Value is not mintPrice");
+
+    Mutated line:
+                 require(msg.value != mintPrice, "Value is not mintPrice");
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-NFT-Collection.sol
+    Line nr: 31
+    Result: Lived
+    Original line:
+                 require(_currentTokenId <= maxSupply, "maxSupply hit");
+
+    Mutated line:
+                 require(_currentTokenId > maxSupply, "maxSupply hit");
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-NFT-Collection.sol
+    Line nr: 34
+    Result: Lived
+    Original line:
+                     currentTokenId = _currentTokenId + 1;
+
+    Mutated line:
+                     currentTokenId = _currentTokenId - 1;
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-NFT-Collection.sol
+    Line nr: 37
+    Result: Lived
+    Original line:
+                 _safeMint(_to, _currentTokenId);
+
+    Mutated line:
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-NFT-Collection.sol
+    Line nr: 18
+    Result: Lived
+    Original line:
+             constructor(string memory _name, string memory _symbol, uint256 _maxSupply) Ownable() ERC721(_name, _symbol) {
+
+    Mutated line:
+             constructor(string memory _name, string memory _symbol, uint256 _maxSupply)  ERC721(_name, _symbol) {
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-NFT-Collection.sol
+    Line nr: 56
+    Result: Lived
+    Original line:
+             function withdrawEther() external onlyOwner {
+
+    Mutated line:
+             function withdrawEther() external  {

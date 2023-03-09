@@ -1,0 +1,676 @@
+Mutation testing report:
+Number of mutations:    61
+Killed:                 31 / 61
+
+Mutations:
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 32
+    Result: Lived
+    Original line:
+                     interfaceId == type(IERC1363).interfaceId ||
+
+    Mutated line:
+                     interfaceId != type(IERC1363).interfaceId ||
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 166
+    Result: Killed
+    Original line:
+                     return retval == IERC1363Receiver.onTransferReceived.selector;
+
+    Mutated line:
+                     return retval != IERC1363Receiver.onTransferReceived.selector;
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 168
+    Result: Lived
+    Original line:
+                     if (reason.length == 0) {
+
+    Mutated line:
+                     if (reason.length != 0) {
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 203
+    Result: Lived
+    Original line:
+                     return retval == IERC1363Spender.onApprovalReceived.selector;
+
+    Mutated line:
+                     return retval != IERC1363Spender.onApprovalReceived.selector;
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 205
+    Result: Lived
+    Original line:
+                     if (reason.length == 0) {
+
+    Mutated line:
+                     if (reason.length != 0) {
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 32
+    Result: Lived
+    Original line:
+                     interfaceId == type(IERC1363).interfaceId ||
+
+    Mutated line:
+                     interfaceId != type(IERC1363).interfaceId ||
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 166
+    Result: Killed
+    Original line:
+                     return retval == IERC1363Receiver.onTransferReceived.selector;
+
+    Mutated line:
+                     return retval != IERC1363Receiver.onTransferReceived.selector;
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 168
+    Result: Lived
+    Original line:
+                     if (reason.length == 0) {
+
+    Mutated line:
+                     if (reason.length != 0) {
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 203
+    Result: Lived
+    Original line:
+                     return retval == IERC1363Spender.onApprovalReceived.selector;
+
+    Mutated line:
+                     return retval != IERC1363Spender.onApprovalReceived.selector;
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 205
+    Result: Lived
+    Original line:
+                     if (reason.length == 0) {
+
+    Mutated line:
+                     if (reason.length != 0) {
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 32
+    Result: Lived
+    Original line:
+                     interfaceId == type(IERC1363).interfaceId ||
+
+    Mutated line:
+                     interfaceId == interfaceId ||
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 155
+    Result: Lived
+    Original line:
+                     revert("ERC1363: transfer to non contract address");
+
+    Mutated line:
+                     
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 169
+    Result: Lived
+    Original line:
+                         revert("ERC1363: transfer to non ERC1363Receiver implementer");
+
+    Mutated line:
+                         
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 193
+    Result: Lived
+    Original line:
+                     revert("ERC1363: approve a non contract address");
+
+    Mutated line:
+                     
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 206
+    Result: Lived
+    Original line:
+                         revert("ERC1363: approve a non ERC1363Spender implementer");
+
+    Mutated line:
+                         
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 23
+    Result: Equivalent
+    Original line:
+             ) ERC20Capped(_maxSupply) ERC20(_name, _symbol) {}
+
+    Mutated line:
+             )  ERC20(_name, _symbol) {}
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/ERC1363Capped.sol
+    Line nr: 23
+    Result: Equivalent
+    Original line:
+             ) ERC20Capped(_maxSupply) ERC20(_name, _symbol) {}
+
+    Mutated line:
+             ) ERC20Capped(_maxSupply)  {}
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 24
+    Result: Killed
+    Original line:
+                     msg.value == buyPriceCalculation(amount),
+
+    Mutated line:
+                     msg.value != buyPriceCalculation(amount),
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 24
+    Result: Killed
+    Original line:
+                     msg.value == buyPriceCalculation(amount),
+
+    Mutated line:
+                     msg.value != buyPriceCalculation(amount),
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 43
+    Result: Killed
+    Original line:
+                 require(from != address(0), "Minting to smart contract fails");
+
+    Mutated line:
+                 require(from == address(0), "Minting to smart contract fails");
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 44
+    Result: Killed
+    Original line:
+                 uint256 _currentPrice = BASIC_PRICE +
+
+    Mutated line:
+                 uint256 _currentPrice = BASIC_PRICE - (PRICE_PER_TOKEN * totalSupply()) /
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 45
+    Result: Killed
+    Original line:
+                     (PRICE_PER_TOKEN * totalSupply()) /
+
+    Mutated line:
+                     (PRICE_PER_TOKEN * totalSupply()) * 10 ** decimals();
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 45
+    Result: Killed
+    Original line:
+                     (PRICE_PER_TOKEN * totalSupply()) /
+
+    Mutated line:
+                     (PRICE_PER_TOKEN / totalSupply()) /
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 47
+    Result: Killed
+    Original line:
+                 uint256 curveBasePrice = ((value * _currentPrice)) / 10 ** decimals();
+
+    Mutated line:
+                 uint256 curveBasePrice = ((value * _currentPrice)) * 10 ** decimals();
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 47
+    Result: Error
+    Original line:
+                 uint256 curveBasePrice = ((value * _currentPrice)) / 10 ** decimals();
+
+    Mutated line:
+                 uint256 curveBasePrice = ((value / _currentPrice)) / 10 ** decimals();
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 49
+    Result: Error
+    Original line:
+                     10 ** decimals()) * (value)) / (2 * 10 ** decimals());
+
+    Mutated line:
+                     10 ** decimals()) * (value)) * (2 * 10 ** decimals());
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 49
+    Result: Killed
+    Original line:
+                     10 ** decimals()) * (value)) / (2 * 10 ** decimals());
+
+    Mutated line:
+                     10 ** decimals()) / (value)) / (2 * 10 ** decimals());
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 48
+    Result: Error
+    Original line:
+                 uint256 curveExtraPrice = (((value * PRICE_PER_TOKEN) /
+
+    Mutated line:
+                 uint256 curveExtraPrice = (((value * PRICE_PER_TOKEN) * 10 ** decimals()) * (value)) / (2 * 10 ** decimals());
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 48
+    Result: Killed
+    Original line:
+                 uint256 curveExtraPrice = (((value * PRICE_PER_TOKEN) /
+
+    Mutated line:
+                 uint256 curveExtraPrice = (((value / PRICE_PER_TOKEN) /
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 49
+    Result: Error
+    Original line:
+                     10 ** decimals()) * (value)) / (2 * 10 ** decimals());
+
+    Mutated line:
+                     10 ** decimals()) * (value)) / (2 / 10 ** decimals());
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 51
+    Result: Killed
+    Original line:
+                 payable(from).transfer(curveBasePrice - curveExtraPrice);
+
+    Mutated line:
+                 payable(from).transfer(curveBasePrice + curveExtraPrice);
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 64
+    Result: Lived
+    Original line:
+                 uint256 _currentPrice = BASIC_PRICE +
+
+    Mutated line:
+                 uint256 _currentPrice = BASIC_PRICE - (PRICE_PER_TOKEN * totalSupply()) /
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 65
+    Result: Lived
+    Original line:
+                     (PRICE_PER_TOKEN * totalSupply()) /
+
+    Mutated line:
+                     (PRICE_PER_TOKEN * totalSupply()) * 10 ** decimals();
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 65
+    Result: Error
+    Original line:
+                     (PRICE_PER_TOKEN * totalSupply()) /
+
+    Mutated line:
+                     (PRICE_PER_TOKEN / totalSupply()) /
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 67
+    Result: Killed
+    Original line:
+                 uint256 curveBasePrice = ((amount * _currentPrice)) / 10 ** decimals();
+
+    Mutated line:
+                 uint256 curveBasePrice = ((amount * _currentPrice)) * 10 ** decimals();
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 67
+    Result: Killed
+    Original line:
+                 uint256 curveBasePrice = ((amount * _currentPrice)) / 10 ** decimals();
+
+    Mutated line:
+                 uint256 curveBasePrice = ((amount / _currentPrice)) / 10 ** decimals();
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 69
+    Result: Killed
+    Original line:
+                     10 ** decimals()) * amount) / (2 * 10 ** decimals());
+
+    Mutated line:
+                     10 ** decimals()) * amount) * (2 * 10 ** decimals());
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 69
+    Result: Killed
+    Original line:
+                     10 ** decimals()) * amount) / (2 * 10 ** decimals());
+
+    Mutated line:
+                     10 ** decimals()) / amount) / (2 * 10 ** decimals());
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 68
+    Result: Killed
+    Original line:
+                 uint256 curveExtraPrice = (((amount * PRICE_PER_TOKEN) /
+
+    Mutated line:
+                 uint256 curveExtraPrice = (((amount * PRICE_PER_TOKEN) * 10 ** decimals()) * amount) / (2 * 10 ** decimals());
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 68
+    Result: Killed
+    Original line:
+                 uint256 curveExtraPrice = (((amount * PRICE_PER_TOKEN) /
+
+    Mutated line:
+                 uint256 curveExtraPrice = (((amount / PRICE_PER_TOKEN) /
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 69
+    Result: Error
+    Original line:
+                     10 ** decimals()) * amount) / (2 * 10 ** decimals());
+
+    Mutated line:
+                     10 ** decimals()) * amount) / (2 / 10 ** decimals());
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 70
+    Result: Killed
+    Original line:
+                 return (curveBasePrice + curveExtraPrice);
+
+    Mutated line:
+                 return (curveBasePrice - curveExtraPrice);
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 77
+    Result: Killed
+    Original line:
+                 return PRICE_PER_TOKEN * totalSupply();
+
+    Mutated line:
+                 return PRICE_PER_TOKEN / totalSupply();
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 27
+    Result: Killed
+    Original line:
+                 _mint(msg.sender, amount);
+
+    Mutated line:
+                 
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 50
+    Result: Lived
+    Original line:
+                 _burn(address(this), value);
+
+    Mutated line:
+                 
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 18
+    Result: Equivalent
+    Original line:
+             ) MyOwnToken(_name, _symbol, _maxSupply) {}
+
+    Mutated line:
+             )  {}
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-Sanctions-Godmode.sol
+    Line nr: 23
+    Result: Killed
+    Original line:
+                 require(from == msg.sender, "from address must be sender");
+
+    Mutated line:
+                 require(from != msg.sender, "from address must be sender");
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-Sanctions-Godmode.sol
+    Line nr: 78
+    Result: Killed
+    Original line:
+                 require(bannedAddress[from] == false, "Banned address");
+
+    Mutated line:
+                 require(bannedAddress[from] != false, "Banned address");
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-Sanctions-Godmode.sol
+    Line nr: 79
+    Result: Killed
+    Original line:
+                 require(bannedAddress[to] == false, "Banned address");
+
+    Mutated line:
+                 require(bannedAddress[to] != false, "Banned address");
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-Sanctions-Godmode.sol
+    Line nr: 23
+    Result: Killed
+    Original line:
+                 require(from == msg.sender, "from address must be sender");
+
+    Mutated line:
+                 require(from != msg.sender, "from address must be sender");
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-Sanctions-Godmode.sol
+    Line nr: 78
+    Result: Killed
+    Original line:
+                 require(bannedAddress[from] == false, "Banned address");
+
+    Mutated line:
+                 require(bannedAddress[from] != false, "Banned address");
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-Sanctions-Godmode.sol
+    Line nr: 79
+    Result: Killed
+    Original line:
+                 require(bannedAddress[to] == false, "Banned address");
+
+    Mutated line:
+                 require(bannedAddress[to] != false, "Banned address");
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-Sanctions-Godmode.sol
+    Line nr: 24
+    Result: Killed
+    Original line:
+                 _burn(from, amount);
+
+    Mutated line:
+                 
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-Sanctions-Godmode.sol
+    Line nr: 31
+    Result: Killed
+    Original line:
+                 _mint(to, amount);
+
+    Mutated line:
+                 
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-Sanctions-Godmode.sol
+    Line nr: 55
+    Result: Killed
+    Original line:
+                 _transfer(from, to, amount);
+
+    Mutated line:
+                 
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-Sanctions-Godmode.sol
+    Line nr: 17
+    Result: Equivalent
+    Original line:
+             ) ERC1363Capped(_name, _symbol, _maxSupply) Ownable() {}
+
+    Mutated line:
+             )  Ownable() {}
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-Sanctions-Godmode.sol
+    Line nr: 17
+    Result: Lived
+    Original line:
+             ) ERC1363Capped(_name, _symbol, _maxSupply) Ownable() {}
+
+    Mutated line:
+             ) ERC1363Capped(_name, _symbol, _maxSupply)  {}
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-Sanctions-Godmode.sol
+    Line nr: 30
+    Result: Killed
+    Original line:
+             function mint(address to, uint256 amount) external onlyOwner {
+
+    Mutated line:
+             function mint(address to, uint256 amount) external  {
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-Sanctions-Godmode.sol
+    Line nr: 36
+    Result: Lived
+    Original line:
+             function banAddress(address _bannedAddress) external onlyOwner {
+
+    Mutated line:
+             function banAddress(address _bannedAddress) external  {
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-Sanctions-Godmode.sol
+    Line nr: 42
+    Result: Lived
+    Original line:
+             function unbanAddress(address _unbannedAddress) external onlyOwner {
+
+    Mutated line:
+             function unbanAddress(address _unbannedAddress) external  {
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-Sanctions-Godmode.sol
+    Line nr: 54
+    Result: Lived
+    Original line:
+             ) external onlyOwner {
+
+    Mutated line:
+             ) external  {
+
+

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Unlicense
-pragma solidity 0.8.18;
+pragma solidity 0.8.19;
 
 import {ERC1363Capped} from "./ERC1363Capped.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
