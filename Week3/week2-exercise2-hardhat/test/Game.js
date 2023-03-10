@@ -45,8 +45,8 @@ await ethers.provider.send("evm_mine")*/
             expect(await contractToken.balanceOf(user1.address)).to.equal(ethers.utils.parseEther("0"));
 
             await contractStaking.connect(user1).withdrawNFT(tokenId);
-            expect(await contractToken.balanceOf(user1.address)).to.greaterThan(ethers.utils.parseEther("10"));
-            expect(await contractToken.balanceOf(user1.address)).to.lessThan(ethers.utils.parseEther("10.005"));
+            expect(await contractToken.balanceOf(user1.address)).to.be.at.least(ethers.utils.parseEther("10"));
+            expect(await contractToken.balanceOf(user1.address)).to.be.at.most(ethers.utils.parseEther("10.005"));
         });
 
         it("normal behaviour for transferFrom and withdraw", async function () {
@@ -61,8 +61,8 @@ await ethers.provider.send("evm_mine")*/
             expect(await contractToken.balanceOf(user1.address)).to.equal(ethers.utils.parseEther("0"));
 
             await contractStaking.connect(user1).withdrawNFT(tokenId);
-            expect(await contractToken.balanceOf(user1.address)).to.greaterThan(ethers.utils.parseEther("10"));
-            expect(await contractToken.balanceOf(user1.address)).to.lessThan(ethers.utils.parseEther("10.005"));
+            expect(await contractToken.balanceOf(user1.address)).to.be.at.least(ethers.utils.parseEther("10"));
+            expect(await contractToken.balanceOf(user1.address)).to.be.at.most(ethers.utils.parseEther("10.005"));
         });
 
         it("other ERC721 transferFrom", async function () {
@@ -88,15 +88,15 @@ await ethers.provider.send("evm_mine")*/
 
             expect(await contractToken.balanceOf(user1.address)).to.equal(ethers.utils.parseEther("0"));
             await contractStaking.connect(user1).getRewards(tokenId);
-            expect(await contractToken.balanceOf(user1.address)).to.greaterThan(ethers.utils.parseEther("10"));
-            expect(await contractToken.balanceOf(user1.address)).to.lessThan(ethers.utils.parseEther("10.005"));
+            expect(await contractToken.balanceOf(user1.address)).to.to.be.at.least(ethers.utils.parseEther("10"));
+            expect(await contractToken.balanceOf(user1.address)).to.be.at.most(ethers.utils.parseEther("10.005"));
 
             await ethers.provider.send("evm_increaseTime", [86400]);
             await ethers.provider.send("evm_mine");
 
             await contractStaking.connect(user1).withdrawNFT(tokenId);
-            expect(await contractToken.balanceOf(user1.address)).to.greaterThan(ethers.utils.parseEther("20"));
-            expect(await contractToken.balanceOf(user1.address)).to.lessThan(ethers.utils.parseEther("20.005"));
+            expect(await contractToken.balanceOf(user1.address)).to.be.at.least(ethers.utils.parseEther("20"));
+            expect(await contractToken.balanceOf(user1.address)).to.be.at.most(ethers.utils.parseEther("20.005"));
         });
 
         it("another user try to withdraw", async function () {

@@ -1,0 +1,47 @@
+[*] Done with campaign run
+[+] Report:
+Mutation testing report:
+Number of mutations:    33
+Killed:                 18 / 33
+
+Mutations:
+
+[+] Survivors
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-NFT-Collection.sol
+    Line nr: 18
+    Result: Lived
+    Original line:
+             constructor(string memory _name, string memory _symbol, uint256 _maxSupply) Ownable() ERC721(_name, _symbol) {
+
+    Mutated line:
+             constructor(string memory _name, string memory _symbol, uint256 _maxSupply)  ERC721(_name, _symbol) {
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-NFT-Collection.sol
+    Line nr: 56
+    Result: Lived
+    Original line:
+             function withdrawEther() external onlyOwner {
+
+    Mutated line:
+             function withdrawEther() external  {
+
+Traceback (most recent call last):
+  File "/usr/local/bin/vertigo", line 11, in <module>
+    load_entry_point('eth-vertigo==1.3.0', 'console_scripts', 'vertigo')()
+  File "/usr/local/lib/python3.8/dist-packages/click/core.py", line 1130, in __call__
+    return self.main(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/click/core.py", line 1055, in main
+    rv = self.invoke(ctx)
+  File "/usr/local/lib/python3.8/dist-packages/click/core.py", line 1657, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/usr/local/lib/python3.8/dist-packages/click/core.py", line 1404, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/usr/local/lib/python3.8/dist-packages/click/core.py", line 760, in invoke
+    return __callback(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/eth_vertigo/cli/main.py", line 182, in run
+    click.echo(str(mutation))
+  File "/usr/local/lib/python3.8/dist-packages/eth_vertigo/core/mutation.py", line 90, in __repr__
+    line_nr, og_line = self._get_mutated_line(self.location[0], source_content)
+TypeError: cannot unpack non-iterable NoneType object

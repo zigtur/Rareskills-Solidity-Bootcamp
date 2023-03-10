@@ -1,5 +1,5 @@
 {
-  "name": "week2-exercise2-hardhat",
+  "name": "day1",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,11 +9,6 @@
   "author": "zigtur",
   "license": "ISC",
   "dependencies": {
-    "@nomiclabs/hardhat-waffle": "^2.0.5",
-    "@openzeppelin/contracts": "^4.8.2",
     "hardhat": "^2.13.0"
-  },
-  "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^2.0.2"
   }
 }

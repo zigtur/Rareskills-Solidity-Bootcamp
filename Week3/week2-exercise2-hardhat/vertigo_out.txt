@@ -1,0 +1,37 @@
+[*] Starting mutation testing
+[*] Starting analysis on project
+[*] Initializing campaign run 
+[*] Checking validity of project
+[+] The project is valid
+[*] Storing compilation results
+[*] Running analysis on 33 mutants
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 33/33 [17:37<00:00, 32.04s/mutant][*] Done with campaign run
+[+] Report:
+Mutation testing report:
+Number of mutations:    33
+Killed:                 18 / 33
+
+Mutations:
+
+Mutations:
+
+[+] Survivors
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-NFT-Collection.sol
+    Line nr: 18
+    Result: Lived
+    Original line:
+             constructor(string memory _name, string memory _symbol, uint256 _maxSupply) Ownable() ERC721(_name, _symbol) {
+
+    Mutated line:
+             constructor(string memory _name, string memory _symbol, uint256 _maxSupply)  ERC721(_name, _symbol) {
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-NFT-Collection.sol
+    Line nr: 56
+    Result: Lived
+    Original line:
+             function withdrawEther() external onlyOwner {
+
+    Mutated line:
+             function withdrawEther() external  {

@@ -1,0 +1,9 @@
+echidna_test_balance: failed!💥  
+  Call sequence:
+    transfer(0x1fffffffe,23412962107650618190577089611868739158599198158093446542493980135606268585524) Time delay: 243667 seconds Block delay: 11826
+
+
+Unique instructions: 310
+Unique codehashes: 1
+Corpus size: 1
+Seed: 5665075163466875618
