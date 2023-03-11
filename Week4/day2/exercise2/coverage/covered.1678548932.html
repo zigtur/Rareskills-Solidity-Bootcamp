@@ -1,0 +1,60 @@
+<style> code { white-space: pre-wrap; display: block; background-color: #eee; }.executed { background-color: #afa; }.reverted { background-color: #ffa; }.unexecuted { background-color: #faa; }.neutral { background-color: #eee; }</style><b>/mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week4/day2/exercise2/mysolution.sol</b>
+<code>
+  1 |     | <span class='neutral'>pragma solidity ^0.4.21;</span>
+  2 |     | <span class='neutral'></span>
+  3 |     | <span class='neutral'>//import &quot;./token-sale-modified.sol&quot;;</span>
+  4 |     | <span class='neutral'>import &quot;./token-sale.sol&quot;;</span>
+  5 | *r  | <span class='executed'></span>
+  6 |     | <span class='neutral'>contract ZigturTestTokenSale is TokenSaleChallenge {</span>
+  7 |     | <span class='neutral'>    function ZigturTestTokenSale() public payable TokenSaleChallenge(msg.sender) {</span>
+  8 |     | <span class='neutral'>    }</span>
+  9 |     | <span class='neutral'></span>
+ 10 |     | <span class='neutral'>    // add the property</span>
+ 11 |     | <span class='unexecuted'>    function echidna_test_balance() public view returns (bool) {</span>
+ 12 |     | <span class='unexecuted'>        return isComplete();</span>
+ 13 |     | <span class='neutral'>    }</span>
+ 14 |     | <span class='neutral'>}</span>
+
+</code>
+<br />
+
+<b>/mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week4/day2/exercise2/token-sale.sol</b>
+<code>
+  1 |     | <span class='neutral'>pragma solidity ^0.4.21;</span>
+  2 |     | <span class='unexecuted'></span>
+  3 |     | <span class='neutral'>contract TokenSaleChallenge {</span>
+  4 | *   | <span class='executed'>    mapping(address =&gt; uint256) public balanceOf;</span>
+  5 | *r  | <span class='executed'>    uint256 constant PRICE_PER_TOKEN = 1 ether;</span>
+  6 |     | <span class='neutral'></span>
+  7 |     | <span class='unexecuted'>    function TokenSaleChallenge(address _player) public payable {</span>
+  8 |     | <span class='neutral'>        //require(msg.value == 1 ether);</span>
+  9 |     | <span class='neutral'>    }</span>
+ 10 |     | <span class='neutral'></span>
+ 11 |     | <span class='unexecuted'>    function isComplete() public view returns (bool) {</span>
+ 12 |     | <span class='unexecuted'>        return address(this).balance &lt; 1 ether;</span>
+ 13 |     | <span class='neutral'>    }</span>
+ 14 |     | <span class='neutral'></span>
+ 15 |     | <span class='neutral'>    /*function buy(uint256 numTokens) public payable {</span>
+ 16 |     | <span class='neutral'>        require(msg.value == numTokens * PRICE_PER_TOKEN);</span>
+ 17 |     | <span class='neutral'></span>
+ 18 |     | <span class='neutral'>        balanceOf[msg.sender] += numTokens;</span>
+ 19 |     | <span class='neutral'>    }*/</span>
+ 20 | *r  | <span class='executed'>    function buy(uint256 numTokens) public payable {</span>
+ 21 | *r  | <span class='executed'>        require(numTokens * PRICE_PER_TOKEN &lt; PRICE_PER_TOKEN);</span>
+ 22 |     | <span class='neutral'>        //require(msg.value == numTokens * PRICE_PER_TOKEN);</span>
+ 23 |     | <span class='neutral'></span>
+ 24 | *   | <span class='executed'>        balanceOf[msg.sender] += numTokens;</span>
+ 25 | *   | <span class='executed'>        msg.sender.transfer(PRICE_PER_TOKEN);</span>
+ 26 |     | <span class='neutral'>    }</span>
+ 27 |     | <span class='neutral'></span>
+ 28 | *r  | <span class='executed'>    function sell(uint256 numTokens) public {</span>
+ 29 | *r  | <span class='executed'>        require(balanceOf[msg.sender] &gt;= numTokens);</span>
+ 30 |     | <span class='neutral'></span>
+ 31 | *   | <span class='executed'>        balanceOf[msg.sender] -= numTokens;</span>
+ 32 | *   | <span class='executed'>        msg.sender.transfer(numTokens * PRICE_PER_TOKEN);</span>
+ 33 |     | <span class='neutral'>    }</span>
+ 34 |     | <span class='neutral'>}</span>
+
+</code>
+<br />
+

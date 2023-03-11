@@ -42,14 +42,9 @@ contract MyOwnTokenBonding is MyOwnToken, IERC1363Receiver {
         bytes memory data
     ) external returns (bytes4) {
         require(from != address(0), "Minting to smart contract fails");
-        uint256 _currentPrice = BASIC_PRICE +
-            (PRICE_PER_TOKEN * totalSupply()) /
-            10 ** decimals();
-        uint256 curveBasePrice = ((value * _currentPrice)) / 10 ** decimals();
-        uint256 curveExtraPrice = (((value * PRICE_PER_TOKEN) /
-            10 ** decimals()) * (value)) / (2 * 10 ** decimals());
+        uint256 sellPrice = sellPriceCalculation(value);
         _burn(address(this), value);
-        payable(from).transfer(curveBasePrice - curveExtraPrice);
+        payable(from).transfer(sellPrice);
         return
             bytes4(
                 keccak256("onTransferReceived(address,address,uint256,bytes)")
@@ -69,6 +64,21 @@ contract MyOwnTokenBonding is MyOwnToken, IERC1363Receiver {
         uint256 curveExtraPrice = (((amount * PRICE_PER_TOKEN) /
             10 ** decimals()) * amount) / (2 * 10 ** decimals());
         return (curveBasePrice + curveExtraPrice);
+    }
+
+    /**
+     * @notice Calculation of ether price for amount
+     * @param amount uint256 The amount of tokens to sell
+     * @return Price to pay for the given amount
+     */
+    function sellPriceCalculation(uint256 amount) public view returns (uint256) {
+        uint256 _currentPrice = BASIC_PRICE +
+            (PRICE_PER_TOKEN * totalSupply()) /
+            10 ** decimals();
+        uint256 curveBasePrice = ((amount * _currentPrice)) / 10 ** decimals();
+        uint256 curveExtraPrice = (((amount * PRICE_PER_TOKEN) /
+            10 ** decimals()) * amount) / (2 * 10 ** decimals());
+        return (curveBasePrice - curveExtraPrice);
     }
 
     /** @notice Get the corrent price for a token

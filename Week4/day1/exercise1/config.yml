@@ -1,0 +1,4 @@
+#https://github.com/crytic/echidna/wiki/Config
+
+testMode: property
+

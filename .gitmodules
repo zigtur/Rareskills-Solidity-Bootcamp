@@ -37,3 +37,9 @@
 [submodule "Week2/exercise3/lib/openzeppelin-contracts"]
 	path = Week2/exercise3/lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "Week4/day1/exercise1/lib/forge-std"]
+	path = Week4/day1/exercise1/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "Week4/day2/exercise2-foundry/lib/forge-std"]
+	path = Week4/day2/exercise2-foundry/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std

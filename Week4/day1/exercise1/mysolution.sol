@@ -1,13 +1,13 @@
-import "contract.sol";
+pragma solidity ^0.4.21;
 
-/// @dev to run: $ echidna-test solution.sol
-contract TestToken is TokenWhaleChallenge {
-    constructor() public {
-        TokenWhaleChallenge(msg.sender);
+import "./contract.sol";
+
+contract ZigturTestTokenWhale is TokenWhaleChallenge {
+    function ZigturTestTokenWhale() public TokenWhaleChallenge(msg.sender)  {
     }
 
     // add the property
-    function echidna_test_pausable() public view returns (bool) {
-        return isComplete();
+    function echidna_test_balance() public view returns (bool) {
+        return !isComplete();
     }
 }

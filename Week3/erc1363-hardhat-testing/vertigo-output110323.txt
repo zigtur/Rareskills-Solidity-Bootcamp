@@ -1,3 +1,13 @@
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 24
+    Result: Killed
+    Original line:
+                     msg.value == buyPriceCalculation(amount),
+
+    Mutated line:
+                     msg.value != buyPriceCalculation(amount),
+
 
 Mutation:
     File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
@@ -9,7 +19,6 @@ Mutation:
     Mutated line:
                      msg.value != buyPriceCalculation(amount),
 
-Zigtur comment: Modification done, need test
 
 Mutation:
     File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
@@ -21,132 +30,10 @@ Mutation:
     Mutated line:
                  require(from == address(0), "Minting to smart contract fails");
 
-Zigtur comment: Hard to test, minting to smart contract address should do the job. FIXED!
 
 Mutation:
     File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 44
-    Result: Killed
-    Original line:
-                 uint256 _currentPrice = BASIC_PRICE +
-
-    Mutated line:
-                 uint256 _currentPrice = BASIC_PRICE - (PRICE_PER_TOKEN * totalSupply()) /
-Zigtur comment: should be fixed
-
-Mutation:
-    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 45
-    Result: Killed
-    Original line:
-                     (PRICE_PER_TOKEN * totalSupply()) /
-
-    Mutated line:
-                     (PRICE_PER_TOKEN * totalSupply()) * 10 ** decimals();
-Zigtur comment: should be fixed
-
-Mutation:
-    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 45
-    Result: Killed
-    Original line:
-                     (PRICE_PER_TOKEN * totalSupply()) /
-
-    Mutated line:
-                     (PRICE_PER_TOKEN / totalSupply()) /
-Zigtur comment: should be fixed
-
-Mutation:
-    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 47
-    Result: Killed
-    Original line:
-                 uint256 curveBasePrice = ((value * _currentPrice)) / 10 ** decimals();
-
-    Mutated line:
-                 uint256 curveBasePrice = ((value * _currentPrice)) * 10 ** decimals();
-Zigtur comment: should be fixed
-
-Mutation:
-    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 47
-    Result: Error
-    Original line:
-                 uint256 curveBasePrice = ((value * _currentPrice)) / 10 ** decimals();
-
-    Mutated line:
-                 uint256 curveBasePrice = ((value / _currentPrice)) / 10 ** decimals();
-Zigtur comment: should be fixed
-
-Mutation:
-    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 49
-    Result: Error
-    Original line:
-                     10 ** decimals()) * (value)) / (2 * 10 ** decimals());
-
-    Mutated line:
-                     10 ** decimals()) * (value)) * (2 * 10 ** decimals());
-Zigtur comment: should be fixed
-
-Mutation:
-    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 49
-    Result: Killed
-    Original line:
-                     10 ** decimals()) * (value)) / (2 * 10 ** decimals());
-
-    Mutated line:
-                     10 ** decimals()) / (value)) / (2 * 10 ** decimals());
-Zigtur comment: should be fixed
-
-Mutation:
-    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 48
-    Result: Error
-    Original line:
-                 uint256 curveExtraPrice = (((value * PRICE_PER_TOKEN) /
-
-    Mutated line:
-                 uint256 curveExtraPrice = (((value * PRICE_PER_TOKEN) * 10 ** decimals()) * (value)) / (2 * 10 ** decimals());
-Zigtur comment: should be fixed
-
-Mutation:
-    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 48
-    Result: Killed
-    Original line:
-                 uint256 curveExtraPrice = (((value * PRICE_PER_TOKEN) /
-
-    Mutated line:
-                 uint256 curveExtraPrice = (((value / PRICE_PER_TOKEN) /
-Zigtur comment: should be fixed
-
-Mutation:
-    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 49
-    Result: Error
-    Original line:
-                     10 ** decimals()) * (value)) / (2 * 10 ** decimals());
-
-    Mutated line:
-                     10 ** decimals()) * (value)) / (2 / 10 ** decimals());
-Zigtur comment: should be fixed
-
-Mutation:
-    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 51
-    Result: Killed
-    Original line:
-                 payable(from).transfer(curveBasePrice - curveExtraPrice);
-
-    Mutated line:
-                 payable(from).transfer(curveBasePrice + curveExtraPrice);
-Zigtur comment: should be fixed
-
-Mutation:
-    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 64
+    Line nr: 59
     Result: Lived
     Original line:
                  uint256 _currentPrice = BASIC_PRICE +
@@ -157,7 +44,7 @@ Mutation:
 
 Mutation:
     File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 65
+    Line nr: 60
     Result: Lived
     Original line:
                      (PRICE_PER_TOKEN * totalSupply()) /
@@ -168,7 +55,7 @@ Mutation:
 
 Mutation:
     File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 65
+    Line nr: 60
     Result: Error
     Original line:
                      (PRICE_PER_TOKEN * totalSupply()) /
@@ -179,7 +66,7 @@ Mutation:
 
 Mutation:
     File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 67
+    Line nr: 62
     Result: Killed
     Original line:
                  uint256 curveBasePrice = ((amount * _currentPrice)) / 10 ** decimals();
@@ -190,7 +77,7 @@ Mutation:
 
 Mutation:
     File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 67
+    Line nr: 62
     Result: Killed
     Original line:
                  uint256 curveBasePrice = ((amount * _currentPrice)) / 10 ** decimals();
@@ -201,7 +88,7 @@ Mutation:
 
 Mutation:
     File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 69
+    Line nr: 64
     Result: Killed
     Original line:
                      10 ** decimals()) * amount) / (2 * 10 ** decimals());
@@ -212,7 +99,7 @@ Mutation:
 
 Mutation:
     File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 69
+    Line nr: 64
     Result: Killed
     Original line:
                      10 ** decimals()) * amount) / (2 * 10 ** decimals());
@@ -223,7 +110,7 @@ Mutation:
 
 Mutation:
     File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 68
+    Line nr: 63
     Result: Killed
     Original line:
                  uint256 curveExtraPrice = (((amount * PRICE_PER_TOKEN) /
@@ -234,7 +121,7 @@ Mutation:
 
 Mutation:
     File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 68
+    Line nr: 63
     Result: Killed
     Original line:
                  uint256 curveExtraPrice = (((amount * PRICE_PER_TOKEN) /
@@ -245,7 +132,7 @@ Mutation:
 
 Mutation:
     File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 69
+    Line nr: 64
     Result: Error
     Original line:
                      10 ** decimals()) * amount) / (2 * 10 ** decimals());
@@ -256,7 +143,7 @@ Mutation:
 
 Mutation:
     File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 70
+    Line nr: 65
     Result: Killed
     Original line:
                  return (curveBasePrice + curveExtraPrice);
@@ -267,7 +154,128 @@ Mutation:
 
 Mutation:
     File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 74
+    Result: Killed
+    Original line:
+                 uint256 _currentPrice = BASIC_PRICE +
+
+    Mutated line:
+                 uint256 _currentPrice = BASIC_PRICE - (PRICE_PER_TOKEN * totalSupply()) /
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 75
+    Result: Killed
+    Original line:
+                     (PRICE_PER_TOKEN * totalSupply()) /
+
+    Mutated line:
+                     (PRICE_PER_TOKEN * totalSupply()) * 10 ** decimals();
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 75
+    Result: Killed
+    Original line:
+                     (PRICE_PER_TOKEN * totalSupply()) /
+
+    Mutated line:
+                     (PRICE_PER_TOKEN / totalSupply()) /
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
     Line nr: 77
+    Result: Killed
+    Original line:
+                 uint256 curveBasePrice = ((amount * _currentPrice)) / 10 ** decimals();
+
+    Mutated line:
+                 uint256 curveBasePrice = ((amount * _currentPrice)) * 10 ** decimals();
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 77
+    Result: Error
+    Original line:
+                 uint256 curveBasePrice = ((amount * _currentPrice)) / 10 ** decimals();
+
+    Mutated line:
+                 uint256 curveBasePrice = ((amount / _currentPrice)) / 10 ** decimals();
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 79
+    Result: Error
+    Original line:
+                     10 ** decimals()) * amount) / (2 * 10 ** decimals());
+
+    Mutated line:
+                     10 ** decimals()) * amount) * (2 * 10 ** decimals());
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 79
+    Result: Killed
+    Original line:
+                     10 ** decimals()) * amount) / (2 * 10 ** decimals());
+
+    Mutated line:
+                     10 ** decimals()) / amount) / (2 * 10 ** decimals());
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 78
+    Result: Error
+    Original line:
+                 uint256 curveExtraPrice = (((amount * PRICE_PER_TOKEN) /
+
+    Mutated line:
+                 uint256 curveExtraPrice = (((amount * PRICE_PER_TOKEN) * 10 ** decimals()) * amount) / (2 * 10 ** decimals());
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 78
+    Result: Killed
+    Original line:
+                 uint256 curveExtraPrice = (((amount * PRICE_PER_TOKEN) /
+
+    Mutated line:
+                 uint256 curveExtraPrice = (((amount / PRICE_PER_TOKEN) /
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 79
+    Result: Error
+    Original line:
+                     10 ** decimals()) * amount) / (2 * 10 ** decimals());
+
+    Mutated line:
+                     10 ** decimals()) * amount) / (2 / 10 ** decimals());
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 80
+    Result: Killed
+    Original line:
+                 return (curveBasePrice - curveExtraPrice);
+
+    Mutated line:
+                 return (curveBasePrice + curveExtraPrice);
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
+    Line nr: 87
     Result: Killed
     Original line:
                  return PRICE_PER_TOKEN * totalSupply();
@@ -289,7 +297,7 @@ Mutation:
 
 Mutation:
     File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/erc1363-hardhat-testing/contracts/Token-BondingSale.sol
-    Line nr: 50
+    Line nr: 45
     Result: Lived
     Original line:
                  _burn(address(this), value);

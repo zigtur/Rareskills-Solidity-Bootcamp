@@ -1,0 +1,44 @@
+/mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week4/day2/exercise2/mysolution.sol
+  1 |     | pragma solidity ^0.4.21;
+  2 |     | 
+  3 |     | import "./token-sale.sol";
+  4 | *r  | 
+  5 |     | contract ZigturTestTokenSale is TokenSaleChallenge {
+  6 |     |     function ZigturTestTokenSale() public payable TokenSaleChallenge(msg.sender) {
+  7 |     |     }
+  8 |     | 
+  9 |     |     // add the property
+ 10 |     |     function echidna_test_balance() public view returns (bool) {
+ 11 |     |         return isComplete();
+ 12 |     |     }
+ 13 |     | }
+
+/mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week4/day2/exercise2/token-sale.sol
+  1 |     | pragma solidity ^0.4.21;
+  2 |     | 
+  3 |     | contract TokenSaleChallenge {
+  4 | *   |     mapping(address => uint256) public balanceOf;
+  5 | *r  |     uint256 constant PRICE_PER_TOKEN = 1 ether;
+  6 |     | 
+  7 |     |     function TokenSaleChallenge(address _player) public payable {
+  8 |     |         //require(msg.value == 1 ether);
+  9 |     |     }
+ 10 |     | 
+ 11 |     |     function isComplete() public view returns (bool) {
+ 12 |     |         return address(this).balance < 100 ether;
+ 13 |     |     }
+ 14 |     | 
+ 15 | r   |     function buy(uint256 numTokens) public payable {
+ 16 | r   |         require(msg.value == numTokens * PRICE_PER_TOKEN);
+ 17 |     | 
+ 18 |     |         balanceOf[msg.sender] += numTokens;
+ 19 |     |     }
+ 20 |     | 
+ 21 | *r  |     function sell(uint256 numTokens) public {
+ 22 | *r  |         require(balanceOf[msg.sender] >= numTokens);
+ 23 |     | 
+ 24 | *   |         balanceOf[msg.sender] -= numTokens;
+ 25 | *   |         msg.sender.transfer(numTokens * PRICE_PER_TOKEN);
+ 26 |     |     }
+ 27 |     | }
+
