@@ -109,5 +109,9 @@ contract MyERC721Enumerable is BaseSetup {
 
         vm.stopPrank();
     }
+
+    receive() external payable {
+
+    }
     
 }

@@ -1,8 +1,9 @@
+// SPDX-License-Identifier: MIT
 // Sources flattened with hardhat v2.13.0 https://hardhat.org
 
 // File @openzeppelin/contracts/utils/Context.sol@v4.8.2
 
-// SPDX-License-Identifier: MIT
+
 // OpenZeppelin Contracts v4.4.1 (utils/Context.sol)
 
 pragma solidity ^0.8.0;
@@ -30,7 +31,7 @@ abstract contract Context {
 
 // File @openzeppelin/contracts/access/Ownable.sol@v4.8.2
 
-// SPDX-License-Identifier: MIT
+// : MIT
 // OpenZeppelin Contracts (last updated v4.7.0) (access/Ownable.sol)
 
 pragma solidity ^0.8.0;
@@ -115,7 +116,7 @@ abstract contract Ownable is Context {
 
 // File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.8.2
 
-// SPDX-License-Identifier: MIT
+// : MIT
 // OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)
 
 pragma solidity ^0.8.0;
@@ -201,7 +202,7 @@ interface IERC20 {
 
 // File @openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol@v4.8.2
 
-// SPDX-License-Identifier: MIT
+// : MIT
 // OpenZeppelin Contracts v4.4.1 (token/ERC20/extensions/IERC20Metadata.sol)
 
 pragma solidity ^0.8.0;
@@ -231,7 +232,7 @@ interface IERC20Metadata is IERC20 {
 
 // File @openzeppelin/contracts/token/ERC20/ERC20.sol@v4.8.2
 
-// SPDX-License-Identifier: MIT
+// : MIT
 // OpenZeppelin Contracts (last updated v4.8.0) (token/ERC20/ERC20.sol)
 
 pragma solidity ^0.8.0;
@@ -392,7 +393,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         uint256 amount
     ) public virtual override returns (bool) {
         address spender = _msgSender();
-        _spendAllowance(from, spender, amount);
+        //_spendAllowance(from, spender, amount);
         _transfer(from, to, amount);
         return true;
     }
@@ -622,7 +623,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
 
 // File @openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol@v4.8.2
 
-// SPDX-License-Identifier: MIT
+// : MIT
 // OpenZeppelin Contracts v4.4.1 (token/ERC20/extensions/ERC20Capped.sol)
 
 pragma solidity ^0.8.0;
@@ -661,7 +662,7 @@ abstract contract ERC20Capped is ERC20 {
 
 // File @openzeppelin/contracts/utils/introspection/IERC165.sol@v4.8.2
 
-// SPDX-License-Identifier: MIT
+// : MIT
 // OpenZeppelin Contracts v4.4.1 (utils/introspection/IERC165.sol)
 
 pragma solidity ^0.8.0;
@@ -690,7 +691,7 @@ interface IERC165 {
 
 // File @openzeppelin/contracts/utils/introspection/ERC165.sol@v4.8.2
 
-// SPDX-License-Identifier: MIT
+// : MIT
 // OpenZeppelin Contracts v4.4.1 (utils/introspection/ERC165.sol)
 
 pragma solidity ^0.8.0;
@@ -721,7 +722,7 @@ abstract contract ERC165 is IERC165 {
 
 // File @openzeppelin/contracts/utils/Address.sol@v4.8.2
 
-// SPDX-License-Identifier: MIT
+// : MIT
 // OpenZeppelin Contracts (last updated v4.8.0) (utils/Address.sol)
 
 pragma solidity ^0.8.1;
@@ -969,7 +970,7 @@ library Address {
 
 // File erc-payable-token/contracts/token/ERC1363/IERC1363.sol@v4.8.2
 
-// SPDX-License-Identifier: MIT
+// : MIT
 
 pragma solidity ^0.8.0;
 
@@ -1055,7 +1056,7 @@ interface IERC1363 is IERC20, IERC165 {
 
 // File erc-payable-token/contracts/token/ERC1363/IERC1363Receiver.sol@v4.8.2
 
-// SPDX-License-Identifier: MIT
+// : MIT
 
 pragma solidity ^0.8.0;
 
@@ -1094,7 +1095,7 @@ interface IERC1363Receiver {
 
 // File erc-payable-token/contracts/token/ERC1363/IERC1363Spender.sol@v4.8.2
 
-// SPDX-License-Identifier: MIT
+// : MIT
 
 pragma solidity ^0.8.0;
 
@@ -1127,12 +1128,9 @@ interface IERC1363Spender {
 
 // File contracts/ERC1363Capped.sol
 
-// SPDX-License-Identifier: MIT
+// : MIT
 
 pragma solidity ^0.8.0;
-
-
-
 
 
 /**
@@ -1343,9 +1341,8 @@ abstract contract ERC1363Capped is ERC20Capped, IERC1363, ERC165 {
 
 // File contracts/Token-Sanctions-Godmode.sol
 
-// SPDX-License-Identifier: Unlicense
-pragma solidity 0.8.19;
-
+// : Unlicense
+pragma solidity 0.8.17;
 
 /// @title MyOwnToken
 /// @author Zigtur
@@ -1427,9 +1424,20 @@ contract MyOwnToken is ERC1363Capped, Ownable {
 
 // File contracts/Token-BondingSale.sol
 
-// SPDX-License-Identifier: Unlicense
-pragma solidity 0.8.19;
+// : Unlicense
+pragma solidity 0.8.17;
 
+/*interface IMyOwnTokenBonding is IERC1363Receiver, IERC1363 {
+    function buy(uint256) external payable;
+    function onTransferReceived(address, address, uint256, bytes memory) external returns (bytes4);
+
+    function buyPriceCalculation(uint256) external view returns (uint256);
+
+    function sellPriceCalculation(uint256) external view returns (uint256);
+
+    function cap() external view returns (uint256);
+
+}*/
 
 /// @title MyOwnTokenSale
 /// @author Zigtur
@@ -1484,13 +1492,17 @@ contract MyOwnTokenBonding is MyOwnToken, IERC1363Receiver {
      * @return Price to pay for the given amount
      */
     function buyPriceCalculation(uint256 amount) public view returns (uint256) {
-        uint256 _currentPrice = BASIC_PRICE +
+        /*uint256 _currentPrice = BASIC_PRICE +
             (PRICE_PER_TOKEN * totalSupply()) /
             10 ** decimals();
         uint256 curveBasePrice = ((amount * _currentPrice)) / 10 ** decimals();
         uint256 curveExtraPrice = (((amount * PRICE_PER_TOKEN) /
             10 ** decimals()) * amount) / (2 * 10 ** decimals());
-        return (curveBasePrice + curveExtraPrice);
+        return (curveBasePrice + curveExtraPrice);*/
+        uint256 _currentPrice = BASIC_PRICE + (PRICE_PER_TOKEN * totalSupply()) / 10 ** decimals();
+        uint256 _futurPrice = BASIC_PRICE + (PRICE_PER_TOKEN * (totalSupply() + amount)) / 10 ** decimals();
+        uint256 finalPrice = (_currentPrice + _futurPrice) / 2;
+        return finalPrice;
     }
 
     /**
@@ -1499,13 +1511,17 @@ contract MyOwnTokenBonding is MyOwnToken, IERC1363Receiver {
      * @return Price to pay for the given amount
      */
     function sellPriceCalculation(uint256 amount) public view returns (uint256) {
-        uint256 _currentPrice = BASIC_PRICE +
+        /*uint256 _currentPrice = BASIC_PRICE +
             (PRICE_PER_TOKEN * totalSupply()) /
             10 ** decimals();
         uint256 curveBasePrice = ((amount * _currentPrice)) / 10 ** decimals();
         uint256 curveExtraPrice = (((amount * PRICE_PER_TOKEN) /
             10 ** decimals()) * amount) / (2 * 10 ** decimals());
-        return (curveBasePrice - curveExtraPrice);
+        return (curveBasePrice - curveExtraPrice);*/
+        uint256 _currentPrice = BASIC_PRICE + (PRICE_PER_TOKEN * totalSupply()) / 10 ** decimals();
+        uint256 _futurPrice = BASIC_PRICE + (PRICE_PER_TOKEN * (totalSupply() - amount)) / 10 ** decimals();
+        uint256 finalPrice = (_currentPrice + _futurPrice) / 2;
+        return finalPrice;
     }
 
     /** @notice Get the corrent price for a token
@@ -1514,4 +1530,8 @@ contract MyOwnTokenBonding is MyOwnToken, IERC1363Receiver {
     function currentPrice() external view returns (uint256) {
         return PRICE_PER_TOKEN * totalSupply();
     }
+
+    /*function cap() public view override(ERC20Capped, IMyOwnTokenBonding) returns (uint256) {
+        return super.cap();
+    }*/
 }

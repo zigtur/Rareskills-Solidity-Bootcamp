@@ -1,0 +1,8 @@
+#https://github.com/crytic/echidna/wiki/Config
+
+testMode: assertion
+
+#100_000 ethers
+balanceContract: 100000000000000000000000
+testLimit: 50000
+corpusDir: coverage
