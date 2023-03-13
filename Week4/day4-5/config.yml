@@ -2,7 +2,10 @@
 
 testMode: assertion
 
-#100_000 ethers
-balanceContract: 100000000000000000000000
+#1_000 ethers
+balanceContract: 1000000000000000000000
 testLimit: 50000
 corpusDir: coverage
+
+# 100 000
+maxValue: 100000000000000000000000

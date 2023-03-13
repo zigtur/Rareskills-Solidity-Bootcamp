@@ -1479,7 +1479,7 @@ contract MyOwnTokenBonding is MyOwnToken, IERC1363Receiver {
         require(from != address(0), "Minting to smart contract fails");
         uint256 sellPrice = sellPriceCalculation(value);
         _burn(address(this), value);
-        payable(from).transfer(sellPrice);
+        payable(from).send(sellPrice);
         return
             bytes4(
                 keccak256("onTransferReceived(address,address,uint256,bytes)")

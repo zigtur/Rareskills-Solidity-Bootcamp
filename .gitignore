@@ -3,4 +3,5 @@ openzeppelin-contracts
 forge-std
 artifacts
 cache
-
+coverage
+.vscode

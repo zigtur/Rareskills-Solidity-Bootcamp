@@ -11,7 +11,8 @@ contract ZigturTestBondingSale {
     event buyAndSellLog(uint256 amount, uint256 buyPrice, uint256 sellPrice);
     event pricesMovingSupply(uint256 oldTotalSupply, uint256 newTotalSupply, uint256 buyPrice, uint256 sellPrice);
     event Debug(uint256 index);
-    event Receive(uint256 index);
+    event sellDecrease(uint256 totalSupply, uint256 amount, bool status);
+    event debugSellDecrease(uint256 newBalance, uint256 shouldBeNewBalance, uint256 contractBalance, uint256 sellPrice, uint256 initialBalance);
 
     constructor() payable {
         tokenContract = new MyOwnTokenBonding("ZigBondingTest", "ZBT", 100_000_000 ether);
@@ -58,15 +59,22 @@ contract ZigturTestBondingSale {
     }
 
     function sellBalanceDecrease(uint256 amountOfTokens) public {
-        require(amountOfTokens <= tokenContract.totalSupply());
-        uint256 initialTokenBalance = tokenContract.balanceOf(address(this));
+        uint256 totalSupply = tokenContract.totalSupply();
+        uint256 balanceThis = tokenContract.balanceOf(address(this));
+        require(amountOfTokens <= totalSupply);
+        require(amountOfTokens >= balanceThis);
+        require(amountOfTokens != 0); //can't be optimized, or there should be a require on totalSupply != 0
+        uint256 initialTokenBalance = balanceThis;
         uint256 initialEtherBalance = address(this).balance;
         uint256 initialContractEtherBalance = address(tokenContract).balance;
         uint256 sellPrice = tokenContract.sellPriceCalculation(amountOfTokens);
         emit Debug(1);
+        emit sellDecrease(totalSupply, amountOfTokens, totalSupply > amountOfTokens);
         try tokenContract.transferFromAndCall(address(this), address(tokenContract), amountOfTokens) {
             assert(tokenContract.balanceOf(address(this)) == initialTokenBalance - amountOfTokens);
-            assert(address(this).balance == initialEtherBalance + sellPrice);
+            // round the result (would fail if not done)
+            emit debugSellDecrease(address(this).balance, (initialEtherBalance + sellPrice), address(tokenContract).balance, sellPrice, initialEtherBalance);
+            assert(address(this).balance == (initialEtherBalance + sellPrice));
             assert(address(tokenContract).balance == initialContractEtherBalance - sellPrice);
         } catch (bytes memory err) {
             assert(false);
@@ -75,12 +83,7 @@ contract ZigturTestBondingSale {
         
     }
 
-    
-    /*receive() external payable {
-        emit Receive(0);
-        emit Receive(msg.value);
+    receive() payable external {
 
-        return true;
-
-    }*/
+    }
 }

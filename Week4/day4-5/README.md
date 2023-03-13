@@ -52,3 +52,7 @@ Special thank to my mate Patrick for the code (https://github.com/PatrickZimmere
 ```
 
 
+Anish Naik from Trail of Bits says that it can be rounded. So my equality check could be changed to support a round. Then if x - y < 0.01 % for example, then x==y
+
+
+
