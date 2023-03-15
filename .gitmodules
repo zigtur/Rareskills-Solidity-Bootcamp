@@ -43,3 +43,9 @@
 [submodule "Week4/day2/exercise2-foundry/lib/forge-std"]
 	path = Week4/day2/exercise2-foundry/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "Week4/day3/lib/forge-std"]
+	path = Week4/day3/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "Week4/day3/lib/openzeppelin-contracts"]
+	path = Week4/day3/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts

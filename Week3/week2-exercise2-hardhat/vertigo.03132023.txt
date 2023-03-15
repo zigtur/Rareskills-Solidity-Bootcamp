@@ -1,0 +1,38 @@
+Mutation testing report:
+Number of mutations:    3
+Killed:                 2 / 3
+
+Mutations:
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-ERC20-Token.sol
+    Line nr: 35
+    Result: Killed
+    Original line:
+                 require(msg.sender == stakingRewardContract, "msg.sender is not staking and reward contract");
+
+    Mutated line:
+                 require(msg.sender != stakingRewardContract, "msg.sender is not staking and reward contract");
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-NFT-Collection.sol
+    Line nr: 18
+    Result: Equivalent
+    Original line:
+             constructor(string memory _name, string memory _symbol, uint256 _maxSupply) Ownable() ERC721(_name, _symbol) {
+
+    Mutated line:
+             constructor(string memory _name, string memory _symbol, uint256 _maxSupply) Ownable()  {
+
+
+Mutation:
+    File: /mnt/b/Informatique/Travaux/RareSkills/Solidity-Bootcamp/Code/Week3/week2-exercise2-hardhat/contracts/Game-NFT-Collection.sol
+    Line nr: 31
+    Result: Killed
+    Original line:
+                 require(_currentTokenId <= maxSupply, "maxSupply hit");
+
+    Mutated line:
+                 require(_currentTokenId < maxSupply, "maxSupply hit");
+
+

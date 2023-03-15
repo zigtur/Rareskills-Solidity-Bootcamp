@@ -141,6 +141,7 @@ await ethers.provider.send("evm_mine")*/
             expect(await contractStaking.ZGameTokenContract()).to.equal(contractToken.address);
             let contractToken2 = await ZGameTokenContract.deploy("ZGameToken2", "ZGT2", contractStaking.address);
             await contractToken2.deployed();
+            expect(await contractStaking.owner()).to.equal(owner.address);
             await contractStaking.connect(owner).setGameTokenContract(contractToken2.address);
             expect(await contractStaking.ZGameTokenContract()).to.equal(contractToken2.address);
 
