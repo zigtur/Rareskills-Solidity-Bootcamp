@@ -1,13 +1,15 @@
-# Sample Hardhat Project
+# RareSkills WriteUp
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+## Questions
 
-Try running some of the following tasks:
+- How can you alter the wrapper function to ensure the fuzzer doesn’t try invalid values?
+  - Write the token addresses inside the wrapper function
+- Echidna uses what addresses as msg.sender by default?
+  - 0x10000, 0x20000, and 0x30000
+  - We can only use one address
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
+## Results
+
+
+
+

@@ -1,0 +1,9 @@
+#https://github.com/crytic/echidna/wiki/Config
+
+testMode: assertion
+
+sender: ["0x30000"]
+
+testLimit: 50000
+corpusDir: coverage
+
