@@ -52,6 +52,21 @@ There are only 256 values possibles for a uint8 (0 to 255). We just need to test
 
 
 ### Capture The Ether - Guess the new number
+We just need to calculate the hash of block number and time. This is simple, we just need to do the same operations with another contract.
+
+```
+uint8 myAnswer = uint8(uint256(keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp))));
+```
+
+### Capture The Ether - Predict the Future
+
+
+
+## Day5-6 - Re-entrancy
+### Ethernaut - Re-entrancy
+https://github.com/zigtur/Ethernaut-Solutions#re-entrancy
+https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#re-entrancy
+
 
 
 

