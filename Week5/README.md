@@ -59,7 +59,9 @@ uint8 myAnswer = uint8(uint256(keccak256(abi.encodePacked(blockhash(block.number
 ```
 
 ### Capture The Ether - Predict the Future
+For this challenge, there is only 10 possible values. So, we are going to test all of them.
 
+It would also be possible to anticipate a block number in the future and base our calculation on it. Then, we will have to send the settle transaction at the right moment to get our transaction included in the block that has the number we want.
 
 
 ## Day5-6 - Re-entrancy
