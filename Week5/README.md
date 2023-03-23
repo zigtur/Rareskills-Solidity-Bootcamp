@@ -69,6 +69,13 @@ It would also be possible to anticipate a block number in the future and base ou
 https://github.com/zigtur/Ethernaut-Solutions#re-entrancy
 https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#re-entrancy
 
+### RareSkills Riddles - ERC1155
+Private exploit
+
+### Capture The Ether - Token Bank
+There is a re-entrancy issue the balanceOf is updated after transfering tokens in the TokenBank withdraw function.
+
+
 
 
 
