@@ -34,6 +34,12 @@ If we can make $address(this).balance > startBalance$, then the substraction wil
 
 
 ### Damn Vulnerable DeFi - Side Entrance
+This contract does implement a flashloan mechanism. The vulnerability looks pretty simple to exploit:
+- 1. flashloan the amount available on the contract
+- 2. deposit the loaned amount
+- 3. withdraw the deposited amount
+
+The vulnerability here is that 
 
 ### Damn Vulnerable DeFi - Unstoppable
-
+The contract requires that his pool balance is == token balance. It should require <= instead of ==.
