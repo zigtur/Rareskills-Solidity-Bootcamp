@@ -1,50 +1,64 @@
-pragma solidity ^0.6.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/math/SafeMath.sol";
 import "../DamnValuableToken.sol";
 
+/**
+ * @title PuppetPool
+ * @author Damn Vulnerable DeFi (https://damnvulnerabledefi.xyz)
+ */
 contract PuppetPool is ReentrancyGuard {
-
-    using SafeMath for uint256;
     using Address for address payable;
 
-    address public uniswapOracle;
+    uint256 public constant DEPOSIT_FACTOR = 2;
+
+    address public immutable uniswapPair;
+    DamnValuableToken public immutable token;
+
     mapping(address => uint256) public deposits;
-    DamnValuableToken public token;
-    
-    constructor (address tokenAddress, address uniswapOracleAddress) public {
+
+    error NotEnoughCollateral();
+    error TransferFailed();
+
+    event Borrowed(address indexed account, address recipient, uint256 depositRequired, uint256 borrowAmount);
+
+    constructor(address tokenAddress, address uniswapPairAddress) {
         token = DamnValuableToken(tokenAddress);
-        uniswapOracle = uniswapOracleAddress;
+        uniswapPair = uniswapPairAddress;
     }
 
-    // Allows borrowing `borrowAmount` of tokens by first depositing two times their value in ETH
-    function borrow(uint256 borrowAmount) public payable nonReentrant {
-        uint256 amountToDeposit = msg.value;
+    // Allows borrowing tokens by first depositing two times their value in ETH
+    function borrow(uint256 amount, address recipient) external payable nonReentrant {
+        uint256 depositRequired = calculateDepositRequired(amount);
 
-        uint256 tokenPriceInWei = computeOraclePrice();
-        uint256 depositRequired = borrowAmount.mul(tokenPriceInWei) * 2;
-        
-        require(amountToDeposit >= depositRequired, "Not depositing enough collateral");
-        if (amountToDeposit > depositRequired) {
-            uint256 amountToReturn = amountToDeposit - depositRequired;
-            amountToDeposit -= amountToReturn;
-            msg.sender.sendValue(amountToReturn);
-        }        
+        if (msg.value < depositRequired)
+            revert NotEnoughCollateral();
 
-        deposits[msg.sender] += amountToDeposit;
+        if (msg.value > depositRequired) {
+            unchecked {
+                payable(msg.sender).sendValue(msg.value - depositRequired);
+            }
+        }
+
+        unchecked {
+            deposits[msg.sender] += depositRequired;
+        }
 
         // Fails if the pool doesn't have enough tokens in liquidity
-        require(token.transfer(msg.sender, borrowAmount), "Transfer failed");
+        if(!token.transfer(recipient, amount))
+            revert TransferFailed();
+
+        emit Borrowed(msg.sender, recipient, depositRequired, amount);
     }
 
-    function computeOraclePrice() public view returns (uint256) {
-        return uniswapOracle.balance.div(token.balanceOf(uniswapOracle));
+    function calculateDepositRequired(uint256 amount) public view returns (uint256) {
+        return amount * _computeOraclePrice() * DEPOSIT_FACTOR / 10 ** 18;
     }
 
-     /**
-     ... functions to deposit, redeem, repay, calculate interest, and so on ...
-     */
-
+    function _computeOraclePrice() private view returns (uint256) {
+        // calculates the price of the token in wei according to Uniswap pair
+        return uniswapPair.balance * (10 ** 18) / token.balanceOf(uniswapPair);
+    }
 }

@@ -39,7 +39,6 @@ This contract does implement a flashloan mechanism. The vulnerability looks pret
 - 2. deposit the loaned amount
 - 3. withdraw the deposited amount
 
-The vulnerability here is that 
 
 ### Damn Vulnerable DeFi - Unstoppable
 The contract requires that his pool balance is == token balance. It should require <= instead of ==.

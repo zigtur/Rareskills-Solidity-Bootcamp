@@ -1,84 +1,105 @@
-const { ether, time } = require('@openzeppelin/test-helpers');
-const { accounts, contract } = require('@openzeppelin/test-environment');
-
-const FlashLoanerPool = contract.fromArtifact('FlashLoanerPool');
-const TheRewarderPool = contract.fromArtifact('TheRewarderPool');
-const DamnValuableToken = contract.fromArtifact('DamnValuableToken');
-const RewardToken = contract.fromArtifact('RewardToken');
-const AccountingToken = contract.fromArtifact('AccountingToken');
-
+const { ethers } = require('hardhat');
 const { expect } = require('chai');
 
 describe('[Challenge] The rewarder', function () {
-
-    const [deployer, alice, bob, charlie, david, attacker, ...otherAccounts] = accounts;
-    const users = [alice, bob, charlie, david];
-
-    const TOKENS_IN_LENDER_POOL = ether('1000000');
+    const TOKENS_IN_LENDER_POOL = 1000000n * 10n ** 18n; // 1 million tokens
+    let users, deployer, alice, bob, charlie, david, player;
+    let liquidityToken, flashLoanPool, rewarderPool, rewardToken, accountingToken;
 
     before(async function () {
-        /** SETUP SCENARIO */
-        this.liquidityToken = await DamnValuableToken.new({ from: deployer });
-        this.flashLoanPool = await FlashLoanerPool.new(this.liquidityToken.address, { from: deployer });
+        /** SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE */
+
+        [deployer, alice, bob, charlie, david, player] = await ethers.getSigners();
+        users = [alice, bob, charlie, david];
+
+        const FlashLoanerPoolFactory = await ethers.getContractFactory('FlashLoanerPool', deployer);
+        const TheRewarderPoolFactory = await ethers.getContractFactory('TheRewarderPool', deployer);
+        const DamnValuableTokenFactory = await ethers.getContractFactory('DamnValuableToken', deployer);
+        const RewardTokenFactory = await ethers.getContractFactory('RewardToken', deployer);
+        const AccountingTokenFactory = await ethers.getContractFactory('AccountingToken', deployer);
+
+        liquidityToken = await DamnValuableTokenFactory.deploy();
+        flashLoanPool = await FlashLoanerPoolFactory.deploy(liquidityToken.address);
 
         // Set initial token balance of the pool offering flash loans
-        await this.liquidityToken.transfer(this.flashLoanPool.address, TOKENS_IN_LENDER_POOL, { from: deployer });
+        await liquidityToken.transfer(flashLoanPool.address, TOKENS_IN_LENDER_POOL);
 
-        this.rewarderPool = await TheRewarderPool.new(this.liquidityToken.address, { from: deployer });
-        this.rewardToken = await RewardToken.at(await this.rewarderPool.rewardToken());
-        this.accountingToken = await AccountingToken.at(await this.rewarderPool.accToken());
+        rewarderPool = await TheRewarderPoolFactory.deploy(liquidityToken.address);
+        rewardToken = RewardTokenFactory.attach(await rewarderPool.rewardToken());
+        accountingToken = AccountingTokenFactory.attach(await rewarderPool.accountingToken());
 
-        // Alice, Bob, Charlie and David deposit 100 tokens each
+        // Check roles in accounting token
+        expect(await accountingToken.owner()).to.eq(rewarderPool.address);
+        const minterRole = await accountingToken.MINTER_ROLE();
+        const snapshotRole = await accountingToken.SNAPSHOT_ROLE();
+        const burnerRole = await accountingToken.BURNER_ROLE();
+        expect(await accountingToken.hasAllRoles(rewarderPool.address, minterRole | snapshotRole | burnerRole)).to.be.true;
+
+        // Alice, Bob, Charlie and David deposit tokens
+        let depositAmount = 100n * 10n ** 18n; 
         for (let i = 0; i < users.length; i++) {
-            const amount = ether('100');
-            await this.liquidityToken.transfer(users[i], amount, { from: deployer });
-            await this.liquidityToken.approve(this.rewarderPool.address, amount, { from: users[i] });
-            await this.rewarderPool.deposit(amount, { from: users[i] });
+            await liquidityToken.transfer(users[i].address, depositAmount);
+            await liquidityToken.connect(users[i]).approve(rewarderPool.address, depositAmount);
+            await rewarderPool.connect(users[i]).deposit(depositAmount);
             expect(
-                await this.accountingToken.balanceOf(users[i])
-            ).to.be.bignumber.eq(amount);
+                await accountingToken.balanceOf(users[i].address)
+            ).to.be.eq(depositAmount);
         }
-        expect(await this.accountingToken.totalSupply()).to.be.bignumber.eq(ether('400'));
-        expect(await this.rewardToken.totalSupply()).to.be.bignumber.eq('0');
+        expect(await accountingToken.totalSupply()).to.be.eq(depositAmount * BigInt(users.length));
+        expect(await rewardToken.totalSupply()).to.be.eq(0);
 
         // Advance time 5 days so that depositors can get rewards
-        await time.increase(time.duration.days(5));
+        await ethers.provider.send("evm_increaseTime", [5 * 24 * 60 * 60]); // 5 days
         
-        // Each depositor gets 25 reward tokens
+        // Each depositor gets reward tokens
+        let rewardsInRound = await rewarderPool.REWARDS();
         for (let i = 0; i < users.length; i++) {
-            await this.rewarderPool.distributeRewards({ from: users[i] });
+            await rewarderPool.connect(users[i]).distributeRewards();
             expect(
-                await this.rewardToken.balanceOf(users[i])
-            ).to.be.bignumber.eq(ether('25'));
+                await rewardToken.balanceOf(users[i].address)
+            ).to.be.eq(rewardsInRound.div(users.length));
         }
-        expect(await this.rewardToken.totalSupply()).to.be.bignumber.eq(ether('100'));
+        expect(await rewardToken.totalSupply()).to.be.eq(rewardsInRound);
+
+        // Player starts with zero DVT tokens in balance
+        expect(await liquidityToken.balanceOf(player.address)).to.eq(0);
         
-        // Two rounds should have occurred so far
-        expect(
-            await this.rewarderPool.roundNumber()
-        ).to.be.bignumber.eq('2');
+        // Two rounds must have occurred so far
+        expect(await rewarderPool.roundNumber()).to.be.eq(2);
     });
 
-    it('Exploit', async function () {
-        /** YOUR EXPLOIT GOES HERE */
+    it('Execution', async function () {
+        /** CODE YOUR SOLUTION HERE */
     });
 
     after(async function () {
-        // Only one round should have taken place
+        /** SUCCESS CONDITIONS - NO NEED TO CHANGE ANYTHING HERE */
+        // Only one round must have taken place
         expect(
-            await this.rewarderPool.roundNumber()
-        ).to.be.bignumber.eq('3');
+            await rewarderPool.roundNumber()
+        ).to.be.eq(3);
 
-        // Users should not get more rewards this round
+        // Users should get neglegible rewards this round
         for (let i = 0; i < users.length; i++) {
-            await this.rewarderPool.distributeRewards({ from: users[i] });
-            expect(
-                await this.rewardToken.balanceOf(users[i])
-            ).to.be.bignumber.eq(ether('25'));
+            await rewarderPool.connect(users[i]).distributeRewards();
+            const userRewards = await rewardToken.balanceOf(users[i].address);
+            const delta = userRewards.sub((await rewarderPool.REWARDS()).div(users.length));
+            expect(delta).to.be.lt(10n ** 16n)
         }
         
-        // Rewards must have been issued to the attacker account
-        expect(await this.rewardToken.totalSupply()).to.be.bignumber.gt(ether('100'));
-        expect(await this.rewardToken.balanceOf(attacker)).to.be.bignumber.gt('0');
+        // Rewards must have been issued to the player account
+        expect(await rewardToken.totalSupply()).to.be.gt(await rewarderPool.REWARDS());
+        const playerRewards = await rewardToken.balanceOf(player.address);
+        expect(playerRewards).to.be.gt(0);
+
+        // The amount of rewards earned should be close to total available amount
+        const delta = (await rewarderPool.REWARDS()).sub(playerRewards);
+        expect(delta).to.be.lt(10n ** 17n);
+
+        // Balance of DVT tokens in player and lending pool hasn't changed
+        expect(await liquidityToken.balanceOf(player.address)).to.eq(0);
+        expect(
+            await liquidityToken.balanceOf(flashLoanPool.address)
+        ).to.eq(TOKENS_IN_LENDER_POOL);
     });
 });

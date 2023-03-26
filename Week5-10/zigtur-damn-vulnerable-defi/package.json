@@ -1,23 +1,45 @@
 {
-  "scripts": {
-    "test": "npm run compile && npx mocha --timeout 5000 --exit --recursive test",
-    "unstoppable": "npm run compile && npx mocha --timeout 5000 --exit test/unstoppable/unstoppable.challenge.js",
-    "truster": "npm run compile && npx mocha --timeout 5000 --exit test/truster/truster.challenge.js",
-    "naive-receiver": "npm run compile && npx mocha --timeout 5000 --exit test/naive-receiver/naive-receiver.challenge.js",
-    "side-entrance": "npm run compile && npx mocha --timeout 5000 --exit test/side-entrance/side-entrance.challenge.js",
-    "the-rewarder": "npm run compile && npx mocha --timeout 5000 --exit test/the-rewarder/the-rewarder.challenge.js",
-    "selfie": "npm run compile && npx mocha --timeout 5000 --exit test/selfie/selfie.challenge.js",
-    "compromised": "npm run compile && npx mocha --timeout 5000 --exit test/compromised/compromised.challenge.js",
-    "puppet": "npm run compile && npx mocha --timeout 5000 --exit test/puppet/puppet.challenge.js",
-    "compile": "npx buidler compile"
-  },
+  "version": "3.0.0",
   "license": "MIT",
-  "dependencies": {
-    "@nomiclabs/buidler": "1.4.7",
-    "@openzeppelin/contracts": "3.0.0",
-    "@openzeppelin/test-environment": "0.1.3",
-    "@openzeppelin/test-helpers": "0.5.5",
-    "hardhat": "^2.13.0",
-    "mocha": "7.1.1"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tinchoabbate/damn-vulnerable-defi.git"
+  },
+  "scripts": {
+    "unstoppable": "yarn hardhat test test/unstoppable/unstoppable.challenge.js",
+    "truster": "yarn hardhat test test/truster/truster.challenge.js",
+    "naive-receiver": "yarn hardhat test test/naive-receiver/naive-receiver.challenge.js",
+    "side-entrance": "yarn hardhat test test/side-entrance/side-entrance.challenge.js",
+    "the-rewarder": "yarn hardhat test test/the-rewarder/the-rewarder.challenge.js",
+    "selfie": "yarn hardhat test test/selfie/selfie.challenge.js",
+    "compromised": "yarn hardhat test test/compromised/compromised.challenge.js",
+    "puppet": "yarn hardhat test test/puppet/puppet.challenge.js",
+    "puppet-v2": "yarn hardhat test test/puppet-v2/puppet-v2.challenge.js",
+    "free-rider": "yarn hardhat test test/free-rider/free-rider.challenge.js",
+    "backdoor": "yarn hardhat test test/backdoor/backdoor.challenge.js",
+    "climber": "yarn hardhat test test/climber/climber.challenge.js",
+    "wallet-mining": "yarn hardhat test test/wallet-mining/wallet-mining.challenge.js",
+    "abi-smuggling": "yarn hardhat test test/abi-smuggling/abi-smuggling.challenge.js",
+    "puppet-v3": "yarn hardhat test test/puppet-v3/puppet-v3.challenge.js"
+  },
+  "devDependencies": {
+    "@gnosis.pm/safe-contracts": "1.3.0",
+    "@nomicfoundation/hardhat-chai-matchers": "1.0.3",
+    "@nomicfoundation/hardhat-network-helpers": "1.0.6",
+    "@nomiclabs/hardhat-ethers": "2.1.1",
+    "@openzeppelin/contracts": "4.7.1",
+    "@openzeppelin/contracts-upgradeable": "4.7.1",
+    "@openzeppelin/hardhat-upgrades": "1.20.0",
+    "@uniswap/v2-periphery": "1.1.0-beta.0",
+    "@uniswap/v3-core": "1.0.1",
+    "@uniswap/v3-periphery": "1.4.1",
+    "bignumber.js": "9.1.0",
+    "chai": "4.3.6",
+    "ethers": "5.7.2",
+    "hardhat": "2.12.4",
+    "hardhat-dependency-compiler": "1.1.3",
+    "solady": "0.0.67",
+    "solmate": "6.6.1",
+    "eth-permit": "0.2.3"
   }
 }

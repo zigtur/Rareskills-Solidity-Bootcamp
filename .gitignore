@@ -5,3 +5,7 @@ artifacts
 cache
 coverage
 .vscode
+build
+contracts/attacker-contracts/*.sol
+*.solved.js
+cache

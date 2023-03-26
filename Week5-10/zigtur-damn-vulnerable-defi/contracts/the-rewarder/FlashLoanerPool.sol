@@ -1,38 +1,46 @@
-pragma solidity ^0.6.0;
+// SPDX-License-Identifier: MIT
 
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "../DamnValuableToken.sol";
 
 /**
- * @notice A simple pool to get flash loans of DVT
+ * @title FlashLoanerPool
+ * @author Damn Vulnerable DeFi (https://damnvulnerabledefi.xyz)
+ * @dev A simple pool to get flashloans of DVT
  */
 contract FlashLoanerPool is ReentrancyGuard {
+    using Address for address;
 
-    using Address for address payable;
+    DamnValuableToken public immutable liquidityToken;
 
-    DamnValuableToken public liquidityToken;
+    error NotEnoughTokenBalance();
+    error CallerIsNotContract();
+    error FlashLoanNotPaidBack();
 
-    constructor(address liquidityTokenAddress) public {
+    constructor(address liquidityTokenAddress) {
         liquidityToken = DamnValuableToken(liquidityTokenAddress);
     }
 
     function flashLoan(uint256 amount) external nonReentrant {
         uint256 balanceBefore = liquidityToken.balanceOf(address(this));
-        require(amount <= balanceBefore, "Not enough token balance");
 
-        require(msg.sender.isContract(), "Borrower must be a deployed contract");
-        
+        if (amount > balanceBefore) {
+            revert NotEnoughTokenBalance();
+        }
+
+        if (!msg.sender.isContract()) {
+            revert CallerIsNotContract();
+        }
+
         liquidityToken.transfer(msg.sender, amount);
 
-        (bool success, ) = msg.sender.call(
-            abi.encodeWithSignature(
-                "receiveFlashLoan(uint256)",
-                amount
-            )
-        );
-        require(success, "External call failed");
+        msg.sender.functionCall(abi.encodeWithSignature("receiveFlashLoan(uint256)", amount));
 
-        require(liquidityToken.balanceOf(address(this)) >= balanceBefore, "Flash loan not paid back");
+        if (liquidityToken.balanceOf(address(this)) < balanceBefore) {
+            revert FlashLoanNotPaidBack();
+        }
     }
 }

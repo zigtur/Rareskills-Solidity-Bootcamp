@@ -1,25 +1,30 @@
-pragma solidity ^0.6.0;
+// SPDX-License-Identifier: MIT
 
-import "@openzeppelin/contracts/token/ERC20/ERC20Snapshot.sol";
+pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Snapshot.sol";
+
+/**
+ * @title DamnValuableTokenSnapshot
+ * @author Damn Vulnerable DeFi (https://damnvulnerabledefi.xyz)
+ */
 contract DamnValuableTokenSnapshot is ERC20Snapshot {
-    
-    uint256 private lastSnapshotId;
+    uint256 private _lastSnapshotId;
 
-    constructor(uint256 initialSupply) public ERC20("DamnValuableToken", "DVT") {
+    constructor(uint256 initialSupply) ERC20("DamnValuableToken", "DVT") {
         _mint(msg.sender, initialSupply);
     }
 
-    function snapshot() public returns (uint256) {
+    function snapshot() public returns (uint256 lastSnapshotId) {
         lastSnapshotId = _snapshot();
-        return lastSnapshotId;
+        _lastSnapshotId = lastSnapshotId;
     }
 
     function getBalanceAtLastSnapshot(address account) external view returns (uint256) {
-        return balanceOfAt(account, lastSnapshotId);
+        return balanceOfAt(account, _lastSnapshotId);
     }
 
     function getTotalSupplyAtLastSnapshot() external view returns (uint256) {
-        return totalSupplyAt(lastSnapshotId);
+        return totalSupplyAt(_lastSnapshotId);
     }
 }

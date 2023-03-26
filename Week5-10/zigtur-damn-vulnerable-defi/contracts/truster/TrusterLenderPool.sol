@@ -1,34 +1,39 @@
-pragma solidity ^0.6.0;
+// SPDX-License-Identifier: MIT
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/utils/Address.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "../DamnValuableToken.sol";
+
+/**
+ * @title TrusterLenderPool
+ * @author Damn Vulnerable DeFi (https://damnvulnerabledefi.xyz)
+ */
 contract TrusterLenderPool is ReentrancyGuard {
+    using Address for address;
 
-    IERC20 public damnValuableToken;
+    DamnValuableToken public immutable token;
 
-    constructor (address tokenAddress) public {
-        damnValuableToken = IERC20(tokenAddress);
+    error RepayFailed();
+
+    constructor(DamnValuableToken _token) {
+        token = _token;
     }
 
-    function flashLoan(
-        uint256 borrowAmount,
-        address borrower,
-        address target,
-        bytes calldata data
-    )
+    function flashLoan(uint256 amount, address borrower, address target, bytes calldata data)
         external
         nonReentrant
+        returns (bool)
     {
-        uint256 balanceBefore = damnValuableToken.balanceOf(address(this));
-        require(balanceBefore >= borrowAmount, "Not enough tokens in pool");
-        
-        damnValuableToken.transfer(borrower, borrowAmount);
-        (bool success, ) = target.call(data);
-        require(success, "External call failed");
+        uint256 balanceBefore = token.balanceOf(address(this));
 
-        uint256 balanceAfter = damnValuableToken.balanceOf(address(this));
-        require(balanceAfter >= balanceBefore, "Flash loan hasn't been paid back");
+        token.transfer(borrower, amount);
+        target.functionCall(data);
+
+        if (token.balanceOf(address(this)) < balanceBefore)
+            revert RepayFailed();
+
+        return true;
     }
-
 }
