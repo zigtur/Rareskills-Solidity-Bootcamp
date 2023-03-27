@@ -47,7 +47,7 @@ https://github.com/zigtur/Ethernaut-Solutions#shop
 
 ## Day4 - Unsafe number casting
 ### Capture The Ether - Guess the secret number
-There are only 256 values possibles for a uint8 (0 to 255). We just need to test all values and find the number that gives the answer hash.
+There are only 256 values possibles for a uint8 (0 to 255). We just need to off-chain test all values and find the number that gives the answer hash.
 
 
 
