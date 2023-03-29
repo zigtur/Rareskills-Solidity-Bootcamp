@@ -11,7 +11,8 @@ https://github.com/zigtur/Ethernaut-Solutions#king
 
 
 ### Ethernaut - Denial
-
+https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#denial
+https://github.com/zigtur/Ethernaut-Solutions#denial
 
 ## Day21 - Access control or bad input validation
 ### Ethernaut - Dex2
