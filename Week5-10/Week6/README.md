@@ -12,7 +12,8 @@ Asking for a blockhash that has a number lower than (block.number - 256), the bl
 
 ## Day8 - Arithmetic overflow
 ### Ethernaut - Token
-https://github.com/zigtur/Ethernaut-Solutions#token \
+https://github.com/zigtur/Ethernaut-Solutions#token
+
 https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#token
 
 ### Capture The Ether - Token Whale Challenge
@@ -26,6 +27,7 @@ In this challenge, we can overflow the multiplication in the buy function. If we
 ## Day10-12 - Flawed or mixed accounting
 ### Ethernaut - Force
 https://github.com/zigtur/Ethernaut-Solutions#force
+
 https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#force
 
 

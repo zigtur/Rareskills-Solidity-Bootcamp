@@ -28,7 +28,8 @@ let number = await ethers.provider.getStorageAt(contract.address, BigNumber.from
 
 ## Day2 - Insecure Randomness
 ### Ethernaut - Coin Flip
-https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#coin-flip \
+https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#coin-flip
+
 https://github.com/zigtur/Ethernaut-Solutions#coin-flip
 
 ### Capture The Ether - Guess the random number
@@ -37,12 +38,14 @@ The way I did the exploit for "Guess The Number" challenge just resolve this cha
 
 ## Day3 - View function errors
 ### Ethernaut - Elevator
-https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#elevator \
+https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#elevator
+
 https://github.com/zigtur/Ethernaut-Solutions#elevator
 
 ### Ethernaut - Shop
 
-https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#shop \
+https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#shop
+
 https://github.com/zigtur/Ethernaut-Solutions#shop
 
 ## Day4 - Unsafe number casting
@@ -67,6 +70,7 @@ It would also be possible to anticipate a block number in the future and base ou
 ## Day5-6 - Re-entrancy
 ### Ethernaut - Re-entrancy
 https://github.com/zigtur/Ethernaut-Solutions#re-entrancy
+
 https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#re-entrancy
 
 ### RareSkills Riddles - ERC1155
