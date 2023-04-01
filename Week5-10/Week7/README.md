@@ -9,6 +9,7 @@ Exploit is not public
 ## Day14-15
 ### Ethernaut - Naught Coin
 https://github.com/zigtur/Ethernaut-Solutions#naught-coin
+
 https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#naught-coin
 
 ### Damn Vulnerable DeFi - Truster
