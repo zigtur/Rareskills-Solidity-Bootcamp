@@ -103,4 +103,29 @@ Then, the contract will be executed. The first opcodoes may look like this:
   - JUMPI --> Jump to it if it was lower than 4. It is pretty sure that it will jump to a piece of code that will revert.
 
 
+### Transaction cost
+Each of the Opcode will have a gas cost associated with it. We know that a simple transaction will cost 21,000 gas.
+
+#### Input data
+Then, some input data could be added to the transaction (a function selector for example). Gas cost will depend on the number of bytes and their values (0x00 cost 4 gas, non-zero values cost 16 gas).
+
+If we want to encode the function "test(address,uint256)", then it should look like this:
+- function selector: 0xba14d606 (which is keccak256(test(address,uint256)))".
+- address value: 0x840342d0e5dd1d2cd37517005a602a5e75287ef3 (the 20 bytes of the address)
+- uint value: 0x0000000000000000000000000000000000000000000000000000000000000001 (value=1)
+
+So the data that will be added to our transaction should be:
+```
+0xba14d606840342d0e5dd1d2cd37517005a602a5e75287ef30000000000000000000000000000000000000000000000000000000000000001
+```
+
+This is 62 bytes, 31 bytes are equal to 0 and 31 are nonzero. So, this will cost $31 * 4 + 31 * 16 = 620$ gas + 21,000 gas for the transaction.
+
+#### Other gas
+At initialization, 3 opcodes are used (see Part "Calling a smart contract"). As the value 0x80 will be stored at index 0x40, three slots will be initialized (and costs 3 gas each). Those slots are:
+- 0x00
+- 0x20
+- 0x40
+Only the last one will have a value set, but others will be initialized. Then gas cost will increase by 3*3 = 9 gas.
+
 
