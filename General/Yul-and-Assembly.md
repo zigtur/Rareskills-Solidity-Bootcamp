@@ -143,4 +143,30 @@ Got storage slot of an index in a dynamic array:
 A mapping will also be dynamic. Like dynamic arrays, it has one fixed storage slot. It will store value mapped to `key` at slot number `keccak(abi.encode(key, mapping.slot))`
 
 
+### Memory
+Memory is needed to do the followings:
+- Return values to external calls
+- Set the function arguments to external calls
+- Get values from external calls
+- Revert with an error string
+- Log messages
+- Create other smart contracts
+- Use the keccak256 hash function
+
+Memory is equivalent to the heap in other languages, but `free` is not possible (garbage collector) and 32 byte sequences are used.
+It has only four instructions:
+- `mload(p)`: retrieves 32 bytes from slot `p` 
+- `mstore(p, v)`: stores `v` value in slot `p` (so if p = 0x10, it will end at)
+- `mstore8(p, v)`: mstore with 1 byte
+- `msize`: largest accessed memory index in that transaction
+
+:warning: Pure Yul programs = Memory easy to use // Mixed Yul/Solidity programs = Solidity expects memory to be used in a specific manner :warning:
+
+#### Solidity usage
+Solidity does allocate:
+- Slots [0x00-0x20], [0x20-0x40] for "scratch space"
+- Slot [0x40-0x60] as the "free memory pointer"
+- Slot [0x60-0x80] is kept empty
+Then slots after 0x80 can be used.
+
 
