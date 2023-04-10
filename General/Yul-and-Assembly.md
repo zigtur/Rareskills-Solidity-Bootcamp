@@ -170,3 +170,100 @@ Solidity does allocate:
 Then slots after 0x80 can be used.
 
 
+#### Yul code examples
+
+Return multiple values from memory:
+```solidity
+    function return2and4() external pure returns (uint256, uint256) {
+        assembly {
+            mstore(0x00, 2)
+            mstore(0x20, 4)
+            return(0x00, 0x40)
+        }
+    }
+```
+*Note: return here is a function in Yul, and not a keyword*
+
+Require equivalent:
+```solidity
+    function requireV1() external view {
+        require(msg.sender == 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2);
+    }
+
+    function requireV2() external view {
+        assembly {
+            if iszero(
+                eq(caller(), 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2)
+            ) {
+                revert(0, 0)
+            }
+        }
+    }
+```
+
+Hashing multiple values:
+```solidity
+    function hashV1() external pure returns (bytes32) {
+        bytes memory toBeHashed = abi.encode(1, 2, 3);
+        return keccak256(toBeHashed);
+    }
+
+    function hashV2() external pure returns (bytes32) {
+        assembly {
+            let freeMemoryPointer := mload(0x40)
+
+            // store 1, 2, 3 in memory
+            mstore(freeMemoryPointer, 1)
+            mstore(add(freeMemoryPointer, 0x20), 2)
+            mstore(add(freeMemoryPointer, 0x40), 3)
+
+            // update memory pointer
+            mstore(0x40, add(freeMemoryPointer, 0x60)) // increase memory pointer by 96 bytes
+
+            mstore(0x00, keccak256(freeMemoryPointer, 0x60))
+            return(0x00, 0x60)
+        }
+    }
+```
+
+Loggging and events:
+```solidity
+    function emitLog() external {
+        emit SomeLog(5, 6);
+    }
+
+    function yulEmitLog() external {
+        assembly {
+            // keccak256("SomeLog(uint256,uint256)") --> Event signature
+            let
+                signature
+            := 0xc200138117cf199dd335a2c6079a6e1be01e6592b6a76d4b5fc31b169df819cc
+            log3(0, 0, signature, 5, 6)
+        }
+    }
+
+    function v2EmitLog() external {
+        emit SomeLogV2(5, true);
+    }
+
+    function v2YulEmitLog() external {
+        assembly {
+            // keccak256("SomeLogV2(uint256,bool)")
+            let
+                signature
+            := 0x113cea0e4d6903d772af04edb841b17a164bff0f0d88609aedd1c4ac9b0c15c2
+            mstore(0x00, 1)
+            log2(0, 0x20, signature, 5)
+        }
+    }
+```
+*Note: indexed keyword allows to search for the event using the indexed parameters as filters.*
+
+
+
+
+
+
+
+
+
