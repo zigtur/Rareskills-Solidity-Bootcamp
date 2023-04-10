@@ -2,6 +2,66 @@
 
 Yul does handle only bytes32 types. So, a variable that is not 32-bytes long is used, then the developer must be careful.
 
+## EVM basics
+*Note: The EVM does use a lot of mechanisms and concepts that are widely used in computer science. If you already study how a process work (its memory layout for example), then you will not be lost here. When available, an equivalent in basic computer science will be given.*
+
+The Ethereum Virtual Machine (EVM) is used on EVM-based blockchains to execute smart contracts.
+
+EVM does use several data regions.
+
+Sources: 
+- https://www.evm.codes/about?fork=merge
+- https://ethereum.github.io/yellowpaper/paper.pdf
+
+### Data Region - The Code
+*Note: basic computer equivalent = .CODE/.TEXT segment*
+
+In the Code region, the instructions of the smart contracts are defined. Almost all of those instructions are taking their parameters from another data region: the Stack.
+
+EVM does use its own instructions, which are defined here: https://www.evm.codes/
+
+
+### Data Region - The Program Counter
+*Note: basic computer equivalent = EIP register*
+
+The Program Counter is used to encode which instruction should be next executed. It points to the code section.
+
+
+### Data Region - The Stack
+*Note: basic computer equivalent = stack segment*
+
+In EVM, the stack is a list of 32-byte element. Each call has its own stack, which is destroyed when the call context ends.
+
+The stack does follow a LIFO structure (Last-In First Out).
+
+
+### Data Region - The Memory
+*Note: basic computer equivalent = heap segment*
+
+The memory region is not persistent, it is also destroyed at the end of the call context.
+
+Memory is accessible using `MSTORE` and `MLOAD` instructions.
+
+### Data Region - The storage
+*Note: basic computer equivalent = data segment, but always persistent for each execution of contract*
+
+This is a map of $2^256$ slots of 32-byte values. It is the persistent memory of contracts.
+
+Storage is accessible using `SSTORE` and `SLOAD` instructions.
+
+### Data Region - The calldata
+*Note: basic computer equivalent = argc/argv, but instead of commandline, it is transaction*
+
+This is the data sent to a smart contract through a transaction. The function selector will be in this calldata.
+
+This calldata is accessible using `CALLDATALOAD`, `CALLDATASIZE` and `CALLDATACOPY`.
+
+### Data Region - The return data
+*Note: basic computer equivalent = return value*
+
+This is the data returned from a smart contract once execution is done.
+
+A contract access to it using `RETURN` or `REVERT` instructions. It can be read from a calling contract through `RETURNDATASIZE` and `RETURNDATACOPY`.
 
 ## Yul Code
 ### Local variable
@@ -261,9 +321,68 @@ Loggging and events:
 
 
 
+### Calling other contracts
+Solidity standard says that a function selector is used for each function. In fact, on a contract call, this function selector will be passed as argument, a piece of code of the contract does execute the right function.
+
+There are several ways to call other contracts:
+- `call`: This is the basic call, it does call another contract function.
+- `staticcall`: It does the same than call, but does not change the state of the blockchain. Used with view functions.
+- `delegatecall`: This calls another contract's code, with the storage of the actual contract
+
+If we do not know what the returned data size is, it is possible to use the `returndatasize` function to allocate the proper amount of memory, and then use the `returndatacopy` function to copy the returned data to the allocated memory.
 
 
+#### Dynamic length arguments in calldata
+The explanation will be given through an example, to make it easier to understand.
 
+So, this function will be used:
 
+```solidity
+    struct structTest {
+        uint256 x;
+        uint256 y;
+    }
 
+    function test(
+        uint256 a,
+        uint256[] calldata b,
+        uint256 c,
+        structTest calldata _struct,
+        uint256[] calldata d,
+        uint256 e
+    ) external {}
+```
+
+The following arguments will be passed:
+- a = 1
+- b = [10,20,30]
+- c = 2
+- _struct = structTest{ x = 8, y = 9 }
+- d = [100,200]
+- e = 3
+
+Lets look at the calldata layout for the arguments:
+```
+0x7b1fd2c                                                           //  The function selector
+0000000000000000000000000000000000000000000000000000000000000001    //  00: value of a
+00000000000000000000000000000000000000000000000000000000000000e0    //  20: the calldata slot in which b is stored
+0000000000000000000000000000000000000000000000000000000000000002    //  40: value of c
+0000000000000000000000000000000000000000000000000000000000000008    //  60: value of x of structure _struct
+0000000000000000000000000000000000000000000000000000000000000009    //  80: value of y of structure _struct
+0000000000000000000000000000000000000000000000000000000000000160    //  A0: the calldata slot in which d is stored
+0000000000000000000000000000000000000000000000000000000000000003    //  C0: the value of d
+0000000000000000000000000000000000000000000000000000000000000003    //  E0: the length of the dynamic array b
+000000000000000000000000000000000000000000000000000000000000000a    // 100: the first value of b
+0000000000000000000000000000000000000000000000000000000000000014    // 120: the second value of b
+000000000000000000000000000000000000000000000000000000000000001e    // 140: the third value of b
+0000000000000000000000000000000000000000000000000000000000000002    // 160: the length of the dynamic array d
+0000000000000000000000000000000000000000000000000000000000000064    // 180: the first value of d
+00000000000000000000000000000000000000000000000000000000000000c8    // 1A0: the second value of d
+```
+
+### Transfer of value
+Two functions in Solidity:
+- `call`: allows to specify the amount of gas or send all gas
+- `transfer`: only 2300 gas with the call, it can throws error
+- `send`: only 2300 gas with the call, returns a boolean
 
