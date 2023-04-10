@@ -45,7 +45,7 @@ Memory is accessible using `MSTORE` and `MLOAD` instructions.
 ### Data Region - The storage
 *Note: basic computer equivalent = data segment, but always persistent for each execution of contract*
 
-This is a map of $2^256$ slots of 32-byte values. It is the persistent memory of contracts.
+This is a map of $2^{256}$ slots of 32-byte values. It is the persistent memory of contracts.
 
 Storage is accessible using `SSTORE` and `SLOAD` instructions.
 
