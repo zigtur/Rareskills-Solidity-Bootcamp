@@ -370,7 +370,7 @@ Lets look at the calldata layout for the arguments:
 0000000000000000000000000000000000000000000000000000000000000008    //  60: value of x of structure _struct
 0000000000000000000000000000000000000000000000000000000000000009    //  80: value of y of structure _struct
 0000000000000000000000000000000000000000000000000000000000000160    //  A0: the calldata slot in which d is stored
-0000000000000000000000000000000000000000000000000000000000000003    //  C0: the value of d
+0000000000000000000000000000000000000000000000000000000000000003    //  C0: the value of e
 0000000000000000000000000000000000000000000000000000000000000003    //  E0: the length of the dynamic array b
 000000000000000000000000000000000000000000000000000000000000000a    // 100: the first value of b
 0000000000000000000000000000000000000000000000000000000000000014    // 120: the second value of b
@@ -380,9 +380,87 @@ Lets look at the calldata layout for the arguments:
 00000000000000000000000000000000000000000000000000000000000000c8    // 1A0: the second value of d
 ```
 
-### Transfer of value
+!["Calldata Layout"](images/calldata-layout.png)
+
+#### Transfer of value
 Two functions in Solidity:
 - `call`: allows to specify the amount of gas or send all gas
 - `transfer`: only 2300 gas with the call, it can throws error
 - `send`: only 2300 gas with the call, returns a boolean
+
+
+#### Function selector in pure Yul
+Here is an example of contract selector in pure Yul:
+```solidity
+contract CalldataDemo {
+    fallback() external {
+        assembly {
+            let cd := calldataload(0) // always loads 32 bytes
+            // d2178b0800000000000000000000000000000000000000000000000000000000
+            let selector := shr(0xe0, cd) // shift right 224 bits to get last 4 bytes
+            // 00000000000000000000000000000000000000000000000000000000d2178b08
+
+            // unlike other languages, switch does not "fall through"
+            switch selector
+            case 0xd2178b08 /* get2() */
+            {
+                returnUint(2)
+            }
+            case 0xba88df04 /* get99(uint256) */
+            {
+                returnUint(getNotSoSecretValue())
+            }
+            default {
+                revert(0, 0)
+            }
+
+            function getNotSoSecretValue() -> r {
+                if lt(calldatasize(), 36) {
+                    revert(0, 0)
+                }
+
+                let arg1 := calldataload(4)
+                if eq(arg1, 8) {
+                    r := 88
+                    leave
+                }
+                r := 99
+            }
+
+            function returnUint(v) {
+                mstore(0, v)
+                return(0, 0x20)
+            }
+        }
+    }
+}
+```
+
+
+### Pure Yul examples
+
+
+#### Simple contract
+```
+object "test" {
+    code {
+        // constructor
+        datacopy(0, dataoffset("runtime"), datasize("runtime"))
+        return(0, datasize("runtime"))
+        // end of constructor
+    }
+
+    object "runtime" {
+        // runtime code, will be executed when contract is called
+        code {
+            mstore(0x00, 42)
+            return(0x00, 0x20)
+        }
+    }
+}
+```
+
+#### ERC20 Yul implementation
+
+https://docs.soliditylang.org/en/v0.8.19/yul.html#complete-erc20-example
 
