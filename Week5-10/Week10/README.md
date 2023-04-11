@@ -1,4 +1,4 @@
-# Week9
+# Week10
 ## Day26-30 - Flash loan attacks part 2
 ### Damn Vulnerable Defi - The Rewarder
 The rewards distribution is checked every time a deposit is made. But the rewards distribution is made after the accounting token mint. Knowing this, we can wait 5 days, flashloan a large amount of tokens, call the deposit function (which will distribute rewards) and then withdraw tokens to give it back to flashloan. During the distribution, our attacker contract will receive the rewards (and a large amount as he deposited a large amount of tokens!).
