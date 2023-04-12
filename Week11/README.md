@@ -98,5 +98,114 @@ Solution = 0x01020304
 ```
 
 
+### Puzzle 4
+
+```
+############
+# Puzzle 4 #
+############
+
+00      34      CALLVALUE
+01      38      CODESIZE
+02      18      XOR
+03      56      JUMP
+04      FD      REVERT
+05      FD      REVERT
+06      FD      REVERT
+07      FD      REVERT
+08      FD      REVERT
+09      FD      REVERT
+0A      5B      JUMPDEST
+0B      00      STOP
+```
+
+- 0 - Identify the target
+    - By analyzing the code, a jump to `JUMPDEST` at index `0A` must be done to succeed.
+- 1 - The first opcode is `CALLVALUE`. It will push on the stack the value sent with the transaction (in Wei).
+- 2 - The second opcode is `CODESIZE`. It will push on the stack the size of the current code. (Here it will be 13, so hexadecimal 0xC)
+- 3 - The third opcode is `XOR`. This opcode will do a XOR operation of the last two variables on stack.
+    - We need the result of the `XOR` opcode to be `0x0A`
+    - We know that `CODESIZE` will give the value `0x0C`
+    - The operation is `0x0C = 0x0A XOR VALUE`
+    - So, `VALUE = 0x0C XOR 0x0A = 0x06`, 6 should be passed as value
 
 
+
+```
+Solution = 0x06 or 6 in decimal
+```
+
+
+### Puzzle 5
+
+```
+############
+# Puzzle 5 #
+############
+
+00      34          CALLVALUE
+01      80          DUP1
+02      02          MUL
+03      610100      PUSH2 0100
+06      14          EQ
+07      600C        PUSH1 0C
+09      57          JUMPI
+0A      FD          REVERT
+0B      FD          REVERT
+0C      5B          JUMPDEST
+0D      00          STOP
+0E      FD          REVERT
+0F      FD          REVERT
+```
+
+- 0 - Identify the target
+    - By analyzing the code, a check that some value is equal to `0x100` is done before jumping to `JUMPDEST`
+    - We do need to pass this check
+- 1 - The first opcode is `CALLVALUE`. It will push on the stack the value sent with the transaction (in Wei).
+- 2 - The second opcode is `DUP1`. It will duplicate last pushed value on stack. So, there will be two times the callvalue on stack.
+- 3 - The third opcode is `MUL`. This opcode will multiply last two parameters. Result will be `CALLVALUE * CALLVALUE` on stack.
+- 4 - The fourth opcode is `PUSH2`, with the value `0x100`. This will push `0x100` on stack, which is `256` as decimal.
+- 5 - Last opcode of the check is `EQ`. This opcode will take last two stack values and check that they are equal.
+    - First element: `0x100`
+    - Second element: `CALLVALUE * CALLVALUE`
+    - So, we need to pass the right callvalue to passe the check, which will be `0x10` (16 as decimal).
+    - Then, `0x10 * 0x10 = 0x100`
+
+```
+Solution = 0x10 or 16 in decimal
+```
+
+
+
+### Puzzle 6
+
+```
+############
+# Puzzle 6 #
+############
+
+00      6000      PUSH1 00
+02      35        CALLDATALOAD
+03      56        JUMP
+04      FD        REVERT
+05      FD        REVERT
+06      FD        REVERT
+07      FD        REVERT
+08      FD        REVERT
+09      FD        REVERT
+0A      5B        JUMPDEST
+0B      00        STOP
+```
+
+- 0 - Identify the target
+    - By analyzing the code, a jump to `JUMPDEST` at index `0A` must be done to succeed.
+- 1 - The first opcode is `PUSH1`, with value `00`. It will push on the stack one byte `0x00`.
+- 2 - The second opcode is `CALLDATALOAD`. It will push on stack the value of calldata starting at the given offset (which is on stack, here `0x00`).
+    - As a reminder, offset 0 corresponds to the less significant byte, and offset 31 to the most significant one.
+    - Passing `0x0A` as calldata, will result in `0x0A00000000000000000000000000000000000000000000000000000000000000` with the `CALLDATALOAD` starting at offset `0x00`
+    - So, we need to pass `0A` as value, in a 32-byte number
+    - Solution is `0x000000000000000000000000000000000000000000000000000000000000000A`
+
+```
+Solution = 0x000000000000000000000000000000000000000000000000000000000000000A
+```
