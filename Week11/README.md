@@ -209,3 +209,223 @@ Solution = 0x10 or 16 in decimal
 ```
 Solution = 0x000000000000000000000000000000000000000000000000000000000000000A
 ```
+
+
+
+### Puzzle 7
+
+```
+############
+# Puzzle 7 #
+############
+
+00      36        CALLDATASIZE
+01      6000      PUSH1 00
+03      80        DUP1
+04      37        CALLDATACOPY
+05      36        CALLDATASIZE
+06      6000      PUSH1 00
+08      6000      PUSH1 00
+0A      F0        CREATE
+0B      3B        EXTCODESIZE
+0C      6001      PUSH1 01
+0E      14        EQ
+0F      6013      PUSH1 13
+11      57        JUMPI
+12      FD        REVERT
+13      5B        JUMPDEST
+14      00        STOP
+```
+
+- 0 - Identify the target
+    - By analyzing the code, the `JUMPI` instruction should be used. It will be triggered if the created contract is 1 byte size.
+- 1 - The calldata needs to include an init code, and a runtime code. The runtime code needs to be 1-byte size to pass the check from the challenge.
+    - Runtime code: No matter what the opcode is. `CODESIZE` will be used here (`0x38`).
+    - Init code: Now, we need to write the init code that will store the runtime code.
+        - To load the runtime code in memory, we need to use the `CODECOPY` opcode. It takes 3 parameters (destOffset, offset, size).
+        - Then, we return the runtime code location in memory to deploy it.
+```
+// Step1: copy code in memory
+PUSH1 01     // size of our runtime code. Size = 2 bytes
+PUSH1 ?     // the offset at which the runtime code is stored in current bytecode. Size = 2 bytes
+PUSH1 00     // the destination in memory. Size = 2 bytes
+CODECOPY    // Copy the code in memory. Size = 1 byte
+
+// Step2: return
+PUSH1 01     // size of our runtime code. Size = 2 bytes
+PUSH1 00     // Memory location that holds our runtime code. Size = 2 bytes
+RETURN      // return with the memory location and size of runtime code. Size = 1 byte
+```
+- 1 -
+    - Init code
+        - The only variable that we need to calculate is the offset at which the runtime code is stored in bytecode.
+            - We just need to calculate the init code size:
+            - `2 + 2 + 2 + 1 + 2 + 2 + 1 = 12 = 0x0C`
+            - `PUSH1 ?` can be replaced by `PUSH1 12`
+    - Final bytecode does concatenate init code and runtime code:
+        - *Note: The opcode hex value can be found here: (https://www.evm.codes/?fork=merge).*
+        - Init code = `0x6001600C60003960016000F3`, size = 12 bytes
+        - Runtime code = `0x38`, size = 1 byte
+        - Final code = `0x6001600C60003960016000F338`, size = 13 bytes
+
+```
+Solution = 0x6001600C60003960016000F338
+```
+
+
+### Puzzle 8
+
+```
+############
+# Puzzle 8 #
+############
+
+00      36        CALLDATASIZE
+01      6000      PUSH1 00
+03      80        DUP1
+04      37        CALLDATACOPY
+05      36        CALLDATASIZE
+06      6000      PUSH1 00
+08      6000      PUSH1 00
+0A      F0        CREATE
+0B      6000      PUSH1 00
+0D      80        DUP1
+0E      80        DUP1
+0F      80        DUP1
+10      80        DUP1
+11      94        SWAP5
+12      5A        GAS
+13      F1        CALL
+14      6000      PUSH1 00
+16      14        EQ
+17      601B      PUSH1 1B
+19      57        JUMPI
+1A      FD        REVERT
+1B      5B        JUMPDEST
+1C      00        STOP
+```
+
+- 0 - Identify the target
+    - By analyzing the code, the `JUMPI` instruction should be used. It will be triggered if the created contract reverts when called.
+- 1 - The calldata needs to include an init code, and a runtime code. The runtime code needs to be 1-byte size to pass the check from the challenge.
+    - Runtime code: Here the runtime code needs to revert.
+```
+PUSH1 00    // Size of revert. Size = 2 bytes
+PUSH1 00    // Offset of revert. Size = 2 bytes
+REVERT      // Revert with 0 and 0. Size = 1 byte
+// Final size = 5 bytes
+```
+- 1
+    - Init code: Now, we need to write the init code that will store the runtime code.
+        - To load the runtime code in memory, we need to use the `CODECOPY` opcode. It takes 3 parameters (destOffset, offset, size).
+        - Then, we return the runtime code location in memory to deploy it.
+```
+// Step1: copy code in memory
+PUSH1 05     // size of our runtime code. Size = 2 bytes
+PUSH1 ?     // the offset at which the runtime code is stored in current bytecode. Size = 2 bytes
+PUSH1 00     // the destination in memory. Size = 2 bytes
+CODECOPY    // Copy the code in memory. Size = 1 byte
+
+// Step2: return
+PUSH1 05     // size of our runtime code. Size = 2 bytes
+PUSH1 00     // Memory location that holds our runtime code. Size = 2 bytes
+RETURN      // return with the memory location and size of runtime code. Size = 1 byte
+```
+- 1 -
+    - Init code
+        - The only variable that we need to calculate is the offset at which the runtime code is stored in bytecode.
+            - We just need to calculate the init code size:
+            - `2 + 2 + 2 + 1 + 2 + 2 + 1 = 12 = 0x0C`
+            - `PUSH1 ?` can be replaced by `PUSH1 12`
+    - Final bytecode does concatenate init code and runtime code:
+        - *Note: The opcode hex value can be found here: (https://www.evm.codes/?fork=merge).*
+        - Init code = `0x6005600C60003960016000F3`, size = 12 bytes
+        - Runtime code = `0x60006000FD`, size = 1 byte
+        - Final code = `0x6005600C60003960056000F360006000FD`, size = 13 bytes
+
+```
+Solution = 0x6005600C60003960056000F360006000FD
+```
+
+### Puzzle 9
+
+```
+############
+# Puzzle 9 #
+############
+
+00      36        CALLDATASIZE
+01      6003      PUSH1 03
+03      10        LT
+04      6009      PUSH1 09
+06      57        JUMPI
+07      FD        REVERT
+08      FD        REVERT
+09      5B        JUMPDEST
+0A      34        CALLVALUE
+0B      36        CALLDATASIZE
+0C      02        MUL
+0D      6008      PUSH1 08
+0F      14        EQ
+10      6014      PUSH1 14
+12      57        JUMPI
+13      FD        REVERT
+14      5B        JUMPDEST
+15      00        STOP
+```
+
+
+- 0 - Identify the target
+    - By analyzing the code, there are two main checks to pass to succeed: `0x03 < CALLDATASIZE` and `CALLVALUE * CALLDATASIZE == 8`.
+- 1 - The first check is pretty easy to pass. We take `CALLDATASIZE = 4` by using `0x11223344` as value.
+- 2 - The second check will depend on the first. As `CALLDATASIZE = 4`, then `CALLVALUE` must be `2`.
+- Note that we could have taken `CALLDATASIZE = 8` and `CALLVALUE = 1`.
+```
+Solution = 0x11223344 as calldata, and 2 as value
+```
+
+
+
+### Puzzle 10
+
+```
+#############
+# Puzzle 10 #
+#############
+
+00      38          CODESIZE
+01      34          CALLVALUE
+02      90          SWAP1
+03      11          GT
+04      6008        PUSH1 08
+06      57          JUMPI
+07      FD          REVERT
+08      5B          JUMPDEST
+09      36          CALLDATASIZE
+0A      610003      PUSH2 0003
+0D      90          SWAP1
+0E      06          MOD
+0F      15          ISZERO
+10      34          CALLVALUE
+11      600A        PUSH1 0A
+13      01          ADD
+14      57          JUMPI
+15      FD          REVERT
+16      FD          REVERT
+17      FD          REVERT
+18      FD          REVERT
+19      5B          JUMPDEST
+1A      00          STOP
+```
+
+
+- 0 - Identify the target
+    - By analyzing the code, there are three main checks to pass to succeed: `CODESIZE > CALLVALUE`, `CALLDATASIZE % 3 == 0` and `CALLVALUE + 0x0A == 0x19`.
+- 1 - The first check is pretty easy to pass. As `CALLVALUE` depends on the third check, value is not set here.
+- 2 - The second check is `CALLDATASIZE % 3 == 0`. As `CALLDATASIZE` is not used anywhere else in the code, we can set 3 random bytes.
+- 3 - The third check is `CALLVALUE + 0x0A == 0x19` to allow the jump to `JUMPDEST`. `0x19 - 0x0A = 0x0F = 15`. So `CALLVALUE = 15`.
+    - It does respect the first check, as `0x0F < CODESIZE`. Here `CODESIZE = 1B`. 
+
+```
+Solution = 0x112233 as calldata, and 15 as value
+```
