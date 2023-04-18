@@ -339,7 +339,7 @@ RETURN      // return with the memory location and size of runtime code. Size = 
             - `PUSH1 ?` can be replaced by `PUSH1 12`
     - Final bytecode does concatenate init code and runtime code:
         - *Note: The opcode hex value can be found here: (https://www.evm.codes/?fork=merge).*
-        - Init code = `0x6005600C60003960016000F3`, size = 12 bytes
+        - Init code = `0x6005600C60003960056000F3`, size = 12 bytes
         - Runtime code = `0x60006000FD`, size = 1 byte
         - Final code = `0x6005600C60003960056000F360006000FD`, size = 13 bytes
 
@@ -429,3 +429,23 @@ Solution = 0x11223344 as calldata, and 2 as value
 ```
 Solution = 0x112233 as calldata, and 15 as value
 ```
+
+## Ethernaut
+### Ethernaut - Privacy
+https://github.com/zigtur/Ethernaut-Solutions#privacy
+https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#privacy
+
+### Ethernaut - Gatekeeper One
+https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#gatekeeper-one
+https://github.com/zigtur/Ethernaut-Solutions#gatekeeper-one
+
+
+### Ethernaut - Magic Number
+https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#magic-number
+https://github.com/zigtur/Ethernaut-Solutions#magic-number
+
+
+## RareSkills Gas Puzzles
+https://github.com/RareSkills/gas-puzzles
+
+

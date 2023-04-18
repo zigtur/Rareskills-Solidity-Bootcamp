@@ -52,3 +52,6 @@
 [submodule "Week5/lib/forge-std"]
 	path = Week5/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "Week11/RareSkills-gas-puzzles"]
+	path = Week11/RareSkills-gas-puzzles
+	url = https://github.com/zigtur/RareSkills-gas-puzzles
