@@ -102,6 +102,7 @@ Then, the contract will be executed. The first opcodoes may look like this:
   - PUSH1 1c --> Push a location
   - JUMPI --> Jump to it if it was lower than 4. It is pretty sure that it will jump to a piece of code that will revert.
 
+The memory layout setup will take some gas fees.
 
 ### Transaction cost
 Each of the Opcode will have a gas cost associated with it. We know that a simple transaction will cost 21,000 gas.
@@ -127,5 +128,31 @@ At initialization, 3 opcodes are used (see Part "Calling a smart contract"). As 
 - 0x20
 - 0x40
 Only the last one will have a value set, but others will be initialized. Then gas cost will increase by 3*3 = 9 gas.
+
+#### Non-payable function
+The solidity code for a non-payable function will embed more opcodes than the same payable function.
+
+As there will be more opcodes to check that callvalue == 0, the gas cost will be higher than without those checks. The non-payable function will revert if value is sent, thanks to those additional opcodes that will make the call revert.
+
+So, for a given code, a payable function will cost less gas than a non-payable.
+
+
+#### Unchecked arithmetic
+Versions "^0.8.0" of Solidity does embed checks on math operations to make sure that there is no overflow/underflow.
+
+EVM behaviour does not change, UINT256MAX + 1 = 0. This behaviour is the same by default for Solidity in version < "0.8.0", and using unchecked block with last versions of Solidity.
+
+To detect overflow/underflow, some additionnal checks are added in the final bytecode during compilation. As there are more checks, there are more opcodes, and so more gas cost.
+
+To use maths operation without checks on Solidity "^0.8.0":
+```solidity
+  function addWithoutChecks(uint256 a, uint256 b) external returns (uint256 result) {
+    unchecked {
+      result = a + b;
+    }
+  }
+```
+
+
 
 

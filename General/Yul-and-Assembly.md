@@ -2,6 +2,8 @@
 
 Yul does handle only bytes32 types. So, a variable that is not 32-bytes long is used, then the developer must be careful.
 
+See the amazing Udemy course given by Jeffrey Scholz: "Advanced Solidity: Understanding and Optimizing Gas Costs".
+
 ## EVM basics
 *Note: The EVM does use a lot of mechanisms and concepts that are widely used in computer science. If you already study how a process work (its memory layout for example), then you will not be lost here. When available, an equivalent in basic computer science will be given.*
 
