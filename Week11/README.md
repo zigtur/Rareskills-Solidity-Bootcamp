@@ -448,4 +448,8 @@ https://github.com/zigtur/Ethernaut-Solutions#magic-number
 ## RareSkills Gas Puzzles
 https://github.com/RareSkills/gas-puzzles
 
+### ArraySum
+Answer is private
 
+### Require
+Answer is private
