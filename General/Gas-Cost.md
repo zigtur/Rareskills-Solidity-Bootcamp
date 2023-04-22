@@ -129,3 +129,60 @@ At initialization, 3 opcodes are used (see Part "Calling a smart contract"). As 
 Only the last one will have a value set, but others will be initialized. Then gas cost will increase by 3*3 = 9 gas.
 
 
+### EIP-1559
+EIP-1559 is confusing:
+- Base fee
+- Max Base fee
+- Max fee
+- Priority fee
+
+Gas price per Gwei <= max_fee
+
+
+There are only 2 fees:
+- `max_priority_fee_per_gas`
+  - The most Gwei per gas you are willing to pay
+- `max_fee_per_gas`
+  - Portion of that `max_fee_per_gas` you want to be a miner tip
+
+And one global variable:
+- `BASEFEE`
+  - How much is going to be burnt
+
+
+#### BASEFEE
+This is the protocol-level base fee. Each block does have this `BASEFEE` value set.
+
+It corresponds to the amount that has to be burnt for each transaction.
+
+This one can increase/decrease:
+- If last block was full: it increases by 12%
+- If last block was empty: it decreases by 12%
+
+The formula behing `BASEFEE` is complicated (https://eips.ethereum.org/EIPS/eip-1559). The value is available in Solidity ^0.8.17 as `block.basefee`.
+
+#### Max Base Fee
+A transaction needs `max fee >= BASEFEE`. As `BASEFEE` can fluctuate, we don't specify a `BASEFEE`, but a `MAX_BASEFEE` we are willing to pay at most.
+
+
+#### Priority Fee
+- Max priority fee = max priority fee we specify in transaction
+- Priority gee = amount miner actually receives. Also known as miner tip
+
+
+#### Summary
+As a summary, here is the global working:
+
+- Transaction basefee: `Max Fee - BASEFEE = Leftover`
+- Miner tip and refund: `Leftover - max_priority_fee = refund`
+
+
+### Solidity optimizer
+The `--optimize-runs` options specifies roughly how often each opcode of the deployed code will be executed across th life-time of the contract. It balances between code size (deployment cost) and code execution cost.
+- If it is called only once: 
+  - Code size will be as small as possible (to reduce deploy cost)
+  - Deployed code will not be efficient, as it will be called only once
+- If it is called multiple times:
+  - Code size will be longer
+  - But code will be more gas efficient 
+
