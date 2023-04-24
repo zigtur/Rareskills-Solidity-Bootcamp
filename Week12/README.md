@@ -154,18 +154,30 @@ Solution:
         0x04
         0x00
         calldatacopy
-
+        
         // Copy second argument in memory
         0x20
         0x24
         0x20
         calldatacopy
 
-        // load both argument (a and b)
+        // load both argument a and check != 0
         0x00
         mload
+        dup1
+        0x00
+        eq
+        zero_case
+        jumpi
+
+        // load both argument b and check != 0
         0x20
         mload
+        dup1
+        0x00
+        eq
+        zero_case
+        jumpi
 
         // multiply (c = a * b)
         mul
@@ -189,6 +201,9 @@ Solution:
         0x6f766572666c6f77 0x40 mstore
         0x20 0x40 revert
 
+    // push zero before end
+    zero_case:
+        0x00
 
     end:
         // store result and return
@@ -198,6 +213,7 @@ Solution:
         0x20
         0x40
         return
+
 }
 ```
 
