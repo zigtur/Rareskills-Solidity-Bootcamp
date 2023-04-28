@@ -150,32 +150,16 @@ Solution:
 
     multiplication:
         // Copy first argument in memory
-        0x20
-        0x04
-        0x00
-        calldatacopy
-        
-        // Copy second argument in memory
-        0x20
-        0x24
-        0x20
-        calldatacopy
-
-        // load both argument a and check != 0
-        0x00
-        mload
+        0x04 calldataload
         dup1
-        0x00
-        eq
+        iszero
         zero_case
         jumpi
-
-        // load both argument b and check != 0
-        0x20
-        mload
+        
+        // Copy second argument in memory
+        0x24 calldataload
         dup1
-        0x00
-        eq
+        iszero
         zero_case
         jumpi
 
@@ -185,14 +169,12 @@ Solution:
 
         // load first argument (a) and divide result by it
         // c / a
-        0x00
-        mload
+        0x04 calldataload
         swap1
         div
 
         // b == c / a ?
-        0x20
-        mload
+        0x24 calldataload
         eq
 
         end
@@ -213,20 +195,181 @@ Solution:
         0x20
         0x40
         return
-
 }
 ```
 
 ### NonPayable
 Solution:
 ```solidity
-
-
+#define macro MAIN() = takes(0) returns(0) {
+    0x00
+    0x00
+    callvalue
+    iszero
+    novalue jumpi
+    revert
+    novalue:
+        return
+}
 ```
 
 ### FooBar
 Solution:
 ```solidity
+ #define function foo() payable returns(uint256)
+ #define function bar() payable returns(uint256)
 
+
+#define macro MAIN() = takes(0) returns(0) {
+    // get 4 first bytes
+    0x00
+    calldataload
+    0xe0
+    shr
+
+    // foo()
+    dup1
+    __FUNC_SIG(foo) eq
+    foo jumpi
+    // bar()
+    __FUNC_SIG(bar) eq
+    bar jumpi
+    0x00 0x00 revert
+
+    foo:
+        pop
+        0x02 0x00 mstore
+        retvalue jump
+
+    bar:
+        0x03 0x00 mstore
+        retvalue jump
+
+    retvalue:
+        0x20 0x00 return
+}
+```
+
+### SimpleStore
+Solution:
+```solidity
+#define function store(uint256) payable returns()
+#define function read() payable returns(uint256)
+
+#define macro MAIN() = takes(0) returns(0) {
+    // get 4 first bytes
+    0x00
+    calldataload
+    0xe0
+    shr
+
+    // read()
+    dup1
+    __FUNC_SIG(read) eq
+    read jumpi
+    // store()
+    __FUNC_SIG(store) eq
+    store jumpi
+    0x00 0x00 revert
+
+    read:
+        pop
+        0x00 sload
+        0x00 mstore
+        retvalue jump
+
+    store:
+        0x04 calldataload
+        0x00 sstore
+        retvalue jump
+
+    retvalue:
+        0x20 0x00 return
+}
+```
+
+
+### RevertCustom
+Solution:
+```solidity
+#define error OnlyHuff()
+
+#define macro MAIN() = takes(0) returns(0) {
+    __ERROR(OnlyHuff) 0x00 mstore
+    0x20 0x00 revert
+}
+```
+
+
+### RevertString
+Solution:
+```solidity
+#define macro MAIN() = takes(0) returns(0) {
+    0x4f6e6c7920487566660000000000000000000000000000000000000000000000
+    0x00 mstore
+    0x09 0x00 revert
+}
+```
+
+
+### SumArray
+Solution:
+```solidity
+
+```
+
+
+### Keccak
+Solution:
+```solidity
+
+```
+
+
+### MaxOfArray
+Solution:
+```solidity
+
+```
+
+### Donations
+Solution:
+```solidity
+
+```
+
+### BasicBank
+Solution:
+```solidity
+
+```
+
+### SimulateArray
+Solution:
+```solidity
+
+```
+
+### Emitter
+Solution:
+```solidity
+
+```
+
+### Create
+Solution:
+```solidity
+
+```
+
+### SendEther
+Solution:
+```solidity
+
+```
+
+### Distribute
+Solution:
+```solidity
 
 ```
