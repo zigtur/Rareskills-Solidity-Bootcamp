@@ -365,7 +365,31 @@ Solution:
 ### SendEther
 Solution:
 ```solidity
+ #define function sendEther(address) payable returns()
 
+
+ #define macro MAIN() = takes(0) returns(0) {
+        // get 4 first bytes
+    0x00
+    calldataload
+    0xe0
+    shr
+
+    // read()
+    __FUNC_SIG(sendEther) eq
+    sendLabel jumpi
+    0x00 0x00 revert
+
+    sendLabel:
+        0x00 //retSize
+        0x00 //retOffset
+        0x00 //argsSize
+        0x00 //argsOffset
+        callvalue
+        0x04 calldataload
+        gas
+        call
+ }
 ```
 
 ### Distribute
