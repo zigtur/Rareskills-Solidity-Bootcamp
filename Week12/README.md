@@ -365,10 +365,10 @@ Solution:
 ### SendEther
 Solution:
 ```solidity
- #define function sendEther(address) payable returns()
+#define function sendEther(address) payable returns()
 
 
- #define macro MAIN() = takes(0) returns(0) {
+#define macro MAIN() = takes(0) returns(0) {
         // get 4 first bytes
     0x00
     calldataload
@@ -389,7 +389,7 @@ Solution:
         0x04 calldataload
         gas
         call
- }
+}
 ```
 
 ### Distribute
