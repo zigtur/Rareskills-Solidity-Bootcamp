@@ -315,7 +315,57 @@ Solution:
 ### SumArray
 Solution:
 ```solidity
+#define function sumArray(uint256[]) payable returns(uint256)
 
+
+#define macro MAIN() = takes(0) returns(0) {
+    // get 4 first bytes
+    0x00
+    calldataload
+    0xe0
+    shr
+
+    // multiply(uint256, uint256) selector
+    __FUNC_SIG(sumArray)
+    eq
+    init jumpi
+    0x00 0x00 revert
+
+    init:
+        // i=0
+        0x00
+        // get array size
+        0x04 calldataload
+        0x04 add
+        dup1 // save index in calldata
+        calldataload
+        swap1
+        // sum variable
+        0x00
+
+    sum:
+        dup3
+        dup5
+        lt
+        iszero
+        end jumpi
+
+        swap1
+        0x20 add
+        swap1
+        dup2
+        calldataload
+        add
+
+        swap3
+        0x01 add
+        swap3
+        sum jump        
+
+    end:
+        0x00 mstore
+        0x20 0x00 return
+}
 ```
 
 
