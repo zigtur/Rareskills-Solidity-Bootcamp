@@ -372,7 +372,15 @@ Solution:
 ### Keccak
 Solution:
 ```solidity
-
+#define macro MAIN() = takes(0) returns(0) {
+    // copy calldata in memory
+    calldatasize 0x00 0x20 calldatacopy
+    // hash calldata value stored in memory
+    calldatasize 0x20 sha3
+    //store keccak-256 hash in memory
+    0x00 mstore
+    0x20 0x00 return
+}
 ```
 
 
