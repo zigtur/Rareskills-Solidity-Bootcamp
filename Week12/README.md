@@ -458,7 +458,46 @@ Solution:
 ### Donations
 Solution:
 ```solidity
+#define function donated(address) payable returns(uint256)
 
+#define macro MAIN() = takes(0) returns(0) {
+    // get 4 first bytes
+    0x00
+    calldataload
+    0xe0
+    shr
+
+    // donated(address)
+    __FUNC_SIG(donated)
+    eq
+    donated jumpi
+    // receive default function
+    // preparing hash caller
+    caller 0x00 mstore
+    0x14 0x00 sha3
+
+    dup1
+    sload
+    callvalue add
+    swap1
+    sstore
+    0x00 0x00 return
+
+    donated:
+        // copy address in memory
+        0x14 //size of an address
+        0x04 // calldata offset
+        0x00 // memory offset (destination)
+        calldatacopy
+
+        // load value stored in storage
+        0x14 0x00 sha3
+        sload
+        // store it in memory and return        
+        0x00
+        mstore
+        0x20 0x00 return
+}
 ```
 
 ### BasicBank
