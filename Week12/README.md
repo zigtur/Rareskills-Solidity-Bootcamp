@@ -387,7 +387,72 @@ Solution:
 ### MaxOfArray
 Solution:
 ```solidity
+#define function maxOfArray(uint256[]) payable returns(uint256)
 
+#define macro MAIN() = takes(0) returns(0) {
+       // get 4 first bytes
+    0x00
+    calldataload
+    0xe0
+    shr
+
+    // maxOfArray(uint256[])
+    __FUNC_SIG(maxOfArray)
+    eq
+    init jumpi
+    0x00 0x00 revert
+
+    init:
+        // i=0
+        0x00
+        // get array size
+        0x04 calldataload
+        0x04 add
+        dup1 // save index in calldata
+        calldataload // get size
+        dup1
+        iszero
+        errorRevert jumpi
+        swap1
+        // sum variable
+        0x00
+
+    sum:
+        dup3
+        dup5
+        lt
+        iszero
+        end jumpi
+
+        swap1
+        0x20 add
+        swap1
+        dup1
+        dup3
+        calldataload
+        
+        gt
+        greater jumpi
+
+    increment:
+        swap3
+        0x01 add
+        swap3
+        sum jump
+
+    greater:
+        pop
+        dup1
+        calldataload
+        increment jump
+
+    end:
+        0x00 mstore
+        0x20 0x00 return
+
+    errorRevert:
+        0x20 0x00 revert
+}
 ```
 
 ### Donations
