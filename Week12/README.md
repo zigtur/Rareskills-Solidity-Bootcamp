@@ -503,7 +503,94 @@ Solution:
 ### BasicBank
 Solution:
 ```solidity
+#define function balanceOf(address) payable returns(uint256)
+#define function withdraw(uint256) payable returns()
 
+#define macro MAIN() = takes(0) returns(0) {
+        // get 4 first bytes
+        0x00
+        calldataload
+        0xe0
+        shr
+
+        // balanceOf(address)
+        dup1
+        __FUNC_SIG(balanceOf)
+        eq
+        balanceOf jumpi
+
+        // balanceOf(address)
+        __FUNC_SIG(withdraw)
+        eq
+        withdraw jumpi
+
+        // receive/deposit default function
+        caller
+        0x00 mstore
+        // start at byte 12 (0x0c) to get only address
+        0x14 0x0c sha3
+
+        dup1
+        sload
+        callvalue add
+        swap1
+        sstore
+        0x00 0x00 return
+
+    balanceOf:
+        pop
+        // copy address in memory
+        0x14 //size of an address
+        0x10 // calldata offset
+        0x00 // memory offset (destination)
+        calldatacopy
+
+        // load value stored in storage
+        0x14 0x00 sha3
+        sload
+        // store it in memory and return        
+        0x00
+        mstore
+        0x20 0x00 return
+    
+    withdraw:
+        // hash caller
+        caller 0x00 mstore
+        0x14 0x0c sha3
+        dup1
+
+        // load old value and sub the amount
+        sload
+        dup1
+        0x04 calldataload
+        swap1 sub
+        // restructure stack to verify substraction
+        dup1 swap2
+        lt 
+        errorRevert jumpi
+
+        // store new value
+        swap1
+        sstore
+
+        // send value to caller
+        0x00 //retSize
+        0x00 //retOffset
+        0x00 //argsSize
+        0x00 //argsOffset
+        0x04 calldataload //value to withdraw
+        caller //address
+        gas //gas
+        call
+        // Check result
+        iszero
+        errorRevert jumpi
+        
+        0x00 0x00 return
+
+    errorRevert:
+        0x00 0x00 revert
+}
 ```
 
 ### SimulateArray
