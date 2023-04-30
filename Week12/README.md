@@ -760,7 +760,28 @@ Solution:
 ### Emitter
 Solution:
 ```solidity
+#define function value(uint256, uint256) payable returns()
+ 
+#define event Value(uint256 indexed, uint256)
 
+#define macro MAIN() = takes(0) returns(0) {
+    // get 4 first bytes
+    0x00 calldataload
+    0xe0 shr
+
+    // value(uint256, uint256)
+    __FUNC_SIG(value)
+    eq valueLabel jumpi
+
+    // else revert
+    0x00 0x00 revert
+
+    valueLabel:
+        0x04 calldataload
+        __EVENT_HASH(Value)
+        0x00 0x00
+        log2
+}
 ```
 
 ### Create
