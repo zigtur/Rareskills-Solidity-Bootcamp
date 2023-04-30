@@ -596,7 +596,165 @@ Solution:
 ### SimulateArray
 Solution:
 ```solidity
+#define function pushh(uint256 num) payable returns()
+#define function popp() payable returns()
+#define function read(uint256 index) payable returns(uint256)
+#define function length() payable returns(uint256)
+#define function write(uint256 index, uint256 num) payable returns()
 
+#define error OutOfBounds()
+#define error ZeroArray()
+
+#define macro MAIN() = takes(0) returns(0) {
+        // get 4 first bytes
+        0x00
+        calldataload
+        0xe0
+        shr
+
+        // pushh(uint256 num)
+        dup1
+        __FUNC_SIG(pushh)
+        eq
+        pushLabel jumpi
+        // popp()
+        dup1
+        __FUNC_SIG(popp)
+        eq
+        popLabel jumpi
+        //read(uint256 index)
+        dup1
+        __FUNC_SIG(read)
+        eq
+        readLabel jumpi
+        //length()
+        dup1
+        __FUNC_SIG(length)
+        eq
+        lengthLabel jumpi
+        //write(uint256 index, uint256 num)
+        __FUNC_SIG(write)
+        eq
+        writeLabel jumpi
+        // else revert
+        0x00 0x00 revert
+    
+    // pushh(uint256 num)
+    pushLabel:
+        pop
+        pc
+        0x08 add // get the jumpdest location
+        getArrayLocationLabel jump
+        jumpdest
+
+        // get number of slot to know at which index store value
+        0x00 sload
+        dup1 swap2 swap1
+        add
+
+        // store value at index
+        0x04 calldataload swap1
+        sstore
+
+        // increment array length
+        0x01 add
+        0x00 sstore
+
+        emptyReturn jump
+
+    // popp()
+    popLabel:
+        pop
+        pc
+        0x08 add // get the jumpdest location
+        getArrayLocationLabel jump
+        jumpdest
+
+        // get number of slot to know which index should be poped
+        0x00 sload
+        dup1
+        0x00 lt
+        iszero errorZeroArrayLabel jumpi
+
+        // get last array slot
+        dup1 swap2 swap1
+        add
+
+        // update value
+        0x00 swap1 sstore
+
+        //update size
+        0x01 swap1 sub
+        0x00 sstore
+
+        emptyReturn jump
+
+    //length()
+    lengthLabel:
+        pop
+        0x00 sload
+        0x00 mstore
+        0x20 0x00 return
+
+    //read(uint256 index)
+    readLabel:
+        pop
+        pc
+        0x08 add // get the jumpdest location
+        getArrayLocationLabel jump
+        jumpdest
+
+        // get number of slot to know at which index store value
+        0x04 calldataload
+        dup1
+        0x00 sload
+        gt iszero errorOutOfBoundsLabel jumpi
+        add
+
+        sload
+        0x00 mstore
+        0x20 0x00 return
+
+
+    //write(uint256 index, uint256 num)
+    writeLabel:
+        pc
+        0x08 add // get the jumpdest location
+        getArrayLocationLabel jump
+        jumpdest
+
+        // get number of slot to know at which index store value
+        0x04 calldataload
+        dup1
+        0x00 sload
+        gt iszero errorOutOfBoundsLabel jumpi
+        add
+
+        // store value at index
+        0x24 calldataload
+        swap1 sstore
+
+        emptyReturn jump
+
+
+    // getArrayLocation
+    getArrayLocationLabel:
+        0x00 0x00 mstore
+        0x20 0x00 sha3
+        swap1
+        jump
+
+    emptyReturn:
+        0x00 0x00 return
+    
+    errorOutOfBoundsLabel:
+        __ERROR(OutOfBounds) 0x00 mstore
+        0x04 0x00 revert
+
+    errorZeroArrayLabel:
+        __ERROR(ZeroArray) 0x00 mstore
+        0x04 0x00 revert
+}
 ```
 
 ### Emitter
