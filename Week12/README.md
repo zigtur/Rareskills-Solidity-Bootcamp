@@ -787,7 +787,49 @@ Solution:
 ### Create
 Solution:
 ```solidity
+ #define function makeContract() payable returns(address)
 
+
+ #define macro MAIN() = takes(0) returns(0) {
+    // get 4 first bytes
+    0x00 calldataload
+    0xe0 shr
+
+    // makeContract()
+    __FUNC_SIG(makeContract)
+    eq makeContractLabel jumpi
+
+    // else revert
+    0x00 0x00 revert
+
+
+    makeContractLabel:
+        0x600c8060093d393df3620caffe60005260206000f30000000000000000000000
+        0x00 mstore
+
+        // deploy contract and get address
+        0x11 // salt
+        0x15 // size
+        0x00 // offset
+        0x00 // value
+        create2
+
+        // store address in memory
+        0x00 mstore
+        0x20 0x00 return
+ }
+
+/*
+    Sub contract runtime code:
+        0x0caffe 0x00 mstore
+        0x20 0x00 return
+    
+        It gives the following bytecode: 620caffe60005260206000f3
+
+    Sub contract init code: 600c8060093d393df3
+
+    Total bytecode: 0x600c8060093d393df3620caffe60005260206000f3
+*/
 ```
 
 ### SendEther
@@ -820,8 +862,64 @@ Solution:
 }
 ```
 
-### Distribute
+### Distributor
 Solution:
 ```solidity
+#define function distribute(address[]) payable returns()
 
+
+#define macro MAIN() = takes(0) returns(0) {
+    // get 4 first bytes
+    0x00 calldataload
+    0xe0 shr
+
+    // distribute(address[])
+    __FUNC_SIG(distribute)
+    eq distributeLabel jumpi
+
+    // else revert
+    0x00 0x00 revert
+
+    distributeLabel:
+        // i=0
+        0x00
+        // get array size
+        0x04 calldataload
+        0x04 add
+        dup1 // save index in calldata
+        calldataload
+        swap1
+        // get value per address
+        dup2 callvalue div
+
+    distributePerAddress:
+        dup3
+        dup5
+        lt
+        iszero
+        end jumpi
+
+        swap1
+        0x20 add
+        swap1
+        0x00 0x00 0x00 0x00
+        dup5 // value to distribute
+        dup7 calldataload //address
+        gas call
+
+        // revert if error
+        iszero error jumpi
+
+        // increment i and jump for loop
+        swap3
+        0x01 add
+        swap3
+        distributePerAddress jump
+
+    end:
+        0x00 0x00 return
+
+    error:
+        0x00 0x00 revert
+}
 ```
