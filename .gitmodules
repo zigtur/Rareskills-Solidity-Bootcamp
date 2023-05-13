@@ -55,3 +55,6 @@
 [submodule "Week11/RareSkills-gas-puzzles"]
 	path = Week11/RareSkills-gas-puzzles
 	url = https://github.com/zigtur/RareSkills-gas-puzzles
+[submodule "Week13-15/erc1155-huff/lib/forge-std"]
+	path = Week13-15/erc1155-huff/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
