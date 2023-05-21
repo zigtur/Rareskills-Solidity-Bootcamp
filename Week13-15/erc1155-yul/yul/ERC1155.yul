@@ -24,17 +24,20 @@ object "ERC1155" {
             // mint(address,uint256,uint256)
             case 0x156e29f6 {
                 mint(decodeAsAddress(0), decodeAsUint(1), decodeAsUint(2))
+                emitTransferSingle(caller(), 0, decodeAsAddress(0), decodeAsUint(1), decodeAsUint(2))
                 returnTrue()
             }
             // mint(address,uint256,uint256,bytes)
             case 0x731133e9 {
                 // ignore bytes sent
                 mint(decodeAsAddress(0), decodeAsUint(1), decodeAsUint(2))
+                emitTransferSingle(caller(), 0, decodeAsAddress(0), decodeAsUint(1), decodeAsUint(2))
                 returnTrue()
             }
             // batchMint(address,uint256[],uint256[])
             case 0x0ca83480 {
                 batchMint(decodeAsAddress(0), decodeAsUint(1), decodeAsUint(2))
+                // TODO: must emit TransferBatch here
                 returnTrue()
             }
             // batchMint(address,uint256[],uint256[],bytes)
@@ -97,7 +100,6 @@ object "ERC1155" {
             function mint(to, id, amount) {
                 let slot := calculateDoubleMapping(balances(), to, id)
                 sstore(slot, amount)
-                emitTransferSingle(caller(), 0, to, id, amount)
             }
 
             /// @notice A function to mint tokens of multiple type
@@ -131,6 +133,7 @@ object "ERC1155" {
                     idsIndex := add(idsIndex, 0x20)
                     amountsIndex := add(amountsIndex, 0x20)
                 }
+
 
             }
 
@@ -174,16 +177,37 @@ object "ERC1155" {
                     revert(0x0, 21)
                 }
 
+                //// store values in memory to later emit them with emitTransferBatch
+                let beginPointer := 0x40
+                // ids array pointer
+                mstore(beginPointer, 0x40)
+                mstore(add(beginPointer, 0x40), idsSize)
+                let emitIdsPointer := add(beginPointer, 0x60)
+                // amounts array pointer
+                mstore(add(beginPointer, 0x20), mul(0x20, add(idsSize, 1)))
+                let emitAmountsPointer := add(add(beginPointer, 0x40), mul(0x20, add(idsSize, 1)))
+                mstore(emitAmountsPointer, amountsSize)
+                emitAmountsPointer := add(emitAmountsPointer, 0x20)
+
+                let emitMemorySize := add(0x40, mul(2, mul(0x20, add(idsSize, 1))))
+
+
                 for { let i:= 0 } lt(i, idsSize) { i:= add(i, 1)}
                 {
                     _transferFrom(from, to, calldataload(idsIndex), calldataload(amountsIndex))
-                    
-                    emitTransferSingle(caller(), from, to, calldataload(idsIndex), calldataload(amountsIndex))
+
+                    // mstore data to emit it
+                    mstore(emitIdsPointer, calldataload(idsIndex))
+                    mstore(emitAmountsPointer, calldataload(amountsIndex))
 
                     // increment indexes
                     idsIndex := add(idsIndex, 0x20)
                     amountsIndex := add(amountsIndex, 0x20)
+                    emitIdsPointer := add(emitIdsPointer, 0x20)
+                    emitAmountsPointer := add(emitAmountsPointer, 0x20)
+
                 }
+                emitTransferBatch(caller(), from, to, 0x40, emitMemorySize)
 
             }
 
@@ -410,7 +434,18 @@ object "ERC1155" {
             /// @dev Corresponds to `event TransferSingle(address indexed _operator, address indexed _from, address indexed _to, uint256 _id, uint256 _value)`;
             function emitTransferSingle(operator, from, to, id, amount) {
                 let signatureHash := 0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62
-                emit2IndexedEvent(signatureHash, from, to, amount)
+                mstore(0, id)
+                mstore(0x20, amount)
+                // to review
+                log4(0, 0x40, signatureHash, operator, from, to)
+            }
+
+            /// @notice Emit a TransferSingle event
+            /// @dev Emitted when `value` tokens of token type `id` are transferred from `from` to `to` by `operator`.
+            /// @dev Corresponds to `event TransferSingle(address indexed _operator, address indexed _from, address indexed _to, uint256 _id, uint256 _value)`;
+            function emitTransferBatch(operator, from, to, memoryIndex, memorySize) {
+                let signatureHash := 0x4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c0526c8f7fb
+                log4(memoryIndex, memorySize, signatureHash, operator, from, to)
             }
 
             /// @notice Emit a ApprovalForAll event
