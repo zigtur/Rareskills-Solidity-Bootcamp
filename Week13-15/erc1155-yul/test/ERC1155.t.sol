@@ -4,6 +4,7 @@ pragma solidity >=0.8.0;
 import "forge-std/console.sol";
 import "forge-std/Test.sol";
 import "./lib/YulDeployer.sol";
+import "solmate/tokens/ERC1155.sol";
 //import "openzeppelin/token/ERC1155/IERC1155.sol";
 
 interface IERC1155 {
@@ -142,6 +143,99 @@ contract ERC1155Test is Test {
         assertEq(token.balanceOf(address(0xBEEF), 1337), 1);
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    ///                                                                                             ///
+    ///                                   safeTransferFrom tests                                    ///
+    ///                                                                                             ///
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function testSafeTransferFromToEOA() public {
+        address from = address(0xABCD);
+
+        token.mint(from, 1337, 100, "");
+
+        vm.prank(from);
+        token.setApprovalForAll(address(this), true);
+
+        token.safeTransferFrom(from, address(0xBEEF), 1337, 70, "");
+
+        assertEq(token.balanceOf(address(0xBEEF), 1337), 70);
+        assertEq(token.balanceOf(from, 1337), 30);
+    }
+
+    function testSafeTransferFromToERC1155Recipient() public {
+        ERC1155Recipient to = new ERC1155Recipient();
+
+        address from = address(0xABCD);
+
+        token.mint(from, 1337, 100, "");
+
+        vm.prank(from);
+        token.setApprovalForAll(address(this), true);
+
+        token.safeTransferFrom(from, address(to), 1337, 70, "testing 123");
+
+        //// transfer hooks implementation incoming...
+        //assertEq(to.operator(), address(this));
+        //assertEq(to.from(), from);
+        //assertEq(to.id(), 1337);
+        //assertBytesEq(to.mintData(), "testing 123");
+
+        assertEq(token.balanceOf(address(to), 1337), 70);
+        assertEq(token.balanceOf(from, 1337), 30);
+    }
+
+    function testSafeTransferFromSelf() public {
+        token.mint(address(this), 1337, 100, "");
+
+        token.safeTransferFrom(address(this), address(0xBEEF), 1337, 70, "");
+
+        assertEq(token.balanceOf(address(0xBEEF), 1337), 70);
+        assertEq(token.balanceOf(address(this), 1337), 30);
+    }
+
+
+    function testFailSafeTransferFromInsufficientBalance() public {
+        address from = address(0xABCD);
+
+        token.mint(from, 1337, 70, "");
+
+        vm.prank(from);
+        token.setApprovalForAll(address(this), true);
+
+        token.safeTransferFrom(from, address(0xBEEF), 1337, 100, "");
+    }
+
+    function testFailSafeTransferFromSelfInsufficientBalance() public {
+        token.mint(address(this), 1337, 70, "");
+        token.safeTransferFrom(address(this), address(0xBEEF), 1337, 100, "");
+    }
+
+    function testFailSafeTransferFromToZero() public {
+        token.mint(address(this), 1337, 100, "");
+        token.safeTransferFrom(address(this), address(0), 1337, 70, "");
+    }
+
+    // transfer hooks implementation incoming...
+    /*
+    function testFailSafeTransferFromToNonERC155Recipient() public {
+        token.mint(address(this), 1337, 100, "");
+        token.safeTransferFrom(address(this), address(new NonERC1155Recipient()), 1337, 70, "");
+    }
+
+    function testFailSafeTransferFromToRevertingERC1155Recipient() public {
+        token.mint(address(this), 1337, 100, "");
+        token.safeTransferFrom(address(this), address(new RevertingERC1155Recipient()), 1337, 70, "");
+    }
+
+    function testFailSafeTransferFromToWrongReturnDataERC1155Recipient() public {
+        token.mint(address(this), 1337, 100, "");
+        token.safeTransferFrom(address(this), address(new WrongReturnDataERC1155Recipient()), 1337, 70, "");
+    }
+    */
+
+
     /*function testMintToERC1155Recipient() public {
         ERC1155Recipient to = new ERC1155Recipient();
 
@@ -176,5 +270,63 @@ contract ERC1155Test is Test {
         // uint256 balance = ch.balanceOf(address(this),1);
         // require(balance > 0, "balance was unexpected");
     }*/
+}
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    ///                                                                                             ///
+    ///                                         Other tools                                         ///
+    ///                                                                                             ///
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+contract ERC1155Recipient is ERC1155TokenReceiver {
+    address public operator;
+    address public from;
+    uint256 public id;
+    uint256 public amount;
+    bytes public mintData;
+
+    function onERC1155Received(
+        address _operator,
+        address _from,
+        uint256 _id,
+        uint256 _amount,
+        bytes calldata _data
+    ) public override returns (bytes4) {
+        operator = _operator;
+        from = _from;
+        id = _id;
+        amount = _amount;
+        mintData = _data;
+
+        return ERC1155TokenReceiver.onERC1155Received.selector;
+    }
+
+    address public batchOperator;
+    address public batchFrom;
+    uint256[] internal _batchIds;
+    uint256[] internal _batchAmounts;
+    bytes public batchData;
+
+    function batchIds() external view returns (uint256[] memory) {
+        return _batchIds;
+    }
+
+    function batchAmounts() external view returns (uint256[] memory) {
+        return _batchAmounts;
+    }
+
+    function onERC1155BatchReceived(
+        address _operator,
+        address _from,
+        uint256[] calldata _ids,
+        uint256[] calldata _amounts,
+        bytes calldata _data
+    ) external override returns (bytes4) {
+        batchOperator = _operator;
+        batchFrom = _from;
+        _batchIds = _ids;
+        _batchAmounts = _amounts;
+        batchData = _data;
+
+        return ERC1155TokenReceiver.onERC1155BatchReceived.selector;
+    }
 }

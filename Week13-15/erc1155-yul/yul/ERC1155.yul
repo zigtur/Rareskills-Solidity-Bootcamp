@@ -36,14 +36,16 @@ object "ERC1155" {
             //// ERC-1155 standard: Write functions
             // safeTransferFrom(address,address,uint256,uint256,bytes)
             case 0xf242432a {
+                // ignore bytes sent
                 safeTransferFrom(decodeAsAddress(0), decodeAsAddress(1), decodeAsUint(2), decodeAsUint(3))
                 returnTrue()
             }
             // safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)
-            //case 0x2eb2c2d6 {
-            //    approve(decodeAsAddress(0), decodeAsUint(1))
-            //    returnTrue()
-            //}
+            case 0x2eb2c2d6 {
+                // ignore bytes sent
+                safeBatchTransferFrom(decodeAsAddress(0), decodeAsAddress(1), decodeAsUint(2), decodeAsUint(3))
+                returnTrue()
+            }
             // setApprovalForAll(address,bool)
             case 0xa22cb465 {
                 setApprovalForAll(decodeAsAddress(0), decodeAsBool(1))
@@ -62,7 +64,7 @@ object "ERC1155" {
             case 0xe985e9c5 {
                 returnUint(isApprovedForAll(decodeAsAddress(0), decodeAsAddress(1)))
             }
-            
+
             // No fallback functions
             default {
                 //returnTrue()
@@ -74,7 +76,12 @@ object "ERC1155" {
             ///                              Non standard: Write helper functions                           ///
             ///                                                                                             ///
             ///////////////////////////////////////////////////////////////////////////////////////////////////
-            
+
+            /// @notice A function to mint tokens
+            /// @dev Mints `amount` tokens of token type `id` to `to`.
+            /// @param to Address to which token will be minted
+            /// @param id Token to mint 
+            /// @param value Amount of token to mint            
             function mint(to, id, amount) {
                 let slot := calculateDoubleMapping(balances(), to, id)
                 sstore(slot, amount)
@@ -94,13 +101,76 @@ object "ERC1155" {
             /// @param to Address to which token will be transfered
             /// @param id Token to transfer 
             /// @param value Amount of token to transfer
-            function safeTransferFrom(offset) -> v {
-                // Check that `to` != address(0)
-                // to do             
-                v := decodeAsUint(offset)
-                if iszero(iszero(and(v, not(0xffffffffffffffffffffffffffffffffffffffff)))) {
-                    revert(0, 0)
+            function safeBatchTransferFrom(from, to, id, value) {
+                //// check if caller can transfer
+                // require(from == msg.sender || isApprovedForAll(from, msg.sender))
+                // check caller == from before, or isApprovedForAll will revert
+                if iszero(eq(from, caller())) {
+                    if iszero(isApprovedForAll(from, caller())) {
+                        mstore(0x0, 0x455243313135355F4F50455241544F525F4E4F545F415554484F52495A454400)
+                        revert(0x0, 31)
+                    }
                 }
+
+                // Check that `to` != address(0)
+                if eq(to, 0x0) {
+                    mstore(0x0, 0x455243313135355F5452414E534645525F544F5F5A45524F5F41444452455353)
+                    revert(0x0, 32)
+                }
+
+                _transferFrom(from, to, id, value)
+
+                emitTransferSingle(caller(), from, to, id, value)
+            }
+
+            /// @notice A function to transfer tokens safely
+            /// @dev Transfers `amount` tokens of token type `id` from `from` to `to`.
+            /// @param from Address from which token will be transfered
+            /// @param to Address to which token will be transfered
+            /// @param id Token to transfer 
+            /// @param value Amount of token to transfer
+            function safeTransferFrom(from, to, id, value) {
+                //// check if caller can transfer
+                // require(from == msg.sender || isApprovedForAll(from, msg.sender))
+                // check caller == from before, or isApprovedForAll will revert
+                if iszero(eq(from, caller())) {
+                    if iszero(isApprovedForAll(from, caller())) {
+                        mstore(0x0, 0x455243313135355F4F50455241544F525F4E4F545F415554484F52495A454400)
+                        revert(0x0, 31)
+                    }
+                }
+
+                // Check that `to` != address(0)
+                if eq(to, 0x0) {
+                    mstore(0x0, 0x455243313135355F5452414E534645525F544F5F5A45524F5F41444452455353)
+                    revert(0x0, 32)
+                }
+
+                _transferFrom(from, to, id, value)
+
+                emitTransferSingle(caller(), from, to, id, value)
+            }
+
+
+            /// @dev Internal use functions - transfer `amount` tokens of token type `id` from `from` to `to`.
+            /// @param from Address from which token will be transfered
+            /// @param to Address to which token will be transfered
+            /// @param id Token to transfer 
+            /// @param value Amount of token to transfer
+            function _transferFrom(from, to, id, value) {
+                // Do not call balanceOf, to calculate slot only once (gas efficiency)
+                let fromOffset := calculateDoubleMapping(balances(), from, id)
+                let fromBalance := sload(fromOffset)
+                // require(!(fromBalance < value))
+                if lt(fromBalance, value) {
+                    mstore(0x0, 0x455243313135355F494E53554646494349454E545F42414C414E434500000000)
+                    revert(0x0, 28)
+                }
+                
+                // token transfer
+                sstore(fromOffset, sub(fromBalance, value))
+                let toOffset := calculateDoubleMapping(balances(), to, id)
+                sstore(toOffset, add(sload(toOffset), value))
             }
 
             /**
@@ -111,7 +181,7 @@ object "ERC1155" {
             */
             function setApprovalForAll(operator, approved) {
                 if eq(caller(), operator) {
-                    mstore(0x455243313135355F4F50455241544F525F49535F4F574E455200000000000000, 0x0)
+                    mstore(0x0, 0x455243313135355F4F50455241544F525F49535F4F574E455200000000000000)
                     revert(0x0, 25)
                 }
                 let slot := calculateDoubleMapping(operatorApprovals(), operator, caller())
