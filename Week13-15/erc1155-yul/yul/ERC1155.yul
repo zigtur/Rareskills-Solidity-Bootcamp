@@ -11,38 +11,74 @@ object "ERC1155" {
 
     object "runtime" {
         code {
+            //// Storage setup
+            // mapping(uint256 => mapping(address => uint256)) private _balances;
+            function balances() -> slot { slot:= 0x0 }
+            // mapping(address => mapping(address => bool)) private _operatorApprovals;
+            function operatorApprovals() -> slot { slot:= 0x1 }
+            
 
-            // Dispatcher based on selector
+            ////// Dispatcher based on selector
             switch selector()
-            /// Non-standard functions
+            //// Non-standard functions
+            // mint(address,uint256,uint256)
+            case 0x156e29f6 {
+                mint(decodeAsAddress(0), decodeAsUint(1), decodeAsUint(2))
+                returnTrue()
+            }
+            // mint(address,uint256,uint256,bytes)
+            case 0x731133e9 {
+                // ignore bytes sent
+                mint(decodeAsAddress(0), decodeAsUint(1), decodeAsUint(2))
+                returnTrue()
+            }
 
-            /// ERC-1155 standard: Write functions
-            case 0xf242432a /* "safeTransferFrom(address,address,uint256,uint256,bytes)" */ {
+            //// ERC-1155 standard: Write functions
+            // safeTransferFrom(address,address,uint256,uint256,bytes)
+            case 0xf242432a {
                 safeTransferFrom(decodeAsAddress(0), decodeAsAddress(1), decodeAsUint(2), decodeAsUint(3))
                 returnTrue()
             }
-            case 0x2eb2c2d6 /* "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)" */ {
-                approve(decodeAsAddress(0), decodeAsUint(1))
+            // safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)
+            //case 0x2eb2c2d6 {
+            //    approve(decodeAsAddress(0), decodeAsUint(1))
+            //    returnTrue()
+            //}
+            // setApprovalForAll(address,bool)
+            case 0xa22cb465 {
+                setApprovalForAll(decodeAsAddress(0), decodeAsBool(1))
                 returnTrue()
             }
-            case 0xa22cb465 /* "setApprovalForAll(address,bool)" */ {
-                transfer(decodeAsAddress(0), decodeAsUint(1))
-                returnTrue()
+            //// ERC-1155 standard: Read functions
+            // balanceOf(address,uint256)
+            case 0x00fdd58e {
+                returnUint(balanceOf(decodeAsAddress(0), decodeAsUint(1)))
             }
-            /// ERC-1155 standard: Read functions
-            case 0x00fdd58e /* "balanceOf(address,uint256)" */ {
-                returnUint(balanceOf(decodeAsAddress(0)))
+            // balanceOfBatch(address[],uint256[])
+            case 0x4e1273f4 {
+                returnUint(balanceOfBatch(decodeAsUint(0), decodeAsUint(1)))
             }
-            case 0x4e1273f4 /* "balanceOfBatch(address[],uint256[])" */ {
-                returnUint(totalSupply())
+            // isApprovedForAll(address,address)
+            case 0xe985e9c5 {
+                returnUint(isApprovedForAll(decodeAsAddress(0), decodeAsAddress(1)))
             }
-            case 0xe985e9c5 /* "isApprovedForAll(address,address)" */ {
-                transfer(decodeAsAddress(0), decodeAsUint(1))
-                returnTrue()
-            }
-            /// No fallback functions
+            
+            // No fallback functions
             default {
+                //returnTrue()
                 revert(0, 0)
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////
+            ///                                                                                             ///
+            ///                              Non standard: Write helper functions                           ///
+            ///                                                                                             ///
+            ///////////////////////////////////////////////////////////////////////////////////////////////////
+            
+            function mint(to, id, amount) {
+                let slot := calculateDoubleMapping(balances(), to, id)
+                sstore(slot, amount)
+                emitTransferSingle(caller(), 0, to, id, amount)
             }
 
 
@@ -52,31 +88,103 @@ object "ERC1155" {
             ///                                                                                             ///
             ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-            /// @notice A function to transfer tokens fro
+            /// @notice A function to transfer tokens safely
             /// @dev Transfers `amount` tokens of token type `id` from `from` to `to`.
             /// @param from Address from which token will be transfered
             /// @param to Address to which token will be transfered
             /// @param id Token to transfer 
             /// @param value Amount of token to transfer
-            /*function safeTransferFrom(offset) -> v {
+            function safeTransferFrom(offset) -> v {
                 // Check that `to` != address(0)
-
-                
+                // to do             
                 v := decodeAsUint(offset)
                 if iszero(iszero(and(v, not(0xffffffffffffffffffffffffffffffffffffffff)))) {
                     revert(0, 0)
                 }
-            }*/
+            }
+
+            /**
+                @notice Enable or disable approval for a third party ("operator") to manage all of the caller's tokens.
+                @dev MUST emit the ApprovalForAll event on success.
+                @param _operator  Address to add to the set of authorized operators
+                @param _approved  True if the operator is approved, false to revoke approval
+            */
+            function setApprovalForAll(operator, approved) {
+                if eq(caller(), operator) {
+                    mstore(0x455243313135355F4F50455241544F525F49535F4F574E455200000000000000, 0x0)
+                    revert(0x0, 25)
+                }
+                let slot := calculateDoubleMapping(operatorApprovals(), operator, caller())
+                sstore(slot, approved)
+                emitApprovalForAll(caller(), operator, approved)
+            }
 
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////
             ///                                                                                             ///
-            ///                                    Write Helper functions                                   ///
+            ///                               ERC-1155 standard: Read functions                             ///
             ///                                                                                             ///
             ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-            function calculateBalanceSlot(id, account) -> slotNumber {
-                // keccak256(concatenate(account, keccak256(concatenate(id, slot))))
+            function balanceOf(account, id) -> amount {
+                let offset := calculateDoubleMapping(balances(), account, id)
+                amount := sload(offset)
+            }
+
+            function balanceOfBatch(accountPointer, idPointer) -> amount {
+                let accountsNumber,accountsIndex := decodeAsArray(accountPointer)
+                let idsNumber,idsIndex := decodeAsArray(idPointer)
+
+                // require(accounts.length == ids.length)
+                if iszero(eq(idsNumber, accountsNumber)) {
+                    mstore(0x0, 0x455243313135355F4E4F545F53414D455F53495A450000000000000000000000)
+                    revert(0x0, 21)
+                }
+
+                //// initialize array for return, according to Solidity standard
+                // store pointer to array in memory
+                mstore(0x40, 0x20)
+                // store array size
+                mstore(0x60, accountsNumber)
+                let balanceIndex := 0x80
+
+                for { let i:= 0 } lt(i, accountsNumber) { i:= add(i, 1)}
+                {
+                    mstore(balanceIndex, balanceOf(calldataload(accountsIndex), calldataload(idsIndex)))
+
+                    // increment indexes
+                    accountsIndex := add(accountsIndex, 0x20)
+                    idsIndex := add(idsIndex, 0x20)
+                    balanceIndex := add(balanceIndex, 0x20)
+                }
+                return(0x40, add(0x40, mul(0x20, accountsNumber)))
+            }
+            
+            function isApprovedForAll(account, operator) -> approved {
+                if eq(account, operator) {
+                    mstore(0x455243313135355F4F50455241544F525F49535F4F574E455200000000000000, 0x0)
+                    revert(0x0, 25)
+                }
+                let slot := calculateDoubleMapping(operatorApprovals(), operator, account)
+                approved := sload(slot)
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////
+            ///                                                                                             ///
+            ///                                        Helper functions                                     ///
+            ///                                                                                             ///
+            ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+            function calculateDoubleMapping(mappingSlot, map2, map1) -> slot {
+                //// keccak256(concatenate(account, keccak256(concatenate(id, slot))))
+                // keccak256(concatenate(id, slot))
+                mstore(0x0, map1)
+                mstore(0x20, mappingSlot) // mstore storage slot of mapping
+                let tmpHash := keccak256(0, 0x40)
+                // keccak256(concatenate(account, tmpHash))
+                mstore(0x0, map2)
+                mstore(0x20, tmpHash)
+                slot := keccak256(0x0, 0x40)
             }
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,7 +197,7 @@ object "ERC1155" {
             /// @notice This function is used to get function selector from the calldata
             /// @return The function selector from calldata
             function selector() -> s {
-                s := shr(calldataload(0), 0xe0)
+                s := shr(0xe0, calldataload(0))
             }
 
             /// @notice A function to decode a calldata slot as an address
@@ -111,6 +219,29 @@ object "ERC1155" {
                     revert(0, 0)
                 }
                 v := calldataload(pos)
+            }
+
+            /// @notice A function to decode a calldata slot as a boolean 
+            /// @param The offset of the bool to read in calldata
+            /// @return The value decoded as a boolean
+            function decodeAsBool(offset) -> v {
+                let pos := add(4, mul(offset, 0x20))
+                if lt(calldatasize(), add(pos, 0x20)) {
+                    revert(0, 0)
+                }
+                v := and(0x1, calldataload(pos))
+            }
+
+            /// @notice A function to decode a calldata dynamic array
+            /// @param The offset at which the array is stored in calldata (must point to the size argument)
+            /// @return The size of the array
+            /// @return The offset at which first argument is stored
+            function decodeAsArray(pointer) -> size,firstSlot {
+                size := calldataload(add(4, pointer))
+                if lt(calldatasize(), add(pointer, mul(size, 0x20))) {
+                    revert(0, 0)
+                }
+                firstSlot := add(0x24, pointer)
             }
 
 
@@ -144,7 +275,15 @@ object "ERC1155" {
             /// @dev Corresponds to `event TransferSingle(address indexed _operator, address indexed _from, address indexed _to, uint256 _id, uint256 _value)`;
             function emitTransferSingle(operator, from, to, id, amount) {
                 let signatureHash := 0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62
-                emit3IndexedEvent(signatureHash, from, to, amount)
+                emit2IndexedEvent(signatureHash, from, to, amount)
+            }
+
+            /// @notice Emit a ApprovalForAll event
+            /// @dev Emitted when `account` grants or revokes permission to `operator` to transfer their tokens, according to `approved`.
+            /// @dev Corresponds to `event ApprovalForAll(address indexed account, address indexed operator, bool approved);`
+            function emitApprovalForAll(owner, operator, approved) {
+                let signatureHash := 0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31
+                emit2IndexedEvent(signatureHash, owner, operator, approved)
             }
 
             /// @notice Emit a TransferBatch event
@@ -161,16 +300,13 @@ object "ERC1155" {
                 log4(0, 0x40, signatureHash, indexed1, indexed2, indexed3)
             }
 
-            /// @dev Emitted when `account` grants or revokes permission to `operator` to transfer their tokens, according to `approved`.
-            /// @dev Corresponds to `event ApprovalForAll(address indexed account, address indexed operator, bool approved);`
-            function emitApprovalForAll(owner, operator, approved) {
-                let signatureHash := 0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31
-                emit2IndexedEvent(signatureHash, owner, operator, approved)
-            }
-
             function emit2IndexedEvent(signatureHash, indexed1, indexed2, nonIndexed) {
                 mstore(0, nonIndexed)
                 log3(0, 0x20, signatureHash, indexed1, indexed2)
+            }
+
+            function debugEmit(value) {
+                log1(0, 0x00, value)
             }
 
             /// @dev Emitted when the URI for token type `id` changes to `value`, if it is a non-programmatic URI.

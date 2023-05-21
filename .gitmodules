@@ -58,3 +58,6 @@
 [submodule "Week13-15/erc1155-huff/lib/forge-std"]
 	path = Week13-15/erc1155-huff/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "Week13-15/erc1155-yul/lib/openzeppelin-contracts"]
+	path = Week13-15/erc1155-yul/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
