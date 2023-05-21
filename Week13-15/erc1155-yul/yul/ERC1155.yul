@@ -32,6 +32,18 @@ object "ERC1155" {
                 mint(decodeAsAddress(0), decodeAsUint(1), decodeAsUint(2))
                 returnTrue()
             }
+            // batchMint(address,uint256[],uint256[])
+            case 0x0ca83480 {
+                batchMint(decodeAsAddress(0), decodeAsUint(1), decodeAsUint(2))
+                returnTrue()
+            }
+            // batchMint(address,uint256[],uint256[],bytes)
+            case 0xb48ab8b6 {
+                // ignore bytes sent
+                batchMint(decodeAsAddress(0), decodeAsUint(1), decodeAsUint(2))
+                returnTrue()
+            }
+
 
             //// ERC-1155 standard: Write functions
             // safeTransferFrom(address,address,uint256,uint256,bytes)
@@ -88,6 +100,40 @@ object "ERC1155" {
                 emitTransferSingle(caller(), 0, to, id, amount)
             }
 
+            /// @notice A function to mint tokens of multiple type
+            /// @dev Mints `amounts` tokens of token types `ids` to `to`.
+            /// @param to Address to which token will be minted
+            /// @param ids Array of token type to mint 
+            /// @param amounts Array of amount per token type to mint
+            function batchMint(to, idPointer, amountPointer) {
+                // Check that `to` != address(0)
+                if eq(to, 0x0) {
+                    mstore(0x0, 0x455243313135355F5452414E534645525F544F5F5A45524F5F41444452455353)
+                    revert(0x0, 32)
+                }
+
+                //// Array manipulation
+                let idsSize,idsIndex := decodeAsArray(idPointer)
+                let amountsSize,amountsIndex := decodeAsArray(amountPointer)
+
+                // require(value.length == id.length)
+                if iszero(eq(idsSize, amountsSize)) {
+                    // ERC1155_NOT_SAME_SIZE
+                    mstore(0x0, 0x455243313135355F4E4F545F53414D455F53495A450000000000000000000000)
+                    revert(0x0, 21)
+                }
+
+                for { let i:= 0 } lt(i, idsSize) { i:= add(i, 1)}
+                {
+                    mint(to, calldataload(idsIndex), calldataload(amountsIndex))
+
+                    // increment indexes
+                    idsIndex := add(idsIndex, 0x20)
+                    amountsIndex := add(amountsIndex, 0x20)
+                }
+
+            }
+
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////
             ///                                                                                             ///
@@ -95,13 +141,13 @@ object "ERC1155" {
             ///                                                                                             ///
             ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-            /// @notice A function to transfer tokens safely
-            /// @dev Transfers `amount` tokens of token type `id` from `from` to `to`.
+            /// @notice A function to transfer tokens of multiple ids safely
+            /// @dev Transfers `amounts` tokens of token types `ids` from `from` to `to`.
             /// @param from Address from which token will be transfered
             /// @param to Address to which token will be transfered
-            /// @param id Token to transfer 
-            /// @param value Amount of token to transfer
-            function safeBatchTransferFrom(from, to, id, value) {
+            /// @param ids Array of token type to transfer 
+            /// @param amounts Array of amount per token type to transfer
+            function safeBatchTransferFrom(from, to, idPointer, amountPointer) {
                 //// check if caller can transfer
                 // require(from == msg.sender || isApprovedForAll(from, msg.sender))
                 // check caller == from before, or isApprovedForAll will revert
@@ -111,16 +157,34 @@ object "ERC1155" {
                         revert(0x0, 31)
                     }
                 }
-
                 // Check that `to` != address(0)
                 if eq(to, 0x0) {
                     mstore(0x0, 0x455243313135355F5452414E534645525F544F5F5A45524F5F41444452455353)
                     revert(0x0, 32)
                 }
 
-                _transferFrom(from, to, id, value)
+                //// Array manipulation
+                let idsSize,idsIndex := decodeAsArray(idPointer)
+                let amountsSize,amountsIndex := decodeAsArray(amountPointer)
 
-                emitTransferSingle(caller(), from, to, id, value)
+                // require(value.length == id.length)
+                if iszero(eq(idsSize, amountsSize)) {
+                    // ERC1155_NOT_SAME_SIZE
+                    mstore(0x0, 0x455243313135355F4E4F545F53414D455F53495A450000000000000000000000)
+                    revert(0x0, 21)
+                }
+
+                for { let i:= 0 } lt(i, idsSize) { i:= add(i, 1)}
+                {
+                    _transferFrom(from, to, calldataload(idsIndex), calldataload(amountsIndex))
+                    
+                    emitTransferSingle(caller(), from, to, calldataload(idsIndex), calldataload(amountsIndex))
+
+                    // increment indexes
+                    idsIndex := add(idsIndex, 0x20)
+                    amountsIndex := add(amountsIndex, 0x20)
+                }
+
             }
 
             /// @notice A function to transfer tokens safely
@@ -128,8 +192,8 @@ object "ERC1155" {
             /// @param from Address from which token will be transfered
             /// @param to Address to which token will be transfered
             /// @param id Token to transfer 
-            /// @param value Amount of token to transfer
-            function safeTransferFrom(from, to, id, value) {
+            /// @param amount Amount of token to transfer
+            function safeTransferFrom(from, to, id, amount) {
                 //// check if caller can transfer
                 // require(from == msg.sender || isApprovedForAll(from, msg.sender))
                 // check caller == from before, or isApprovedForAll will revert
@@ -146,9 +210,9 @@ object "ERC1155" {
                     revert(0x0, 32)
                 }
 
-                _transferFrom(from, to, id, value)
+                _transferFrom(from, to, id, amount)
 
-                emitTransferSingle(caller(), from, to, id, value)
+                emitTransferSingle(caller(), from, to, id, amount)
             }
 
 
@@ -207,6 +271,7 @@ object "ERC1155" {
 
                 // require(accounts.length == ids.length)
                 if iszero(eq(idsNumber, accountsNumber)) {
+                    // ERC1155_NOT_SAME_SIZE
                     mstore(0x0, 0x455243313135355F4E4F545F53414D455F53495A450000000000000000000000)
                     revert(0x0, 21)
                 }
