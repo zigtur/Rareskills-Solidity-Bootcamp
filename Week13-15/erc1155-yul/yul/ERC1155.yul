@@ -125,18 +125,36 @@ object "ERC1155" {
                     revert(0x0, 21)
                 }
 
+                //// store values in memory to later emit them with emitTransferBatch
+                let beginPointer := 0x40
+                // ids array pointer
+                mstore(beginPointer, 0x40)
+                mstore(add(beginPointer, 0x40), idsSize)
+                let emitIdsPointer := add(beginPointer, 0x60)
+                // amounts array pointer
+                mstore(add(beginPointer, 0x20), mul(0x20, add(idsSize, 1)))
+                let emitAmountsPointer := add(add(beginPointer, 0x40), mul(0x20, add(idsSize, 1)))
+                mstore(emitAmountsPointer, amountsSize)
+                emitAmountsPointer := add(emitAmountsPointer, 0x20)
+
+                let emitMemorySize := add(0x40, mul(2, mul(0x20, add(idsSize, 1))))
+
                 for { let i:= 0 } lt(i, idsSize) { i:= add(i, 1)}
                 {
                     mint(to, calldataload(idsIndex), calldataload(amountsIndex))
 
+                    // mstore data to emit it
+                    mstore(emitIdsPointer, calldataload(idsIndex))
+                    mstore(emitAmountsPointer, calldataload(amountsIndex))
+
                     // increment indexes
                     idsIndex := add(idsIndex, 0x20)
                     amountsIndex := add(amountsIndex, 0x20)
+                    emitIdsPointer := add(emitIdsPointer, 0x20)
+                    emitAmountsPointer := add(emitAmountsPointer, 0x20)
                 }
-
-
+                emitTransferBatch(caller(), 0, to, 0x40, emitMemorySize)
             }
-
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////
             ///                                                                                             ///
