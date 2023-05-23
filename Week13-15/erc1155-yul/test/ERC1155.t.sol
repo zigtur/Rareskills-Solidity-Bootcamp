@@ -52,6 +52,14 @@ contract ERC1155Test is Test {
     IERC1155 token;
     
     event TransferSingle(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value);
+    event TransferBatch(
+        address indexed operator,
+        address indexed from,
+        address indexed to,
+        uint256[] ids,
+        uint256[] values
+    );
+    event ApprovalForAll(address indexed account, address indexed operator, bool approved);
     event URI(string _value, uint256 indexed _id);    
 
     function setUp() public {
@@ -181,6 +189,8 @@ contract ERC1155Test is Test {
         amounts[3] = 400;
         amounts[4] = 500;
 
+        vm.expectEmit(true, true, true, true);
+        emit TransferBatch(address(this), address(0x0), address(0xBEEF), ids, amounts);
         token.batchMint(address(0xBEEF), ids, amounts, "");
 
         assertEq(token.balanceOf(address(0xBEEF), 1337), 100);
@@ -206,6 +216,9 @@ contract ERC1155Test is Test {
         amounts[2] = 300;
         amounts[3] = 400;
         amounts[4] = 500;
+        
+        vm.expectEmit(true, true, true, true);
+        emit TransferBatch(address(this), address(0x0), address(to), ids, amounts);
 
         token.batchMint(address(to), ids, amounts, "testing 123");
 
@@ -237,6 +250,9 @@ contract ERC1155Test is Test {
         vm.prank(from);
         token.setApprovalForAll(address(this), true);
 
+        vm.expectEmit(true, true, true, true);
+        emit TransferSingle(address(this), from, address(0xBEEF), 1337, 70);
+
         token.safeTransferFrom(from, address(0xBEEF), 1337, 70, "");
 
         assertEq(token.balanceOf(address(0xBEEF), 1337), 70);
@@ -253,6 +269,9 @@ contract ERC1155Test is Test {
         vm.prank(from);
         token.setApprovalForAll(address(this), true);
 
+        vm.expectEmit(true, true, true, true);
+        emit TransferSingle(address(this), from, address(to), 1337, 70);
+
         token.safeTransferFrom(from, address(to), 1337, 70, "testing 123");
 
         //// transfer hooks implementation incoming...
@@ -268,6 +287,9 @@ contract ERC1155Test is Test {
     function testSafeTransferFromSelf() public {
         token.mint(address(this), 1337, 100, "");
 
+        vm.expectEmit(true, true, true, true);
+        emit TransferSingle(address(this), address(this), address(0xBEEF), 1337, 70);
+
         token.safeTransferFrom(address(this), address(0xBEEF), 1337, 70, "");
 
         assertEq(token.balanceOf(address(0xBEEF), 1337), 70);
@@ -279,6 +301,9 @@ contract ERC1155Test is Test {
         address from = address(0xABCD);
 
         token.mint(from, 1337, 70, "");
+
+        vm.expectEmit(true, true, true, true);
+        emit ApprovalForAll(from, address(this), true);
 
         vm.prank(from);
         token.setApprovalForAll(address(this), true);
@@ -345,15 +370,13 @@ contract ERC1155Test is Test {
         transferAmounts[3] = 200;
         transferAmounts[4] = 250;
 
-        //token.batchMint(from, ids, mintAmounts, "");
-        token.mint(from, 1337, 100, "");
-        token.mint(from, 1338, 200, "");
-        token.mint(from, 1339, 300, "");
-        token.mint(from, 1340, 400, "");
-        token.mint(from, 1341, 500, "");
+        token.batchMint(from, ids, mintAmounts, "");
 
         vm.prank(from);
         token.setApprovalForAll(address(this), true);
+
+        vm.expectEmit(true, true, true, true);
+        emit TransferBatch(address(this), from, address(0xBEEF), ids, transferAmounts);
 
         token.safeBatchTransferFrom(from, address(0xBEEF), ids, transferAmounts, "");
 
@@ -399,15 +422,13 @@ contract ERC1155Test is Test {
         transferAmounts[3] = 200;
         transferAmounts[4] = 250;
 
-        //token.batchMint(from, ids, mintAmounts, "");
-        token.mint(from, 1337, 100, "");
-        token.mint(from, 1338, 200, "");
-        token.mint(from, 1339, 300, "");
-        token.mint(from, 1340, 400, "");
-        token.mint(from, 1341, 500, "");
+        token.batchMint(from, ids, mintAmounts, "");
 
         vm.prank(from);
         token.setApprovalForAll(address(this), true);
+        
+        vm.expectEmit(true, true, true, true);
+        emit TransferBatch(address(this), address(from), address(to), ids, transferAmounts);
 
         token.safeBatchTransferFrom(from, address(to), ids, transferAmounts, "testing 123");
 

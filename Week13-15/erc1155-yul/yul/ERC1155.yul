@@ -132,7 +132,7 @@ object "ERC1155" {
                 mstore(add(beginPointer, 0x40), idsSize)
                 let emitIdsPointer := add(beginPointer, 0x60)
                 // amounts array pointer
-                mstore(add(beginPointer, 0x20), mul(0x20, add(idsSize, 1)))
+                mstore(add(beginPointer, 0x20), add(beginPointer, mul(0x20, add(idsSize, 1))))
                 let emitAmountsPointer := add(add(beginPointer, 0x40), mul(0x20, add(idsSize, 1)))
                 mstore(emitAmountsPointer, amountsSize)
                 emitAmountsPointer := add(emitAmountsPointer, 0x20)
@@ -202,7 +202,7 @@ object "ERC1155" {
                 mstore(add(beginPointer, 0x40), idsSize)
                 let emitIdsPointer := add(beginPointer, 0x60)
                 // amounts array pointer
-                mstore(add(beginPointer, 0x20), mul(0x20, add(idsSize, 1)))
+                mstore(add(beginPointer, 0x20), add(beginPointer, mul(0x20, add(idsSize, 1))))
                 let emitAmountsPointer := add(add(beginPointer, 0x40), mul(0x20, add(idsSize, 1)))
                 mstore(emitAmountsPointer, amountsSize)
                 emitAmountsPointer := add(emitAmountsPointer, 0x20)
