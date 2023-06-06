@@ -1,0 +1,60 @@
+/* Interface */
+
+//// READ ERC1155 STANDARD FUNCTIONS
+#define function balanceOf(address account, uint256 id) external view returns (uint256)
+#define function balanceOfBatch(address[] calldata accounts, uint256[] calldata ids) external view returns (uint256[] memory)
+#define function isApprovedForAll(address account, address operator) external view returns (bool)
+#define 
+#define 
+#define 
+
+//// WRITE ERC1155 STANDARD FUNCTIONS
+#define function setApprovalForAll(address operator, bool approved) external
+#define function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes calldata data) external
+#define function safeBatchTransferFrom(address from, address to, uint256[] calldata ids, uint256[] calldata amounts, bytes calldata data) external
+#define function batchMint(address to, uint256[] calldata id, uint256[] calldata amounts) external
+#define function batchMint(address to, uint256[] calldata id, uint256[] calldata amounts, bytes calldata) external
+
+//// NON-STANDARD FUNCTIONS
+#define function mint(address to, uint256 id, uint256 amount) external
+#define function mint(address to, uint256 id, uint256 amount, bytes calldata) external
+
+
+
+
+/* Storage Slots */
+#define constant VALUE_LOCATION = FREE_STORAGE_POINTER()
+
+/* Methods */
+#define macro SET_VALUE() = takes (0) returns (0) {
+    0x04 calldataload   // [value]
+    [VALUE_LOCATION]    // [ptr, value]
+    sstore              // []
+}
+
+#define macro GET_VALUE() = takes (0) returns (0) {
+    // Load value from storage.
+    [VALUE_LOCATION]   // [ptr]
+    sload                // [value]
+
+    // Store value in memory.
+    0x00 mstore
+
+    // Return value
+    0x20 0x00 return
+}
+
+#define macro MAIN() = takes (0) returns (0) {
+    // Identify which function is being called.
+    0x00 calldataload 0xE0 shr
+    dup1 __FUNC_SIG(setValue) eq set jumpi
+    dup1 __FUNC_SIG(getValue) eq get jumpi
+
+    0x00 0x00 revert
+
+    set:
+        SET_VALUE()
+    get:
+        GET_VALUE()
+
+}
