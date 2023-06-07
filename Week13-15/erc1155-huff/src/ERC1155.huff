@@ -4,20 +4,17 @@
 #define function balanceOf(address account, uint256 id) external view returns (uint256)
 #define function balanceOfBatch(address[] calldata accounts, uint256[] calldata ids) external view returns (uint256[] memory)
 #define function isApprovedForAll(address account, address operator) external view returns (bool)
-#define 
-#define 
-#define 
-
+//#define function 
 //// WRITE ERC1155 STANDARD FUNCTIONS
 #define function setApprovalForAll(address operator, bool approved) external
 #define function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes calldata data) external
 #define function safeBatchTransferFrom(address from, address to, uint256[] calldata ids, uint256[] calldata amounts, bytes calldata data) external
 #define function batchMint(address to, uint256[] calldata id, uint256[] calldata amounts) external
-#define function batchMint(address to, uint256[] calldata id, uint256[] calldata amounts, bytes calldata) external
+//#define function batchMint(address to, uint256[] calldata id, uint256[] calldata amounts, bytes calldata) external
 
 //// NON-STANDARD FUNCTIONS
 #define function mint(address to, uint256 id, uint256 amount) external
-#define function mint(address to, uint256 id, uint256 amount, bytes calldata) external
+//#define function mint(address to, uint256 id, uint256 amount, bytes calldata) external
 
 
 
@@ -25,7 +22,22 @@
 /* Storage Slots */
 #define constant VALUE_LOCATION = FREE_STORAGE_POINTER()
 
-/* Methods */
+/*
+#######################################
+#                                     #
+#            WRITE METHODS            #
+#                                     #
+#######################################
+*/
+
+
+/*
+#######################################
+#                                     #
+#            READ METHODS             #
+#                                     #
+#######################################
+*/
 #define macro SET_VALUE() = takes (0) returns (0) {
     0x04 calldataload   // [value]
     [VALUE_LOCATION]    // [ptr, value]
@@ -44,17 +56,51 @@
     0x20 0x00 return
 }
 
+/*
+#######################################
+#                                     #
+#                 MAIN                #
+#                                     #
+#######################################
+*/
 #define macro MAIN() = takes (0) returns (0) {
     // Identify which function is being called.
-    0x00 calldataload 0xE0 shr
-    dup1 __FUNC_SIG(setValue) eq set jumpi
-    dup1 __FUNC_SIG(getValue) eq get jumpi
+    0x00 calldataload 0xe0 shr
+    // WRITE FUNCTIONS FIRST
+    dup1 __FUNC_SIG(setApprovalForAll) eq setApprovalForAll jumpi
+    dup1 __FUNC_SIG(safeTransferFrom) eq safeTransferFrom jumpi
+    dup1 __FUNC_SIG(safeBatchTransferFrom) eq safeBatchTransferFrom jumpi
+    dup1 __FUNC_SIG(batchMint) eq batchMint jumpi
+    dup1 __FUNC_SIG(mint) eq mint jumpi
+
+
+    // READ FUNCTIONS
+    dup1 __FUNC_SIG(balanceOf) eq balanceOf jumpi
+    dup1 __FUNC_SIG(balanceOfBatch) eq balanceOfBatch jumpi
+    dup1 __FUNC_SIG(isApprovedForAll) eq isApprovedForAll jumpi
 
     0x00 0x00 revert
 
-    set:
-        SET_VALUE()
-    get:
-        GET_VALUE()
+
+    // WRITE FUNCTIONS POINTER
+    setApprovalForAll:
+        SET_APPROVAL_FOR_ALL()
+    safeTransferFrom:
+        SAFE_TRANSFER_FROM()
+    safeBatchTransferFrom:
+        SAFE_BATCH_TRANSFER_FROM()
+    batchMint:
+        BATCH_MINT()
+    mint:
+        MINT()
+
+
+    // READ FUNCTIONS POINTER
+    balanceOf:
+        BALANCE_OF()
+    balanceOfBatch:
+        BALANCE_OF_BATCH()
+    isApprovedForAll:
+        IS_APPROVED_FOR_ALL()
 
 }
