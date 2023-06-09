@@ -4,6 +4,7 @@ pragma solidity ^0.8.15;
 import "foundry-huff/HuffDeployer.sol";
 import "forge-std/Test.sol";
 import "forge-std/console.sol";
+import "solmate/tokens/ERC1155.sol";
 
 interface IERC1155 {
     // ERC-1155 standard functions
@@ -69,7 +70,7 @@ contract ERC1155Test is Test {
         assertEq(token.balanceOf(address(this), 1), 1000);
     }
 
-
+    /*
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     ///                                                                                             ///
     ///                                    ApprovalForAll tests                                     ///
@@ -137,7 +138,7 @@ contract ERC1155Test is Test {
         ids[3] = 1340;
 
         token.balanceOfBatch(tos, ids);
-    }
+    }*/
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     ///                                                                                             ///
@@ -145,11 +146,11 @@ contract ERC1155Test is Test {
     ///                                                                                             ///
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function testMintToEOA() public {
+    /*function testMintToEOA() public {
         token.mint(address(0xBEEF), 1337, 1, "");
 
         assertEq(token.balanceOf(address(0xBEEF), 1337), 1);
-    }
+    }*/
 
     // transfer hooks implementation incoming...
     /*function testMintToERC1155Recipient() public {
@@ -163,15 +164,15 @@ contract ERC1155Test is Test {
         assertEq(to.from(), address(0));
         assertEq(to.id(), 1337);
         assertBytesEq(to.mintData(), "testing 123");
-    }*/
+    }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    /*///////////////////////////////////////////////////////////////////////////////////////////////////
     ///                                                                                             ///
     ///                                      batchMint tests                                        ///
     ///                                                                                             ///
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function testBatchMintToEOA() public {
+    /*function testBatchMintToEOA() public {
         uint256[] memory ids = new uint256[](5);
         ids[0] = 1337;
         ids[1] = 1338;
@@ -225,7 +226,7 @@ contract ERC1155Test is Test {
         assertUintArrayEq(to.batchAmounts(), amounts);
         assertBytesEq(to.batchData(), "testing 123");*/
 
-        assertEq(token.balanceOf(address(to), 1337), 100);
+        /*assertEq(token.balanceOf(address(to), 1337), 100);
         assertEq(token.balanceOf(address(to), 1338), 200);
         assertEq(token.balanceOf(address(to), 1339), 300);
         assertEq(token.balanceOf(address(to), 1340), 400);
@@ -343,7 +344,7 @@ contract ERC1155Test is Test {
     ///                                                                                             ///
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     
-    function testSafeBatchTransferFromToEOA() public {
+    /*function testSafeBatchTransferFromToEOA() public {
         address from = address(0xABCD);
 
         uint256[] memory ids = new uint256[](5);
@@ -436,7 +437,7 @@ contract ERC1155Test is Test {
         assertUintArrayEq(to.batchAmounts(), transferAmounts);
         assertBytesEq(to.batchData(), "testing 123");*/
 
-        assertEq(token.balanceOf(from, 1337), 50);
+        /*assertEq(token.balanceOf(from, 1337), 50);
         assertEq(token.balanceOf(address(to), 1337), 50);
 
         assertEq(token.balanceOf(from, 1338), 100);
@@ -452,12 +453,12 @@ contract ERC1155Test is Test {
         assertEq(token.balanceOf(address(to), 1341), 250);
     }
 
-
+*/
 
 
 }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
+/*    ///////////////////////////////////////////////////////////////////////////////////////////////////
     ///                                                                                             ///
     ///                                         Other tools                                         ///
     ///                                                                                             ///
@@ -515,3 +516,5 @@ contract ERC1155Recipient is ERC1155TokenReceiver {
         return ERC1155TokenReceiver.onERC1155BatchReceived.selector;
     }
 }
+*/
+

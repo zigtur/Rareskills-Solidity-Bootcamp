@@ -61,3 +61,9 @@
 [submodule "Week13-15/erc1155-yul/lib/openzeppelin-contracts"]
 	path = Week13-15/erc1155-yul/lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "Week13-15/erc1155-huff/lib/foundry-huff"]
+	path = Week13-15/erc1155-huff/lib/foundry-huff
+	url = https://github.com/huff-language/foundry-huff
+[submodule "Week13-15/erc1155-huff/lib/solmate"]
+	path = Week13-15/erc1155-huff/lib/solmate
+	url = https://github.com/Rari-Capital/solmate
