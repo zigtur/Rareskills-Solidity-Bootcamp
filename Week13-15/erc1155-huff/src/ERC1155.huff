@@ -31,7 +31,9 @@
     dup1 __FUNC_SIG(safeTransferFrom) eq safeTransferFrom jumpi
     dup1 __FUNC_SIG(safeBatchTransferFrom) eq safeBatchTransferFrom jumpi
     dup1 __FUNC_SIG(batchMint) eq batchMint jumpi*/
+    // mint with bytes and without bytes
     dup1 __FUNC_SIG(mint) eq mint jumpi
+    dup1 0x156e29f6 eq mint jumpi
 
 
     // READ FUNCTIONS
@@ -126,15 +128,13 @@
     0x00 0x00 0x12 log1 // DEBUG
     
     dup1 sload          // load balance
-    0x00 0x00 dup3 log1 // DEBUG
+    //0x00 0x00 dup3 log1 // DEBUG
     0x44 calldataload   // load number to mint
     add                 // add it
+    
+    swap1 sstore // store new balance in storage*/
 
-    dup1 //DEBUG
-
-    swap2 sstore // store new balance in storage
-
-    0x20 0x00 return // return value
+    0x00 0x00 return // return value
 }
 
 
