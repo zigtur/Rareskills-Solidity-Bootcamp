@@ -110,6 +110,7 @@ object "ERC1155" {
             function batchMint(to, idPointer, amountPointer) {
                 // Check that `to` != address(0)
                 if eq(to, 0x0) {
+                    // ERC1155_TRANSFER_TO_ZERO_ADDRESS
                     mstore(0x0, 0x455243313135355F5452414E534645525F544F5F5A45524F5F41444452455353)
                     revert(0x0, 32)
                 }
@@ -137,7 +138,7 @@ object "ERC1155" {
                 mstore(emitAmountsPointer, amountsSize)
                 emitAmountsPointer := add(emitAmountsPointer, 0x20)
 
-                let emitMemorySize := add(0x40, mul(2, mul(0x20, add(idsSize, 1))))
+                let emitMemorySize := add(0x40, shl(1, mul(0x20, add(idsSize, 1))))
 
                 for { let i:= 0 } lt(i, idsSize) { i:= add(i, 1)}
                 {
@@ -174,12 +175,14 @@ object "ERC1155" {
                 // check caller == from before, or isApprovedForAll will revert
                 if iszero(eq(from, caller())) {
                     if iszero(isApprovedForAll(from, caller())) {
-                        mstore(0x0, 0x455243313135355F4F50455241544F525F4E4F545F415554484F52495A454400)
-                        revert(0x0, 31)
+                        // ERC1155_OPERATOR_NOT_AUTHORIZED
+                        mstore(0x0, 0x455243313135355F4F50455241544F525F4E4F545F415554484F52495A4544)
+                        revert(0x01, 31)
                     }
                 }
                 // Check that `to` != address(0)
-                if eq(to, 0x0) {
+                if iszero(to) {
+                    // ERC1155_TRANSFER_TO_ZERO_ADDRESS
                     mstore(0x0, 0x455243313135355F5452414E534645525F544F5F5A45524F5F41444452455353)
                     revert(0x0, 32)
                 }
@@ -191,8 +194,8 @@ object "ERC1155" {
                 // require(value.length == id.length)
                 if iszero(eq(idsSize, amountsSize)) {
                     // ERC1155_NOT_SAME_SIZE
-                    mstore(0x0, 0x455243313135355F4E4F545F53414D455F53495A450000000000000000000000)
-                    revert(0x0, 21)
+                    mstore(0x0, 0x455243313135355F4E4F545F53414D455F53495A45)
+                    revert(0x0B, 21)
                 }
 
                 //// store values in memory to later emit them with emitTransferBatch
@@ -207,7 +210,7 @@ object "ERC1155" {
                 mstore(emitAmountsPointer, amountsSize)
                 emitAmountsPointer := add(emitAmountsPointer, 0x20)
 
-                let emitMemorySize := add(0x40, mul(2, mul(0x20, add(idsSize, 1))))
+                let emitMemorySize := add(0x40, shl(1, mul(0x20, add(idsSize, 1))))
 
 
                 for { let i:= 0 } lt(i, idsSize) { i:= add(i, 1)}
@@ -241,13 +244,15 @@ object "ERC1155" {
                 // check caller == from before, or isApprovedForAll will revert
                 if iszero(eq(from, caller())) {
                     if iszero(isApprovedForAll(from, caller())) {
-                        mstore(0x0, 0x455243313135355F4F50455241544F525F4E4F545F415554484F52495A454400)
-                        revert(0x0, 31)
+                        // ERC1155_OPERATOR_NOT_AUTHORIZED
+                        mstore(0x0, 0x455243313135355F4F50455241544F525F4E4F545F415554484F52495A4544)
+                        revert(0x01, 31)
                     }
                 }
 
                 // Check that `to` != address(0)
-                if eq(to, 0x0) {
+                if iszero(to) {
+                    // ERC1155_TRANSFER_TO_ZERO_ADDRESS
                     mstore(0x0, 0x455243313135355F5452414E534645525F544F5F5A45524F5F41444452455353)
                     revert(0x0, 32)
                 }
@@ -269,8 +274,9 @@ object "ERC1155" {
                 let fromBalance := sload(fromOffset)
                 // require(!(fromBalance < value))
                 if lt(fromBalance, value) {
-                    mstore(0x0, 0x455243313135355F494E53554646494349454E545F42414C414E434500000000)
-                    revert(0x0, 28)
+                    // ERC1155_INSUFFICIENT_BALANCE
+                    mstore(0x0, 0x455243313135355F494E53554646494349454E545F42414C414E4345)
+                    revert(0x04, 28)
                 }
                 
                 // token transfer
@@ -287,8 +293,9 @@ object "ERC1155" {
             */
             function setApprovalForAll(operator, approved) {
                 if eq(caller(), operator) {
-                    mstore(0x0, 0x455243313135355F4F50455241544F525F49535F4F574E455200000000000000)
-                    revert(0x0, 25)
+                    // ERC1155_OPERATOR_IS_OWNER
+                    mstore(0x0, 0x455243313135355F4F50455241544F525F49535F4F574E4552)
+                    revert(0x07, 25)
                 }
                 let slot := calculateDoubleMapping(operatorApprovals(), operator, caller())
                 sstore(slot, approved)
@@ -314,8 +321,8 @@ object "ERC1155" {
                 // require(accounts.length == ids.length)
                 if iszero(eq(idsNumber, accountsNumber)) {
                     // ERC1155_NOT_SAME_SIZE
-                    mstore(0x0, 0x455243313135355F4E4F545F53414D455F53495A450000000000000000000000)
-                    revert(0x0, 21)
+                    mstore(0x0, 0x455243313135355F4E4F545F53414D455F53495A45)
+                    revert(0x0B, 21)
                 }
 
                 //// initialize array for return, according to Solidity standard
@@ -339,8 +346,9 @@ object "ERC1155" {
             
             function isApprovedForAll(account, operator) -> approved {
                 if eq(account, operator) {
-                    mstore(0x455243313135355F4F50455241544F525F49535F4F574E455200000000000000, 0x0)
-                    revert(0x0, 25)
+                    // ERC1155_OPERATOR_IS_OWNER
+                    mstore(0x455243313135355F4F50455241544F525F49535F4F574E4552, 0x0)
+                    revert(0x07, 25)
                 }
                 let slot := calculateDoubleMapping(operatorApprovals(), operator, account)
                 approved := sload(slot)

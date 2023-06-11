@@ -2,12 +2,7 @@
 
 
 Need to:
-- Add comments for revert strings (it is in hex)
-- Shift one bit instead of multiply by 2
-- call `iszero` instead of `eq`
-- do a function with multiple emits
-- remove zeros in revert messages (need to modify revert)
-
+- :x: do a function with multiple emits (to reduce size of smart contract)
 - :x: string encoding for URI need to be implemented
 
 List of supported functions (ERC-1155 standard):
