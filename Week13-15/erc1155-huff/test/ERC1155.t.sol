@@ -70,7 +70,7 @@ contract ERC1155Test is Test {
         assertEq(token.balanceOf(address(this), 1), 1000);
     }
 
-    /*
+    
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     ///                                                                                             ///
     ///                                    ApprovalForAll tests                                     ///
@@ -87,6 +87,7 @@ contract ERC1155Test is Test {
         assertFalse(token.isApprovedForAll(address(this), address(0xBEEF)));
     }
 
+    /*
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     ///                                                                                             ///
     ///                                    balanceOfBatch tests                                     ///
@@ -146,11 +147,11 @@ contract ERC1155Test is Test {
     ///                                                                                             ///
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /*function testMintToEOA() public {
+    function testMintToEOA() public {
         token.mint(address(0xBEEF), 1337, 1, "");
 
         assertEq(token.balanceOf(address(0xBEEF), 1337), 1);
-    }*/
+    }
 
     // transfer hooks implementation incoming...
     /*function testMintToERC1155Recipient() public {
@@ -164,7 +165,7 @@ contract ERC1155Test is Test {
         assertEq(to.from(), address(0));
         assertEq(to.id(), 1337);
         assertBytesEq(to.mintData(), "testing 123");
-    }
+    }*/
 
     /*///////////////////////////////////////////////////////////////////////////////////////////////////
     ///                                                                                             ///
@@ -458,7 +459,7 @@ contract ERC1155Test is Test {
 
 }
 
-/*    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
     ///                                                                                             ///
     ///                                         Other tools                                         ///
     ///                                                                                             ///
@@ -516,5 +517,5 @@ contract ERC1155Recipient is ERC1155TokenReceiver {
         return ERC1155TokenReceiver.onERC1155BatchReceived.selector;
     }
 }
-*/
+
 

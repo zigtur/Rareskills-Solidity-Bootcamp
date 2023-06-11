@@ -16,6 +16,17 @@
 #define function mint(address,uint256,uint256,bytes) nonpayable returns()
 //#define function mint(address to, uint256 id, uint256 amount, bytes calldata) external
 
+/* Events */
+#define event TransferSingle(address, address, address, uint256, uint256)
+#define event TransferBatch(address, address, address, uint256[], uint256[])
+#define event ApprovalForAll(address, address, bool)
+#define event URI(string, uint256)
+
+
+/* Constants */
+#define constant BALANCE_SLOT = 0x0
+#define constant APPROVAL_SLOT = 0x01
+
 /*
 #######################################
 #                                     #
@@ -27,27 +38,28 @@
     // Identify which function is being called.
     0x00 calldataload 0xe0 shr
     // WRITE FUNCTIONS FIRST
-    /*dup1 __FUNC_SIG(setApprovalForAll) eq setApprovalForAll jumpi
-    dup1 __FUNC_SIG(safeTransferFrom) eq safeTransferFrom jumpi
+    dup1 __FUNC_SIG(setApprovalForAll) eq setApprovalForAll jumpi
+    /*dup1 __FUNC_SIG(safeTransferFrom) eq safeTransferFrom jumpi
     dup1 __FUNC_SIG(safeBatchTransferFrom) eq safeBatchTransferFrom jumpi
     dup1 __FUNC_SIG(batchMint) eq batchMint jumpi*/
-    // mint with bytes and without bytes
+    //// mint with bytes and without bytes
     dup1 __FUNC_SIG(mint) eq mint jumpi
     dup1 0x156e29f6 eq mint jumpi
 
 
     // READ FUNCTIONS
     dup1 __FUNC_SIG(balanceOf) eq balanceOf jumpi
-    /*dup1 __FUNC_SIG(balanceOfBatch) eq balanceOfBatch jumpi
-    dup1 __FUNC_SIG(isApprovedForAll) eq isApprovedForAll jumpi*/
+    /*dup1 __FUNC_SIG(balanceOfBatch) eq balanceOfBatch jumpi*/
+    dup1 __FUNC_SIG(isApprovedForAll) eq isApprovedForAll jumpi
 
-    0x00 0x00 return
+    0x00 0x00 revert
 
 
     // WRITE FUNCTIONS POINTER
-    /*setApprovalForAll:
+    setApprovalForAll:
+        pop
         SET_APPROVAL_FOR_ALL()
-    safeTransferFrom:
+    /*safeTransferFrom:
         SAFE_TRANSFER_FROM()
     safeBatchTransferFrom:
         SAFE_BATCH_TRANSFER_FROM()
@@ -61,9 +73,9 @@
     balanceOf:
         BALANCE_OF()
     /*balanceOfBatch:
-        BALANCE_OF_BATCH()
+        BALANCE_OF_BATCH()*/
     isApprovedForAll:
-        IS_APPROVED_FOR_ALL()*/
+        IS_APPROVED_FOR_ALL()
 
 }
 
@@ -85,6 +97,28 @@
     0x40 0x00 sha3 // sha3, on stack (return value)
 }
 
+#define macro DECODE_AS_ADDRESS() = takes (1) returns (1) {
+    // get only 20 bytes (length of an address)
+    0xffffffffffffffffffffffffffffffffffffffff and
+}
+
+#define macro DECODE_AS_BOOL() = takes (1) returns (1) {
+    // get only 1 bit (bool)
+    0x01 and
+}
+
+#define macro REQUIRE() = takes (3) returns (0) {
+    // Input stack:          [condition, message, message_length]
+    continue jumpi        // [message, message_length]
+
+    0x00 mstore           // [message_length]
+    dup1 0x20 sub         // get message index in memory slot1
+    
+    revert
+
+    continue:
+        pop pop
+}
 
 /*
 #######################################
@@ -93,13 +127,23 @@
 #                                     #
 #######################################
 */
-/*
+
 #define macro SET_APPROVAL_FOR_ALL() = takes (0) returns (0) {
-    0x04 calldataload   // [value]
-    [VALUE_LOCATION]    // [ptr, value]
-    sstore              // []
+    0x04 calldataload DECODE_AS_ADDRESS()                           // operator
+    0x19 0x455243313135355F4F50455241544F525F49535F4F574E4552       // ERC1155_OPERATOR_IS_OWNER and its size
+    dup3 caller eq iszero REQUIRE()                                 // require(operator != msg.sender)
+
+    caller swap1
+    [APPROVAL_SLOT]
+    CALCULATE_DOUBLE_MAPPING()
+
+    0x24 calldataload DECODE_AS_BOOL()
+    swap1 sstore
+
+    0x00 0x00 return
 }
 
+/*
 #define macro SAFE_TRANSFER_FROM() = takes (0) returns (0) {
     0x04 calldataload   // [value]
     [VALUE_LOCATION]    // [ptr, value]
@@ -119,20 +163,19 @@
 }*/
 
 #define macro MINT() = takes (0) returns (0) {
-    0x24 calldataload   // tokenId - third argument
-    0x04 calldataload   // address - second argument
-    0x00                // balanceOf mapping storage slot - first argument
+    0x24 calldataload                       // tokenId - third argument
+    0x04 calldataload DECODE_AS_ADDRESS()   // address - second argument
+    [BALANCE_SLOT]                          // balanceOf mapping storage slot - first argument
     
-    CALCULATE_DOUBLE_MAPPING() // will return balanceSlot on stack
-    0x00 0x00 dup3 log1 // DEBUG
-    0x00 0x00 0x12 log1 // DEBUG
+    CALCULATE_DOUBLE_MAPPING()              // will return balanceSlot on stack
     
     dup1 sload          // load balance
-    //0x00 0x00 dup3 log1 // DEBUG
     0x44 calldataload   // load number to mint
     add                 // add it
     
-    swap1 sstore // store new balance in storage*/
+    swap1 sstore // store new balance in storage
+
+    // MISSING: add event emit
 
     0x00 0x00 return // return value
 }
@@ -146,24 +189,12 @@
 #                                     #
 #######################################
 */
-/*
-#define macro GET_VALUE() = takes (0) returns (0) {
-    // Load value from storage.
-    [VALUE_LOCATION]   // [ptr]
-    sload                // [value]
-
-    // Store value in memory.
-    0x00 mstore
-
-    // Return value
-    0x20 0x00 return
-}*/
 
 // balanceOf(address,uint256)
 #define macro BALANCE_OF() = takes (0) returns (0) {
     0x24 calldataload   // tokenId - third argument
     0x04 calldataload   // address - second argument
-    0x00                // balanceOf mapping storage slot - first argument
+    [BALANCE_SLOT]      // balanceOf mapping storage slot - first argument
     
     CALCULATE_DOUBLE_MAPPING() // will return balanceSlot on stack
 
@@ -178,10 +209,16 @@
     [VALUE_LOCATION]    // [ptr, value]
     sstore              // []
 }
-
+*/
 
 #define macro IS_APPROVED_FOR_ALL() = takes (3) returns (0) {
-    0x04 calldataload   // [value]
-    [VALUE_LOCATION]    // [ptr, value]
-    sstore              // []
+    0x04 calldataload DECODE_AS_ADDRESS()                           // owner
+    0x24 calldataload DECODE_AS_ADDRESS()                           // operator
+    [APPROVAL_SLOT]
+    CALCULATE_DOUBLE_MAPPING()
+
+    sload               // Load approval value
+    0x00 mstore
+    0x20 0x00 return
 }
+
