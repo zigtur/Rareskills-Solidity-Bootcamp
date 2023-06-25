@@ -108,11 +108,14 @@ https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#motorbike
 
 
 ### Damn Vulnerable DeFi - Backdoor
+The wallet factory allows to create GnosisSafe wallet contracts, and the callbacks a contract. The wallet registry sends tokens to created GnosisSafe, but verifies that the owner of the GnosisSafe wallet is one of its beneficiaries.
 
+During GnosisSafe creation, the `setup()` function is called. Inside of `setup()`, there is a `setupModules(to, data)` function, which will do a delegate call. Here, the attacker can control the `to` and `data` parameters. So, the attacker can execute arbitrary code during the `setup()`.
+
+So, the solution is to create a GnosisSafe wallet using the factory, setting one of the four legit users as beneficiary to pass the wallet registry checks, but executing an exploit (like approving an account for token transfer) during the `setup()` call.
 
 ### Week2 Upgradeable
 
 ERC721 address:  0x556E27d0711363Aec1474ABe929e09B00A93C949
 ERC20 address:  0x8DC6917EfE51B95000fdEaA63eE173119eac24cC
 Game address:  0xE7C11e25E0A64b4a9Fc1513d30B156fdf39B35aC
-

