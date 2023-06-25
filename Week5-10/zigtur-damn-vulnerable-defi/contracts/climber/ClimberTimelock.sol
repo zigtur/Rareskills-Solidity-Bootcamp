@@ -121,16 +121,11 @@ contract ClimberAttacker is UUPSUpgradeable {
     ClimberVault vault;
     DamnValuableToken private immutable token;
     address private immutable attacker;
-
-
-
     
     address[] targets = new address[](5);
     uint256[] values = new uint256[](5);
     bytes[] dataElements = new bytes[](5);
-
-
-
+    
     constructor(address _vault, address _timelock, address _token) {
         vault = ClimberVault(_vault);
         timelock = ClimberTimelock(payable(_timelock));
@@ -139,8 +134,6 @@ contract ClimberAttacker is UUPSUpgradeable {
     }
 
     function attack() external {
-
-
         // Step 1: update delay
         targets[0] = address(timelock);
         values[0] = 0;
@@ -185,5 +178,3 @@ contract ClimberAttacker is UUPSUpgradeable {
     function _authorizeUpgrade(address newImplementation) internal override {}
 
 }
-
-import "hardhat/console.sol";

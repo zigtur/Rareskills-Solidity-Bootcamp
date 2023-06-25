@@ -105,7 +105,9 @@ https://github.com/zigtur/Ethernaut-Solutions#motorbike
 https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#motorbike
 
 ### Damn Vulnerable DeFi - Climber
+By reading the `ClimberTimelock` contract, we can see that the `execute()` function does not respect the Checks-Effects-Interacts pattern. After executing the operations, it verifies if the operation was scheduled and reverts if not.
 
+So, we can use `execute()` to do whatever we want. We just need to add the operation to the scheduled ones before the `execute()` function verifies the operation.
 
 ### Damn Vulnerable DeFi - Backdoor
 The wallet factory allows to create GnosisSafe wallet contracts, and the callbacks a contract. The wallet registry sends tokens to created GnosisSafe, but verifies that the owner of the GnosisSafe wallet is one of its beneficiaries.
