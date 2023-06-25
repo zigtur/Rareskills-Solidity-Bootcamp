@@ -7,21 +7,45 @@
 const hre = require("hardhat");
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
+  
+  const [deployer] = await ethers.getSigners();
+  console.log("Deploying contracts with the account:", deployer.address);
 
-  const lockedAmount = hre.ethers.utils.parseEther("0.001");
+  const ZGameStakingContract = await ethers.getContractFactory("ZGameStaking");
+  const ZGameTokenContract = await ethers.getContractFactory("ZGameToken");
+  const ZGameNFTCollectionContract = await ethers.getContractFactory("ZGameNFTCollection");
 
-  const Lock = await hre.ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  // NFT - ERC721
+  contractNFT = await upgrades.deployProxy(ZGameNFTCollectionContract, ["ZigTestGameNFT", "ZTG", 100]);
+  await contractNFT.deployed();
 
-  await lock.deployed();
+  // Staking
+  contractStaking = await upgrades.deployProxy(ZGameStakingContract, [contractNFT.address]);
+  await contractStaking.deployed();
 
-  console.log(
-    `Lock with ${ethers.utils.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
-  );
+  // Token - ERC20
+  contractToken = await upgrades.deployProxy(ZGameTokenContract, ["ZigTestGameUpgradeable", "ZTGU", contractStaking.address]);
+  await contractToken.deployed();
+  await contractStaking.setGameTokenContract(contractToken.address);
+
+
+  console.log("ERC721 address: ", contractNFT.address);
+  console.log("ERC20 address: ", contractToken.address);
+  console.log("Game address: ", contractStaking.address);
+
+  console.log("Verifying contracts on Etherscan");
+  await run(`verify:verify`, {
+    address: contractNFT.address,
+    constructorArguments: ["ZigTestGameNFT", "ZTG", 100],
+  });
+  await run(`verify:verify`, {
+    address: contractToken.address,
+    constructorArguments: ["ZigTestGameUpgradeable", "ZTGU", contractStaking.address],
+  });
+  await run(`verify:verify`, {
+    address: contractStaking.address,
+    constructorArguments: [contractNFT.address],
+  });
 }
 
 // We recommend this pattern to be able to use async/await everywhere

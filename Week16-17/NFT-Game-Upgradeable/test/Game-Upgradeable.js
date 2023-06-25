@@ -18,11 +18,17 @@ describe("ZGameStaking", function () {
         const ZGameStakingContract = await ethers.getContractFactory("ZGameStaking");
         const ZGameTokenContract = await ethers.getContractFactory("ZGameToken");
         const ZGameNFTCollectionContract = await ethers.getContractFactory("ZGameNFTCollection");
-        contractNFT = await ZGameNFTCollectionContract.deploy("ZGameNFT", "ZGN", BigNumber.from(100));
+
+        // NFT - ERC721
+        contractNFT = await upgrades.deployProxy(ZGameNFTCollectionContract, ["ZigTestGameNFT", "ZTG", 100]);
         await contractNFT.deployed();
-        contractStaking = await ZGameStakingContract.deploy(contractNFT.address);
+
+        // Staking
+        contractStaking = await upgrades.deployProxy(ZGameStakingContract, [contractNFT.address]);
         await contractStaking.deployed();
-        contractToken = await ZGameTokenContract.deploy("ZGameToken", "ZGT", contractStaking.address);
+
+        // Token - ERC20
+        contractToken = await upgrades.deployProxy(ZGameTokenContract, ["ZigTestGameUpgradeable", "ZTGU", contractStaking.address]);
         await contractToken.deployed();
         await contractStaking.setGameTokenContract(contractToken.address);
     });
@@ -67,7 +73,7 @@ await ethers.provider.send("evm_mine")*/
 
         it("other ERC721 transferFrom", async function () {
             const ZGameNFTCollectionContract = await ethers.getContractFactory("ZGameNFTCollection");
-            let contractNFT2 = await ZGameNFTCollectionContract.deploy("ZGameNFTAttack", "ZGNA", BigNumber.from(100));
+            contractNFT2 = await upgrades.deployProxy(ZGameNFTCollectionContract, ["ZGameNFTAttack", "ZGNA", 100]);
             await contractNFT2.deployed();
             let mintPrice = await contractNFT.mintPrice();
             let tokenId = BigNumber.from(1);
@@ -139,7 +145,8 @@ await ethers.provider.send("evm_mine")*/
         it("change token rewards contract", async function () {
             const ZGameTokenContract = await ethers.getContractFactory("ZGameToken");
             expect(await contractStaking.ZGameTokenContract()).to.equal(contractToken.address);
-            let contractToken2 = await ZGameTokenContract.deploy("ZGameToken2", "ZGT2", contractStaking.address);
+            // new token contract
+            let contractToken2 = await upgrades.deployProxy(ZGameTokenContract, ["ZGameToken2", "ZGT2", contractStaking.address]);
             await contractToken2.deployed();
             expect(await contractStaking.owner()).to.equal(owner.address);
             await contractStaking.connect(owner).setGameTokenContract(contractToken2.address);
@@ -149,12 +156,11 @@ await ethers.provider.send("evm_mine")*/
         it("user fails to change token rewards contract", async function () {
             const ZGameTokenContract = await ethers.getContractFactory("ZGameToken");
             expect(await contractStaking.ZGameTokenContract()).to.equal(contractToken.address);
-            let contractToken2 = await ZGameTokenContract.deploy("ZGameToken2", "ZGT2", contractStaking.address);
+            // new token contract
+            let contractToken2 = await upgrades.deployProxy(ZGameTokenContract, ["ZGameToken2", "ZGT2", contractStaking.address]);
             await contractToken2.deployed();
             expect(contractStaking.connect(user1).setGameTokenContract(contractToken2.address)).to.be.revertedWith('_msgSender() not original owner!');
             expect(await contractStaking.ZGameTokenContract()).to.equal(contractToken.address);
         });
     });
-
-    
 });

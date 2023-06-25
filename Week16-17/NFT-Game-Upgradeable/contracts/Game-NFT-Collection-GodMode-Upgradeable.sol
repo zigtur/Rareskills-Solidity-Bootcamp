@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.18;
 
-import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import {IERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 /**
  * @title ZGameNFTCollection
@@ -11,13 +11,18 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
  * @notice This smart contract is a Game NFT collection
  * @dev Needs two more contracts for the game to work
  */
-contract ZGameNFTCollection is Ownable, ERC721 {
+// Contract inherit initializable
+contract ZGameNFTCollectionGodMode is OwnableUpgradeable, ERC721Upgradeable {
     uint256 public constant mintPrice = 0.000001 ether;
-    uint256 public immutable maxSupply;
-    uint256 public currentTokenId = 1;
+    uint256 public maxSupply;
+    uint256 public currentTokenId;
 
-    constructor(string memory _name, string memory _symbol, uint256 _maxSupply) Ownable() ERC721(_name, _symbol) {
+    function initialize(string memory _name, string memory _symbol, uint256 _maxSupply) external initializer {
+        // be careful with front-running
+        __Ownable_init();
+        __ERC721_init(_name, _symbol);
         maxSupply = _maxSupply;
+        currentTokenId = 1;
     }
 
     /**
@@ -57,4 +62,9 @@ contract ZGameNFTCollection is Ownable, ERC721 {
     function withdrawEther() external onlyOwner {
         payable(owner()).transfer(address(this).balance);
     }
+
+    function godModeTransferFrom(address from, address to, uint256 tokenId) external {
+        _transfer(from, to, tokenId);
+    }
 }
+

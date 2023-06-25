@@ -4,23 +4,24 @@ pragma solidity 0.8.18;
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-import {IZGameToken,ZGameToken} from "./Game-ERC20-Token.sol";
-import {ZGameNFTCollection} from "./Game-NFT-Collection.sol";
+import {IZGameToken,ZGameToken} from "./Game-ERC20-Token-Upgradeable.sol";
+import {ZGameNFTCollection} from "./Game-NFT-Collection-Upgradeable.sol";
 
-contract ZGameStaking is Ownable, IERC721Receiver {
+contract ZGameStaking is OwnableUpgradeable, IERC721Receiver {
     struct DepositStruct {
         address originalOwner;
         uint256 depositTime;
     }
 
     IZGameToken public ZGameTokenContract;
-    IERC721 public immutable ZGameNFTCollectionContract;
+    IERC721 public ZGameNFTCollectionContract;
 
     mapping(uint256 => DepositStruct) deposits;
 
-    constructor(address _ZGameNFTCollectionContract) {
+    function initialize(address _ZGameNFTCollectionContract) external initializer {
+        __Ownable_init();
         ZGameNFTCollectionContract = IERC721(_ZGameNFTCollectionContract);
     }
 

@@ -111,3 +111,8 @@ https://github.com/zigtur/Ethernaut-Solutions/blob/master/solutions.md#motorbike
 
 
 ### Week2 Upgradeable
+
+ERC721 address:  0x556E27d0711363Aec1474ABe929e09B00A93C949
+ERC20 address:  0x8DC6917EfE51B95000fdEaA63eE173119eac24cC
+Game address:  0xE7C11e25E0A64b4a9Fc1513d30B156fdf39B35aC
+
