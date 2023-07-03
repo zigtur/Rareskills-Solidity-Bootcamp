@@ -17,6 +17,36 @@ There are two main functions to get shares:
 Both functions return a uint256 which is the amount of shares to get back.
 
 
+## Constant Product AMM
+*AMM: Automated Market Maker*
+
+### Swap
+Price of tokens are determined by:
+$$ X.Y = K$$
+- With $X = $ Amount of Token A in the AMM.
+- With $Y = $ Amount of Token B in the AMM.
+- With $K$ a constant
+
+Swap example:
+- Let's say that:
+    - $dx = $ Amount of Token A **in**
+    - $dy = $ Amount of Token B **out**
+- Before trade: $X.Y = K$
+- After trade: $(X + dx).(Y - dy) = K$
+- So here:
+    - $Y - dy = \frac{K}{X + dx}$
+    - $ dy = Y - \frac{K}{X + dx}$
+    - $ dy = Y - \frac{XY}{X + dx}$
+    - $ dy = \frac{XY + Ydx - XY}{X + dx}$
+    - $dy = \frac{Y.dx}{X + dx}$
+
+### Add liquidity
+How many shares to mint?
+- Answer: $s = \frac{dx}{X}T = \frac{dy}{Y}T$
+
+
 
 ## Sources
 https://www.rareskills.io/post/erc4626
+https://www.youtube.com/watch?v=QNPyFs8Wybk
+
