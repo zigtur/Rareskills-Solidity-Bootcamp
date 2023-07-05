@@ -43,6 +43,20 @@ Swap example:
 ### Add liquidity
 How many shares to mint?
 - Answer: $s = \frac{dx}{X}T = \frac{dy}{Y}T$
+    - Before: $XY = K$
+    - After: $(X + dx)(Y + dy) = K'$, with $K \leq K'$
+    - No price change before and after adding liquidity: $\frac{X}{Y} = \frac{X+dx}{Y+dy}$
+        - $dy = \frac{Y.dx}{X}$
+        - $dx = \frac{X.dy}{Y}$
+    - Increase in liquidity is proportional to increase in shares:
+        - $L0$ is total liquidity before, $L1$ is after, $T$ is Total shares and $s$ is shares to mint
+        - $\frac{L1}{L0} = \frac{T+s}{T}$
+        - $\frac{L1 - L0}{L0} T = s$
+    - Total liquidity from X and Y:
+        - $f(X,Y) = $ total liquidity
+        - $f(X,Y) = \sqrt{XY} $ is a good one for AMM
+        - Quadratic functions are not good. It should be like linear.
+        
 
 
 
