@@ -77,7 +77,25 @@ How many shares to mint?
             - $= \frac{dx \sqrt{Y}}{ X \sqrt{Y}}$
             - $= \frac{dx}{X}$
             - The same applies to $\frac{dy}{Y}$.
-
+How many tokens to withdraw?
+- Answer: $dx = X \frac{S}{T}$
+    - $a$ = Amount out = $f(dx, dy) = \sqrt{dxdy}$
+    - $L$ = Total liquidity (as seen before)
+    - $s$ = Amount of shares to burn
+    - $T$ = Total shares
+    - $\frac{a}{L} = \frac{s}{T}$
+    - $a = L \frac{s}{T}$
+    - $\sqrt{dxdy} = \sqrt{XY} \frac{s}{T}$
+    - **Find $dx$**:
+        - Replace $dy$ by $\frac{Ydx}{X}$
+        - $\sqrt{dx \frac{Ydx}{X}} = \sqrt{XY} \frac{s}{T}$
+        - $\sqrt{(dx)^2 \frac{Y}{X}} = \sqrt{XY} \frac{s}{T}$
+        - $dx \sqrt{\frac{Y}{X}} = \sqrt{XY} \frac{s}{T}$
+        - $dx = \frac{\sqrt{XY} \frac{s}{T}}{\sqrt{\frac{Y}{X}}}$
+        - $dx = \frac{\sqrt{XY} \frac{s}{T} \sqrt{X}}{\sqrt{Y}}$
+        - $dx = \sqrt{X} \frac{s}{T} \sqrt{X}$
+        - $dx = X \frac{s}{T}$
+        
 
         
 
