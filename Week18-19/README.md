@@ -41,7 +41,8 @@ Swap example:
     - $dy = \frac{Y.dx}{X + dx}$
 
 ### Liquidity Pool
-How many shares to mint?
+**How many shares to mint?**
+
 - Answer: $s = \frac{dx}{X}T = \frac{dy}{Y}T$
     - Before: $XY = K$
     - After: $(X + dx)(Y + dy) = K'$, with $K \leq K'$
@@ -77,7 +78,8 @@ How many shares to mint?
             - $= \frac{dx \sqrt{Y}}{ X \sqrt{Y}}$
             - $= \frac{dx}{X}$
             - The same applies to $\frac{dy}{Y}$.
-How many tokens to withdraw?
+
+**How many tokens to withdraw?**
 - Answer: $dx = X \frac{S}{T}$
     - $a$ = Amount out = $f(dx, dy) = \sqrt{dxdy}$
     - $L$ = Total liquidity (as seen before)
