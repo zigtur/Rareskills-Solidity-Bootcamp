@@ -40,7 +40,7 @@ Swap example:
     - $dy = \frac{XY + Ydx - XY}{X + dx}$
     - $dy = \frac{Y.dx}{X + dx}$
 
-### Add liquidity
+### Liquidity Pool
 How many shares to mint?
 - Answer: $s = \frac{dx}{X}T = \frac{dy}{Y}T$
     - Before: $XY = K$
@@ -56,11 +56,34 @@ How many shares to mint?
         - $f(X,Y) =$ total liquidity
         - $f(X,Y) = \sqrt{XY}$ is a good one for AMM
         - Quadratic functions are not good. It should be like linear.
+    - Simplify shares to mint equation:
+        - As said earlier, $L0$ and $L1$ are liquidity before and after
+        - Liquidity is measured using $f(X,Y) = \sqrt{XY}$
+            - So:
+            - $L0 = \sqrt{XY}$
+            - $L1 = \sqrt{(X+dx)(Y + dy)}$
+        - Let's take $\frac{L1 - L0}{L0}$:
+            - $\frac{L1 - L0}{L0} = \frac{\sqrt{(X+dx)(Y + dy)} - \sqrt{XY}}{\sqrt{XY}}$
+            - $\frac{L1 - L0}{L0} = \frac{\sqrt{XY + Xdy + dxY + dxdy} - \sqrt{XY}}{\sqrt{XY}}$
+                - Recall $dy = \frac{Y.dx}{X}$
+            - $\frac{L1 - L0}{L0} = \frac{\sqrt{XY + X \frac{Y.dx}{X} + dxY + dx \frac{Ydx}{X}} - \sqrt{XY}}{\sqrt{XY}}$
+            - $\frac{L1 - L0}{L0} = \frac{\sqrt{XY + Ydx + dxY + dx^2 \frac{Y}{X}} - \sqrt{XY}}{\sqrt{XY}}$
+            - $\frac{L1 - L0}{L0} = \frac{\sqrt{(X + 2dx + \frac{dx^2}{X}) Y} - \sqrt{XY}}{\sqrt{XY}}$
+            - $= \frac{\sqrt{X}}{\sqrt{X}} \frac{\sqrt{(X + 2dx + \frac{dx^2}{X}) Y} - \sqrt{XY}}{\sqrt{XY}}$
+            - $= \frac{\sqrt{(X^2 + 2Xdx + dx^2) Y} - \sqrt{X^2Y}}{\sqrt{X^2Y}}$
+            - $= \frac{\sqrt{(X^2 + 2Xdx + dx^2)}\sqrt{Y} - \sqrt{X^2Y}}{\sqrt{X^2Y}} = \frac{\sqrt{(X + dx)^2}\sqrt{Y} - \sqrt{X^2Y}}{\sqrt{X^2Y}}$
+            - $= \frac{(X + dx) \sqrt{Y} - X \sqrt{Y}}{ X \sqrt{Y}}$
+            - $= \frac{X \sqrt{Y} + dx \sqrt{Y} - X \sqrt{Y}}{ X \sqrt{Y}}$
+            - $= \frac{dx \sqrt{Y}}{ X \sqrt{Y}}$
+            - $= \frac{dx}{X}$
+            - The same applies to $\frac{dy}{Y}$.
+
+
         
 
 
 
 ## Sources
-https://www.rareskills.io/post/erc4626
-https://www.youtube.com/watch?v=QNPyFs8Wybk
+- https://www.rareskills.io/post/erc4626
+- https://www.youtube.com/watch?v=QNPyFs8Wybk
 

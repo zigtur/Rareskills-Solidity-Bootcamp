@@ -67,3 +67,6 @@
 [submodule "Week13-15/erc1155-huff/lib/solmate"]
 	path = Week13-15/erc1155-huff/lib/solmate
 	url = https://github.com/Rari-Capital/solmate
+[submodule "Week18-19/lib/forge-std"]
+	path = Week18-19/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
