@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+/*pragma solidity 0.8.20;
 
-contract Counter {
+contract ZigSwapPool {
     uint256 public number;
 
     function setNumber(uint256 newNumber) public {
@@ -12,3 +12,4 @@ contract Counter {
         number++;
     }
 }
+*/
