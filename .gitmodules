@@ -73,9 +73,6 @@
 [submodule "Week18-19/lib/openzeppelin-contracts"]
 	path = Week18-19/lib/openzeppelin-contracts
 	url = https://github.com/openzeppelin/openzeppelin-contracts
-[submodule "lib/prb-math"]
-	path = lib/prb-math
-	url = https://github.com/PaulRBerg/prb-math
 [submodule "Week18-19/lib/prb-math"]
 	path = Week18-19/lib/prb-math
 	url = https://github.com/PaulRBerg/prb-math
