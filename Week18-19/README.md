@@ -2,7 +2,6 @@
 
 ## ERC4626
 
-
 ERC4626 is a tokenized vault standard that uses ERC20 tokens to represent shares of some other asset.
 
 By depositing an ERC20 token, another token will be given which can be called a "share". The ERC4626 contract is also an ERC20 contract (shares).
