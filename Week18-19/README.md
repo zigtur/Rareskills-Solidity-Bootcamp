@@ -39,6 +39,8 @@ Swap example:
     - $dy = \frac{XY + Ydx - XY}{X + dx}$
     - $dy = \frac{Y.dx}{X + dx}$
 
+![Figure - Swap](./images/swap.svg)
+
 ### Liquidity Pool
 **How many shares to mint?**
 
@@ -78,6 +80,8 @@ Swap example:
             - $= \frac{dx}{X}$
             - The same applies to $\frac{dy}{Y}$.
 
+![Figure - Mint](./images/mint.svg)
+
 **How many tokens to withdraw?**
 - Answer: $dx = X \frac{S}{T}$
     - $a$ = Amount out = $f(dx, dy) = \sqrt{dxdy}$
@@ -98,7 +102,6 @@ Swap example:
         - $dx = X \frac{s}{T}$
         
 
-        
 
 
 
