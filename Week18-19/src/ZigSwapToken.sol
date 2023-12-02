@@ -33,6 +33,7 @@ contract ZigSwapToken is ERC20 {
             )
         );
         address signedFrom = ecrecover(message, v, r, s);
+        // address(0) already checked as owner != address(0)
         require(signedFrom == owner, "Signature invalid");
         nonces[owner][nonce] = true;
         _approve(owner, spender, value);
